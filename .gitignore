@@ -2,3 +2,6 @@
 /Gwm/dist/
 /Gwm/Gwm-ejb/dist/
 /Gwm/Gwm-ejb/build/
+/Gwm/Gwm-war/nbproject/private/
+/Gwm/Gwm-war/dist/
+/Gwm/Gwm-war/build/
