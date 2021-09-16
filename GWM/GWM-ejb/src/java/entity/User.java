@@ -62,8 +62,11 @@ public class User implements Serializable {
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Party> parties;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "user")
     private List<Post> posts;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "user")
+    private List<Request> requests;
 
     public User() {
         passwordSalt = new SecureRandom().nextInt(10000) + ""; //securerandom number from 0-9999 (4 digits)
@@ -81,9 +84,8 @@ public class User implements Serializable {
         this.protectedPassword = generateProtectedPassword(passwordSalt, plainPassword);
         this.profileImage = profileImage;
     }
-    
+
     //Required constructors to be added here   
-    
     public Long getUserId() {
         return userId;
     }
@@ -201,5 +203,13 @@ public class User implements Serializable {
 
     public void setPosts(List<Post> posts) {
         this.posts = posts;
+    }
+
+    public List<Request> getRequests() {
+        return requests;
+    }
+
+    public void setRequests(List<Request> requests) {
+        this.requests = requests;
     }
 }

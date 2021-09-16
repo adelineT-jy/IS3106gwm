@@ -1,20 +1,16 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package entity;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.Date;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
-/**
- *
- * @author HP
- */
 @Entity
 public class Payment implements Serializable {
 
@@ -22,6 +18,21 @@ public class Payment implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+    
+    @Column(nullable = false)
+    private Long userIdFrom;
+    
+    @Column(nullable = false)
+    private Long userIdTo;
+    
+    @Column(scale = 2)
+    private BigDecimal paymentAmount;
+    
+    @Temporal(TemporalType.DATE)
+    private Date paymentDate;
+    
+    @Column(length = 100, nullable = false, unique = true)
+    private String ccTransactionId;
 
     public Long getId() {
         return id;
@@ -29,6 +40,46 @@ public class Payment implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getUserIdFrom() {
+        return userIdFrom;
+    }
+
+    public void setUserIdFrom(Long userIdFrom) {
+        this.userIdFrom = userIdFrom;
+    }
+
+    public Long getUserIdTo() {
+        return userIdTo;
+    }
+
+    public void setUserIdTo(Long userIdTo) {
+        this.userIdTo = userIdTo;
+    }
+
+    public BigDecimal getPaymentAmount() {
+        return paymentAmount;
+    }
+
+    public void setPaymentAmount(BigDecimal paymentAmount) {
+        this.paymentAmount = paymentAmount;
+    }
+
+    public Date getPaymentDate() {
+        return paymentDate;
+    }
+
+    public void setPaymentDate(Date paymentDate) {
+        this.paymentDate = paymentDate;
+    }
+
+    public String getCcTransactionId() {
+        return ccTransactionId;
+    }
+
+    public void setCcTransactionId(String ccTransactionId) {
+        this.ccTransactionId = ccTransactionId;
     }
 
     @Override
