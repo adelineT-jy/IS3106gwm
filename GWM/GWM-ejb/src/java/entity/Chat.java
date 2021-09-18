@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package entity;
+package Entity;
 
 import java.io.Serializable;
 import javax.persistence.Entity;
@@ -13,14 +13,14 @@ import javax.persistence.Id;
 
 /**
  *
- * @author HP
+ * @author User
  */
 @Entity
 public class Chat implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     public Long getId() {
@@ -53,7 +53,7 @@ public class Chat implements Serializable {
 
     @Override
     public String toString() {
-        return "entity.Chat[ id=" + id + " ]";
+        return "Entity.Chat[ id=" + id + " ]";
     }
-    
+
 }
