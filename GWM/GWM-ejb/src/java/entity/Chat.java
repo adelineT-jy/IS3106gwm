@@ -6,10 +6,15 @@
 package Entity;
 
 import java.io.Serializable;
+import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToOne;
 
 /**
  *
@@ -21,10 +26,22 @@ public class Chat implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-
     private Long chatId;
 
+    private Boolean party;
+
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "chat")
+    private List<User> users;
+
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private ChatMessage chatMessage;
+
     public Chat() {
+        this.party = false;
+    }
+
+    public Chat(Boolean party1) {
+        this.party = party1;
     }
 
     public Long getChatId() {
@@ -33,6 +50,22 @@ public class Chat implements Serializable {
 
     public void setChatId(Long chatId) {
         this.chatId = chatId;
+    }
+
+    public List<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(List<User> users) {
+        this.users = users;
+    }
+
+    public Boolean getParty() {
+        return party;
+    }
+
+    public void setParty(Boolean party) {
+        this.party = party;
     }
 
     @Override

@@ -16,6 +16,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.swing.ImageIcon;
 
 @Entity
@@ -46,6 +47,9 @@ public class User implements Serializable {
     private double wallet = 0.00;
 
     private ImageIcon profileImage;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
+    private List<Notification> notify;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<User> following;
@@ -85,7 +89,7 @@ public class User implements Serializable {
         this.profileImage = profileImage;
     }
 
-    //Required constructors to be added here   
+    //Required constructors to be added here
     public Long getUserId() {
         return userId;
     }

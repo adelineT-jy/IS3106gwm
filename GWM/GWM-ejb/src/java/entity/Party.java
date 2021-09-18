@@ -28,34 +28,34 @@ import javax.persistence.TemporalType;
  */
 @Entity
 public class Party implements Serializable {
-    
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long partyId;
-    
-    @Column(length=999, nullable = false)
+
+    @Column(length = 999, nullable = false)
     private String inviteLink;
-    
+
     @Temporal(TemporalType.TIMESTAMP)
     private Date partyStartTime;
-    
+
     @Temporal(TemporalType.TIMESTAMP)
     private Date partyEndTime;
-    
+
     @ManyToOne(optional = false, fetch = FetchType.EAGER)
-    @JoinColumn(nullable=false)
+    @JoinColumn(nullable = false)
     private User partyOwner;
-    
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy= "parties")
+
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "parties")
     private List<User> users;
-    
-    @OneToOne(cascade = {CascadeType.ALL})
-    private Chat chat;
-    
+
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private GroupChat chat;
+
     public Party() {
     }
-    
+
     public Long getPartyId() {
         return partyId;
     }
@@ -128,5 +128,5 @@ public class Party implements Serializable {
     public String toString() {
         return "entity.Party[ id=" + partyId + " ]";
     }
-    
+
 }
