@@ -10,5 +10,5 @@ package enumeration;
  * @author HP
  */
 public enum Game {
-    
+    MOBILELENGENDS, CALLOFDUTY
 }

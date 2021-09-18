@@ -21,21 +21,18 @@ public class Chat implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
-    public Long getId() {
-        return id;
+    private Long chatId;
+
+    public Chat() {
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public Long getChatId() {
+        return chatId;
     }
 
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
-        return hash;
+    public void setChatId(Long chatId) {
+        this.chatId = chatId;
     }
 
     @Override
@@ -45,7 +42,7 @@ public class Chat implements Serializable {
             return false;
         }
         Chat other = (Chat) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+        if ((this.chatId == null && other.chatId != null) || (this.chatId != null && !this.chatId.equals(other.chatId))) {
             return false;
         }
         return true;
@@ -53,7 +50,7 @@ public class Chat implements Serializable {
 
     @Override
     public String toString() {
-        return "Entity.Chat[ id=" + id + " ]";
+        return "Entity.Chat[ id=" + chatId + " ]";
     }
 
 }
