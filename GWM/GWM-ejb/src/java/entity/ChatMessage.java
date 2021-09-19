@@ -38,9 +38,6 @@ public class ChatMessage implements Serializable {
     @Column(nullable = false)
     private Long msgOwnerId;
 
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "chatMessage")
-    private Chat chat;
-
     public ChatMessage(String message, Long msgOwnerId) {
         this.message = message;
         this.msgOwnerId = msgOwnerId;

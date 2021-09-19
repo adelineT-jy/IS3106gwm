@@ -21,9 +21,6 @@ import javax.persistence.OneToOne;
 @Entity
 public class GroupChat extends Chat implements Serializable {
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "chat")
-    private Party party;
-
     public GroupChat() {
         super(true);
     }
