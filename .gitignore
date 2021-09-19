@@ -21,6 +21,9 @@
 *.DS_Store
 *.mtj.tmp
 
+#Build
+*.properties
+
 # User-defined
 /GWM/build/
 /GWM/dist/
