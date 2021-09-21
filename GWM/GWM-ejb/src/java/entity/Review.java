@@ -25,6 +25,9 @@ public class Review implements Serializable {
     private Long reviewId;
     
     @Column(nullable=false)
+    private Long userId;
+    
+    @Column(nullable=false)
     private Integer rating;
     
     @Column(length=200)
@@ -39,6 +42,14 @@ public class Review implements Serializable {
 
     public void setReviewId(Long reviewId) {
         this.reviewId = reviewId;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
     public Integer getRating() {

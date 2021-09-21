@@ -1,0 +1,65 @@
+package session;
+
+import entity.Party;
+import entity.Payment;
+import entity.Post;
+import entity.Request;
+import entity.Review;
+import entity.User;
+import java.util.List;
+import javax.ejb.Local;
+import javax.persistence.NoResultException;
+
+@Local
+public interface PostSessionBeanLocal {
+    public List<Post> searchPosts(String query);
+    
+    public List<Post> searchPostsByUser(Long userId) throws NoResultException;
+    
+    public List<Request> searchRequestsByUser(Long userId) throws NoResultException;
+    
+    public List<Party> searchPartiesByUser(Long userId) throws NoResultException;
+    
+    public List<Review> searchReviewsByUser(Long userId) throws NoResultException;
+    
+    public List<Review> searchReviewsOfUser(Long userId) throws NoResultException;
+    
+    public void createParty(Party party, Long userId) throws NoResultException;
+    
+    public void joinParty(Long partyId, Long userId) throws NoResultException;
+    
+    public void acceptToParty(Long rId, Long partyId, Long userId) throws NoResultException;
+    
+    public void rejectFromParty(Long rId, Long partyId, Long userId) throws NoResultException;
+    
+    public void deleteParty(Long partyId, Long userId) throws NoResultException;
+    
+    public void endParty(Long partyId, Long userId) throws NoResultException;
+    
+    public void createPost(Post p, Long partyId, Long userId);
+    
+    public void editPost(Post p, Long userId) throws NoResultException;
+    
+    public void deletePost(Long pId, Long userId) throws NoResultException;
+    
+    public void createRequest(Request r, Long pId) throws NoResultException;
+    
+    public void deleteRequest(Long rId, Long userId) throws NoResultException;
+    
+    public void makePayment(Payment p, Long pId, Long userId) throws NoResultException;
+    
+    public void createReview(Review rev, Long userId, Long partyId) throws NoResultException;
+    
+    // Helper methods
+    public User getUser(Long userId) throws NoResultException;
+    
+    public Party getParty(Long partyId) throws NoResultException;
+    
+    public Post getPost(Long postId) throws NoResultException;
+    
+    public Request getRequest(Long rId) throws NoResultException;
+    
+    public Payment getPayment(Long paymentId) throws NoResultException;
+    
+    public Review getReview(Long revId) throws NoResultException;
+}
