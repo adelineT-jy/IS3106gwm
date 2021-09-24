@@ -14,9 +14,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.swing.ImageIcon;
 
 @Entity
@@ -33,8 +31,6 @@ public class User implements Serializable {
     @Column(length = 32, nullable = false, unique = true)
     private String username;
 
-    //To set password: user.setProtectedPassword(password)
-    //To validate password: generateProtectedPassword(user.getPasswordSalt(), enteredPW) == enteredPW
     @Column(length = 4, nullable = false)
     private String passwordSalt;
     @Column(length = 128, nullable = false)
@@ -127,6 +123,14 @@ public class User implements Serializable {
         } catch (Exception ex) {
         }
         return generatedPassword;
+    }
+
+    public String getPasswordSalt() {
+        return passwordSalt;
+    }
+
+    public void setPasswordSalt(String passwordSalt) {
+        this.passwordSalt = passwordSalt;
     }
 
     public String getProtectedPassword() {
