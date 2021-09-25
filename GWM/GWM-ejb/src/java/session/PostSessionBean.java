@@ -67,6 +67,8 @@ public class PostSessionBean implements PostSessionBeanLocal {
         
         party.setPartyOwner(u);
         party.setUsers(users);
+        party.setRequests(new ArrayList<>());
+        party.setReviews(new ArrayList<>());
         em.persist(party);
         u.getParties().add(party);
     }
@@ -151,12 +153,25 @@ public class PostSessionBean implements PostSessionBeanLocal {
 
     @Override
     public void createRequest(Request r, Long pId) throws NoResultException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        r.setStatus(RequestStatus.PENDING);
+        em.persist(r);
+        User u = getUser(r.getRequester().getUserId());
+        u.getRequests().add(r);
+        Party p = getParty(pId);
+        p.getRequests().add(r);
     }
 
     @Override
     public void deleteRequest(Long rId, Long userId) throws NoResultException, AuthenticationException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Request r = getRequest(rId);
+        if (!r.getRequester().getUserId().equals(userId)) {
+            throw new AuthenticationException("User not authenticated to delete request");
+        }
+        
+        User u = getUser(userId);
+        u.getRequests().add(r);
+        em.remove(r);
+        em.flush(); // need to get rid of request on party side
     }
 
     @Override
@@ -166,7 +181,16 @@ public class PostSessionBean implements PostSessionBeanLocal {
 
     @Override
     public void createReview(Review rev, Long userId, Long partyId) throws NoResultException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        rev.setUserId(userId);
+        Party p = getParty(partyId);
+        if (p.getUsers().stream()
+                .filter(x -> x.getUserId().equals(userId))
+                .findFirst()
+                .get() == null) {
+            throw new NoResultException("You were not in this party.");
+        }
+        em.persist(rev);
+        p.getReviews().add(rev);
     }
 
     @Override
