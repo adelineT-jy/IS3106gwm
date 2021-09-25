@@ -6,6 +6,10 @@ import entity.Post;
 import entity.Request;
 import entity.Review;
 import entity.User;
+import enumeration.RequestStatus;
+import error.AuthenticationException;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -57,32 +61,77 @@ public class PostSessionBean implements PostSessionBeanLocal {
 
     @Override
     public void createParty(Party party, Long userId) throws NoResultException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        User u = getUser(userId);
+        List<User> users = new ArrayList<>();
+        users.add(u);
+        
+        party.setPartyOwner(u);
+        party.setUsers(users);
+        em.persist(party);
+        u.getParties().add(party);
     }
 
     @Override
     public void joinParty(Long partyId, Long userId) throws NoResultException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        User u = getUser(userId);
+        Party party = getParty(partyId);
+        
+        if (party.getUsers().contains(u)) {
+            return;
+        }
+        
+        party.getUsers().add(u);
+        u.getParties().add(party);
     }
 
     @Override
-    public void acceptToParty(Long rId, Long partyId, Long userId) throws NoResultException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void acceptToParty(Long rId, Long partyId, Long userId) throws NoResultException, AuthenticationException { // userId is the one accepting, has to be party owner.
+        if (!checkPartyOwner(partyId, userId)) {
+            throw new AuthenticationException("User not authenticated to accept request.");
+        }
+        
+        Request r = getRequest(rId);
+        User toAdd = r.getRequester();
+        
+        r.setStatus(RequestStatus.ACCEPTED);
+        joinParty(partyId, toAdd.getUserId());
     }
 
     @Override
-    public void rejectFromParty(Long rId, Long partyId, Long userId) throws NoResultException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void rejectFromParty(Long rId, Long partyId, Long userId) throws NoResultException, AuthenticationException {
+        if (!checkPartyOwner(partyId, userId)) {
+            throw new AuthenticationException("User not authenticated to reject request.");
+        }
+        
+        Request r = getRequest(rId);
+        r.setStatus(RequestStatus.REJECTED);
     }
 
     @Override
-    public void deleteParty(Long partyId, Long userId) throws NoResultException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void deleteParty(Long partyId, Long userId) throws NoResultException, AuthenticationException {
+        if (!checkPartyOwner(partyId, userId)) {
+            throw new AuthenticationException("User not authenticated to delete party.");
+        }
+        
+        Party p = getParty(partyId);
+        if (p.getPartyEndTime() != null) {
+            throw new NoResultException("No such party cannot be deleted.");
+        }
+        
+        for (int i = 0; i < p.getUsers().size(); i++) {
+            p.getUsers().get(i).getParties().remove(p);
+        }
+        p.setUsers(new ArrayList<>());
+        em.remove(p);
     }
 
     @Override
-    public void endParty(Long partyId, Long userId) throws NoResultException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void endParty(Long partyId, Long userId) throws NoResultException, AuthenticationException {
+        if (!checkPartyOwner(partyId, userId)) {
+            throw new AuthenticationException("User not authenticated to delete party.");
+        }
+        Party p = getParty(partyId);
+        p.setPartyEndTime(new Date());
     }
 
     @Override
@@ -91,12 +140,12 @@ public class PostSessionBean implements PostSessionBeanLocal {
     }
 
     @Override
-    public void editPost(Post p, Long userId) throws NoResultException {
+    public void editPost(Post p, Long userId) throws NoResultException, AuthenticationException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public void deletePost(Long pId, Long userId) throws NoResultException {
+    public void deletePost(Long pId, Long userId) throws NoResultException, AuthenticationException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -106,7 +155,7 @@ public class PostSessionBean implements PostSessionBeanLocal {
     }
 
     @Override
-    public void deleteRequest(Long rId, Long userId) throws NoResultException {
+    public void deleteRequest(Long rId, Long userId) throws NoResultException, AuthenticationException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -141,6 +190,11 @@ public class PostSessionBean implements PostSessionBeanLocal {
         party.getPartyOwner();
         
         return party;
+    }
+    
+    @Override
+    public boolean checkPartyOwner(Long partyId, Long userId) {        
+        return getParty(partyId).getPartyOwner().getUserId().equals(userId);
     }
 
     @Override
