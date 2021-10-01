@@ -85,4 +85,10 @@ public class AdminSession implements AdminSessionLocal {
        em.merge(oldAdmin);
     }
     
+    @Override
+    public void deleteAdmin(Long adminId) throws NoResultException {
+        Admin admin = getAdmin(adminId);
+        
+        em.remove(admin);
+    }
 }

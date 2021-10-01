@@ -17,6 +17,8 @@ public interface AdminSessionLocal {
     public void createAdmin(Admin admin);
     
     public void updateAdmin(Admin admin) throws NoResultException;
+    
+    public void deleteAdmin(Long adminId) throws NoResultException;
 }
 
     
