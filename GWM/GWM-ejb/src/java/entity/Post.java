@@ -1,6 +1,5 @@
 package entity;
 
-import enumeration.Game;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -37,9 +36,6 @@ public class Post implements Serializable {
     @Column(length = 512)
     private String description;
 
-    @Enumerated(EnumType.STRING)
-    private Game game;
-
     private int gratitude;
     private int requestQty;
 
@@ -52,6 +48,7 @@ public class Post implements Serializable {
 
     private boolean isAvailable;
 
+    //Relationships
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
@@ -63,6 +60,9 @@ public class Post implements Serializable {
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Request request;
+    
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Game game;
 
     public Long getPostId() {
         return postId;

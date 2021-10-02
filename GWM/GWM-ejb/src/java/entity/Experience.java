@@ -1,12 +1,15 @@
 package entity;
 
-import enumeration.Game;
+
 import java.io.Serializable;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
 @Entity
 public class Experience implements Serializable {
@@ -15,15 +18,15 @@ public class Experience implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long experienceId;
-
-    @Column(nullable = false)
-    private Game game;
     
     @Column(length = 32, nullable = false)
     private String rank;
     
     @Column(nullable = false)
     private String profileLink;
+    
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Game game;
 
     public Experience() {
     }
