@@ -47,7 +47,7 @@ public class PostSessionBean implements PostSessionBeanLocal {
     public List<Review> searchReviewsByUser(Long userId) throws NoResultException {
         Query q = em.createQuery("SELECT r FROM Review r WHERE r.userId = :inUserId");
         q.setParameter("inUserId", userId);
-        
+
         return q.getResultList();
     }
 
@@ -55,7 +55,7 @@ public class PostSessionBean implements PostSessionBeanLocal {
     public List<Review> searchReviewsOfUser(Long userId) throws NoResultException {
         Query q = em.createQuery("SELECT r FROM User u JOIN u.parties p JOIN p.reviews r "
                 + "WHERE u.userId <> r.userId");
-        
+
         return q.getResultList();
     }
 
@@ -64,7 +64,7 @@ public class PostSessionBean implements PostSessionBeanLocal {
         User u = getUser(userId);
         List<User> users = new ArrayList<>();
         users.add(u);
-        
+
         party.setPartyOwner(u);
         party.setUsers(users);
         em.persist(party);
@@ -75,11 +75,11 @@ public class PostSessionBean implements PostSessionBeanLocal {
     public void joinParty(Long partyId, Long userId) throws NoResultException {
         User u = getUser(userId);
         Party party = getParty(partyId);
-        
+
         if (party.getUsers().contains(u)) {
             return;
         }
-        
+
         party.getUsers().add(u);
         u.getParties().add(party);
     }
@@ -89,10 +89,10 @@ public class PostSessionBean implements PostSessionBeanLocal {
         if (!checkPartyOwner(partyId, userId)) {
             throw new AuthenticationException("User not authenticated to accept request.");
         }
-        
+
         Request r = getRequest(rId);
         User toAdd = r.getRequester();
-        
+
         r.setStatus(RequestStatus.ACCEPTED);
         joinParty(partyId, toAdd.getUserId());
     }
@@ -102,7 +102,7 @@ public class PostSessionBean implements PostSessionBeanLocal {
         if (!checkPartyOwner(partyId, userId)) {
             throw new AuthenticationException("User not authenticated to reject request.");
         }
-        
+
         Request r = getRequest(rId);
         r.setStatus(RequestStatus.REJECTED);
     }
@@ -112,12 +112,12 @@ public class PostSessionBean implements PostSessionBeanLocal {
         if (!checkPartyOwner(partyId, userId)) {
             throw new AuthenticationException("User not authenticated to delete party.");
         }
-        
+
         Party p = getParty(partyId);
         if (p.getPartyEndTime() != null) {
             throw new NoResultException("No such party cannot be deleted.");
         }
-        
+
         for (int i = 0; i < p.getUsers().size(); i++) {
             p.getUsers().get(i).getParties().remove(p);
         }
@@ -172,35 +172,35 @@ public class PostSessionBean implements PostSessionBeanLocal {
     @Override
     public User getUser(Long userId) throws NoResultException {
         User user = em.find(User.class, userId);
-        
+
         if (user == null) {
             throw new NoResultException("User");
         }
-        
+
         return user;
     }
 
     @Override
     public Party getParty(Long partyId) throws NoResultException {
         Party party = em.find(Party.class, partyId);
-        
+
         if (party == null) {
             throw new NoResultException("No such party");
         }
         party.getPartyOwner();
-        
+
         return party;
     }
-    
+
     @Override
-    public boolean checkPartyOwner(Long partyId, Long userId) {        
+    public boolean checkPartyOwner(Long partyId, Long userId) {
         return getParty(partyId).getPartyOwner().getUserId().equals(userId);
     }
 
     @Override
     public Post getPost(Long postId) throws NoResultException {
         Post post = em.find(Post.class, postId);
-        
+
         if (post == null) {
             throw new NoResultException("No such post");
         }
@@ -208,41 +208,40 @@ public class PostSessionBean implements PostSessionBeanLocal {
         post.getParty();
         post.getRequest();
         post.getPayment();
-        
+
         return post;
     }
 
     @Override
     public Request getRequest(Long rId) throws NoResultException {
         Request request = em.find(Request.class, rId);
-        
+
         if (request == null) {
             throw new NoResultException("No such request");
         }
-        
+
         return request;
     }
 
     @Override
     public Payment getPayment(Long paymentId) throws NoResultException {
         Payment payment = em.find(Payment.class, paymentId);
-        
+
         if (payment == null) {
             throw new NoResultException("No such payment");
         }
-        
+
         return payment;
     }
 
     @Override
     public Review getReview(Long revId) throws NoResultException {
         Review review = em.find(Review.class, revId);
-        
+
         if (review == null) {
             throw new NoResultException("No such review");
         }
-        
+
         return review;
     }
-
 }

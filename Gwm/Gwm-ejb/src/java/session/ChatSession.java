@@ -27,9 +27,8 @@ public class ChatSession implements ChatSessionLocal {
     public List<Chat> getAllChats(Long userId) {
         Query q;
         q = em.createQuery("SELECT c FROM Chat,IN c.user u "
-                + "WHERE u.userId = :userId AND u.isAvailable =:isAvailable");
+                + "WHERE u.userId = :userId AND u.isAvailable = 1");
         q.setParameter("userId", userId);
-        q.setParameter("isAvailable", Boolean.TRUE);
         return q.getResultList();
     }
 
