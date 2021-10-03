@@ -1,5 +1,7 @@
 package session;
 
+import entity.Chat;
+import entity.ChatMessage;
 import entity.Party;
 import entity.Payment;
 import entity.Post;
