@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { BrowserRouter } from 'react-router-dom';
 import { ThemeProvider, StyleReset } from 'atomize';
 
 import App from './App';
@@ -14,11 +15,10 @@ const theme = {
 };
 
 ReactDOM.render(
-  <React.StrictMode>
-    <ThemeProvider theme={theme}>
-      <StyleReset />
+  <ThemeProvider theme={theme}>
+    <BrowserRouter>
       <App />
-    </ThemeProvider>
-  </React.StrictMode>,
+    </BrowserRouter>
+  </ThemeProvider>,
   document.getElementById('root')
 );
