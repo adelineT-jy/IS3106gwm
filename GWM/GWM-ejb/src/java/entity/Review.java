@@ -6,6 +6,7 @@
 package entity;
 
 import java.io.Serializable;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -20,32 +21,68 @@ public class Review implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long reviewId;
+    
+    @Column(nullable=false)
+    private Long userId;
+    
+    @Column(nullable=false)
+    private Integer rating;
+    
+    @Column(length=200)
+    private String note;
 
-    public Long getId() {
-        return id;
+    public Review() {
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public Long getReviewId() {
+        return reviewId;
+    }
+
+    public void setReviewId(Long reviewId) {
+        this.reviewId = reviewId;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+    public Integer getRating() {
+        return rating;
+    }
+
+    public void setRating(Integer rating) {
+        this.rating = rating;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
     }
 
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
+        hash += (reviewId != null ? reviewId.hashCode() : 0);
         return hash;
     }
 
     @Override
     public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
+        // TODO: Warning - this method won't work in the case the reviewId fields are not set
         if (!(object instanceof Review)) {
             return false;
         }
         Review other = (Review) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+        if ((this.reviewId == null && other.reviewId != null) || (this.reviewId != null && !this.reviewId.equals(other.reviewId))) {
             return false;
         }
         return true;
@@ -53,7 +90,7 @@ public class Review implements Serializable {
 
     @Override
     public String toString() {
-        return "entity.Review[ id=" + id + " ]";
+        return "entity.Review[ id=" + reviewId + " ]";
     }
     
 }

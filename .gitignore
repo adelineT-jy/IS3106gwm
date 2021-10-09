@@ -1,3 +1,4 @@
+
 # Compiled class files
 *.class
 
@@ -20,6 +21,9 @@
 *.DS_Store
 *.mtj.tmp
 
+#Build
+*.properties
+
 # User-defined
 /GWM/build/
 /GWM/dist/
@@ -28,3 +32,7 @@
 /GWM/GWM-ejb/build/
 /GWM/GWM-ejb/dist/
 /GWM/GWM-ejb/nbproject/private/
+/GWM/Gwm-war/nbproject/private/
+/GWM/Gwm-war/build/
+/GWM/Gwm-war/dist/
+/Gwm/Gwm-war/nbproject/private/

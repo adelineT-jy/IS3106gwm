@@ -6,10 +6,16 @@
 package entity;
 
 import java.io.Serializable;
+import java.util.Date;
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 /**
  *
@@ -20,21 +26,67 @@ public class ChatMessage implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long msgId;
 
-    public Long getId() {
-        return id;
+    @Column(nullable = false)
+    private String message;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date dateTime;
+
+    @Column(nullable = false)
+    private Long msgOwnerId;
+
+    public ChatMessage(String message, Long msgOwnerId) {
+        this.message = message;
+        this.msgOwnerId = msgOwnerId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public Long getId() {
+        return msgId;
+    }
+
+    public void setId(Long messId) {
+        this.msgId = messId;
+    }
+
+    public Long getMsgId() {
+        return msgId;
+    }
+
+    public void setMsgId(Long msgId) {
+        this.msgId = msgId;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public Date getDateTime() {
+        return dateTime;
+    }
+
+    public void setDateTime(Date dateTime) {
+        this.dateTime = dateTime;
+    }
+
+    public Long getMsgOwnerId() {
+        return msgOwnerId;
+    }
+
+    public void setMsgOwnerId(Long msgOwnerId) {
+        this.msgOwnerId = msgOwnerId;
     }
 
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
+        hash += (msgId != null ? msgId.hashCode() : 0);
         return hash;
     }
 
@@ -45,7 +97,7 @@ public class ChatMessage implements Serializable {
             return false;
         }
         ChatMessage other = (ChatMessage) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+        if ((this.msgId == null && other.msgId != null) || (this.msgId != null && !this.msgId.equals(other.msgId))) {
             return false;
         }
         return true;
@@ -53,7 +105,7 @@ public class ChatMessage implements Serializable {
 
     @Override
     public String toString() {
-        return "entity.ChatMessage[ id=" + id + " ]";
+        return "entity.ChatMessage[ msgId=" + msgId + " ]";
     }
-    
+
 }
