@@ -1,9 +1,13 @@
 import React, { Component } from 'react';
 
+import Box from '@mui/material/Box';
+
 class Home extends Component {
     render() {
         return (
-            <h1>Hello World!!!!</h1>
+            <Box sx={{ bgcolor: '#e3f2fd', height: '80vh' }}>
+                <h1>Hello World!!!!</h1>
+            </Box>
         )
     }
 }

@@ -1,12 +1,7 @@
-html, body {
+html, body, #root {
   min-height: 100%;
   height: 100%;
-}
-
-#root {
-  min-height: 100%;
-  height: 100%;
-  background-color: lightsteelblue;
+  background-color: #90caf9;
 }
 
 /* App styles */
@@ -47,20 +42,4 @@ html, body {
   to {
     transform: rotate(360deg);
   }
-}
-
-/* Container styles */
-.container {
-  background-color: mintcream;
-  min-height: 100%;
-  height: 100%;
-  padding: 0px;
-}
-
-.container div {
-  padding: 5px 15px 15px 15px;
-}
-
-.header {
-  background-color: powderblue;
 }

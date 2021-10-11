@@ -1,9 +1,27 @@
 import React from 'react';
 
-const Account = () => {
+import Box from '@mui/material/Box';
+
+export function Account () {
     return (
-        <h1>Account</h1>
+        <Box sx={{ bgcolor: '#e3f2fd', height: '80vh' }}>
+            <h1>Account</h1>
+        </Box>
     )
 }
 
-export default Account;
+export function Register () {
+    return (
+        <Box sx={{ bgcolor: '#e3f2fd', height: '80vh' }}>
+            <h1>Register</h1>
+        </Box>
+    )
+}
+
+export function Login () {
+    return (
+        <Box sx={{ bgcolor: '#e3f2fd', height: '80vh' }}>
+            <h1>Login</h1>
+        </Box>
+    )
+}
