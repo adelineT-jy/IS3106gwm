@@ -5,15 +5,27 @@
  */
 package webservices.restful;
 
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.UriInfo;
-import javax.ws.rs.Produces;
+import entity.User;
+import error.NoResultException;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.ejb.EJB;
+import javax.ws.rs.Path;
+import javax.enterprise.context.RequestScoped;
+import javax.json.Json;
+import javax.json.JsonObject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
-import javax.ws.rs.Path;
+import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
-import javax.enterprise.context.RequestScoped;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import session.UserSessionLocal;
 
 /**
  * REST Web Service
@@ -23,33 +35,76 @@ import javax.ws.rs.core.MediaType;
 @Path("users")
 @RequestScoped
 public class UsersResource {
-
-    @Context
-    private UriInfo context;
-
-    /**
-     * Creates a new instance of UsersResource
-     */
-    public UsersResource() {
-    }
-
-    /**
-     * Retrieves representation of an instance of webservices.restful.UsersResource
-     * @return an instance of java.lang.String
-     */
+    
+    @EJB
+    private UserSessionLocal userSessionLocal;
+    
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public String getJson() {
-        //TODO return proper representation object
-        throw new UnsupportedOperationException();
+    public List<User> getAllUsers() {
+        return userSessionLocal.searchUser(null);
     }
-
-    /**
-     * PUT method for updating or creating an instance of UsersResource
-     * @param content representation for the resource
-     */
+    
+    @GET
+    @Path("/query")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response searchCustomers(@QueryParam("name") String name) { 
+        if (name != null) {
+            List<User> results = userSessionLocal.searchUser(name);
+            GenericEntity<List<User>> entity = new GenericEntity<List<User>>(results){};
+            return Response.status(200).entity(entity).build();
+        } else {
+            JsonObject exception = Json.createObjectBuilder().add("error", "No query conditions").build();  
+            return Response.status(400).entity(exception).build();
+        }
+    }
+    
+    @GET
+    @Path("/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getUser(@PathParam("id") Long uId) {
+        try {
+            User u = userSessionLocal.getUserById(uId);
+            return Response.status(200).entity(u).type(MediaType.APPLICATION_JSON).build();
+        } catch (Exception ex) {
+            JsonObject exception = Json.createObjectBuilder().add("error", "Not found").build();  
+            return Response.status(404).entity(exception).type(MediaType.APPLICATION_JSON).build();
+        }
+    }
+    
     @PUT
+    @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public void putJson(String content) {
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response editUser(@PathParam("id") Long uId, User u) {
+        u.setUserId(uId);
+        try {
+            userSessionLocal.updateUserProfile(u);
+            return Response.status(404).build();
+        } catch (Exception ex) {
+            JsonObject exception = Json.createObjectBuilder().add("error", "Not found").build();  
+            return Response.status(404).entity(exception).type(MediaType.APPLICATION_JSON).build();
+        }
     }
+    
+    @POST
+    @Path("/{user_id}/contacts")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public User addFollowing(@PathParam("user_id") Long uId, Long followId) {
+        try { 
+            userSessionLocal.addFollowing(uId, followId);
+            User u = userSessionLocal.getUserById(uId);
+            return u;
+        } catch (Exception ex) {
+            System.out.println("addfollowing error");
+            return null;
+        }
+    }
+    
+    
+    
+        
+    
+    
 }
