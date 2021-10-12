@@ -38,6 +38,9 @@ public class ChatMessage implements Serializable {
     @Column(nullable = false)
     private Long msgOwnerId;
 
+    public ChatMessage() {
+    }
+
     public ChatMessage(String message, Long msgOwnerId) {
         this.message = message;
         this.msgOwnerId = msgOwnerId;

@@ -3,6 +3,19 @@
   <persistence-unit name="Gwm-ejbPU" transaction-type="JTA">
     <jta-data-source>jdbc/gwm</jta-data-source>
     <class>entity.Chat</class>
+    <class>entity.Admin</class>
+    <class>entity.Card</class>
+    <class>entity.ChatMessage</class>
+    <class>entity.Experience</class>
+    <class>entity.Game</class>
+    <class>entity.GroupChat</class>
+    <class>entity.Notification</class>
+    <class>entity.Party</class>
+    <class>entity.Payment</class>
+    <class>entity.Post</class>
+    <class>entity.Request</class>
+    <class>entity.Review</class>
+    <class>entity.User</class>
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
     <properties>
       <property name="javax.persistence.schema-generation.database.action" value="create"/>

@@ -29,16 +29,19 @@ public class Request implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long requestId;
-    
+
     @Column(length = 10, nullable = false)
     @Enumerated(EnumType.STRING)
     private RequestStatus status;
-    
+
     @Column(length = 512)
     private String text;
-    
+
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private User requester;
+
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Post post;
 
     public Long getRequestId() {
         return requestId;
@@ -96,5 +99,5 @@ public class Request implements Serializable {
     public String toString() {
         return "entity.Request[ id=" + requestId + " ]";
     }
-    
+
 }

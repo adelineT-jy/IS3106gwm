@@ -59,13 +59,13 @@ public class User implements Serializable {
     @ManyToMany
     private List<Chat> chats;
 
-    @ManyToMany    
+    @ManyToMany
     private List<Party> parties;
 
     @OneToMany(mappedBy = "user")
     private List<Post> posts;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "requester")
     private List<Request> requests;
 
     public User() {
@@ -173,11 +173,11 @@ public class User implements Serializable {
     public void setNotify(List<Notification> notify) {
         this.notify = notify;
     }
-    
+
     public void addNotify(Notification notify) {
         this.notify.add(notify);
     }
-    
+
     public void removeNotify(Notification notify) {
         this.notify.remove(notify);
     }
@@ -193,11 +193,11 @@ public class User implements Serializable {
     public void addFollowing(User user) {
         this.following.add(user);
     }
-    
+
     public void removeFollowing(User user) {
         this.following.remove(user);
     }
-    
+
     public List<Experience> getExperiences() {
         return experiences;
     }
@@ -205,11 +205,11 @@ public class User implements Serializable {
     public void setExperiences(List<Experience> experiences) {
         this.experiences = experiences;
     }
-    
+
     public void addExperience(Experience exp) {
         this.experiences.add(exp);
     }
-    
+
     public void removeExperience(Experience exp) {
         this.experiences.remove(exp);
     }
@@ -221,7 +221,7 @@ public class User implements Serializable {
     public void setCards(List<Card> cards) {
         this.cards = cards;
     }
-    
+
     public void addCard(Card card) {
         this.cards.add(card);
     }
@@ -229,7 +229,7 @@ public class User implements Serializable {
     public void removeCard(Card card) {
         this.cards.remove(card);
     }
-    
+
     public List<Chat> getChats() {
         return chats;
     }
@@ -237,11 +237,11 @@ public class User implements Serializable {
     public void setChats(List<Chat> chats) {
         this.chats = chats;
     }
-    
+
     public void addChat(Chat chat) {
         this.chats.add(chat);
     }
-    
+
     public void removeChat(Chat chat) {
         this.chats.remove(chat);
     }
@@ -253,11 +253,11 @@ public class User implements Serializable {
     public void setParties(List<Party> parties) {
         this.parties = parties;
     }
-    
+
     public void addParty(Party party) {
         this.parties.add(party);
     }
-    
+
     public void removeParty(Party party) {
         this.parties.remove(party);
     }
@@ -273,11 +273,11 @@ public class User implements Serializable {
     public void addPost(Post post) {
         this.posts.add(post);
     }
-    
+
     public void removePost(Post post) {
         this.posts.remove(post);
     }
-    
+
     public List<Request> getRequests() {
         return requests;
     }
@@ -285,11 +285,11 @@ public class User implements Serializable {
     public void setRequests(List<Request> requests) {
         this.requests = requests;
     }
-    
+
     public void addRequest(Request req) {
         this.requests.add(req);
     }
-    
+
     public void removeRequest(Request req) {
         this.requests.remove(req);
     }

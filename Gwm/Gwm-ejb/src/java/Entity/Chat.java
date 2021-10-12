@@ -13,6 +13,8 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 
@@ -21,6 +23,7 @@ import javax.persistence.OneToOne;
  * @author User
  */
 @Entity
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class Chat implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -30,7 +33,7 @@ public class Chat implements Serializable {
 
     private Boolean party;
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "chat")
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "chats")
     private List<User> users;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)

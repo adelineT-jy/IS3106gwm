@@ -23,7 +23,7 @@ import javax.persistence.Query;
  */
 @Stateless
 public class UserSession implements UserSessionLocal {
-    
+
     @PersistenceContext
     private EntityManager em;
 
@@ -35,7 +35,7 @@ public class UserSession implements UserSessionLocal {
     @Override
     public User getUserById(Long userId) throws NoResultException {
         User u = em.find(User.class, userId);
-        
+
         if (u != null) {
             return u;
         } else {
@@ -59,7 +59,7 @@ public class UserSession implements UserSessionLocal {
     @Override
     public void updateUserProfile(User u) throws NoResultException {
         User oldU = getUserById(u.getUserId());
-        
+
         oldU.setEmail(u.getEmail());
         //this should be a method on its own?
         oldU.setProtectedPassword(u.getProtectedPassword());
@@ -84,7 +84,7 @@ public class UserSession implements UserSessionLocal {
     public void addExperience(Long userId, Experience exp, Long gameId) throws NoResultException, ExperienceExistException {
         User u = getUserById(userId);
         Game game = em.find(Game.class, gameId);
-        
+
         if (game != null) {
             //check if game experience has already been added
             Query q = em.createQuery("SELECT DISTINCT u FROM User u WHERE u.userId = :userId AND u.experiences.game.gameId = :gameId");
@@ -92,7 +92,7 @@ public class UserSession implements UserSessionLocal {
             q.setParameter("gameId", gameId);
             try {
                 q.getSingleResult();
-                
+
                 exp.setGame(game);
                 em.persist(exp);
                 u.addExperience(exp);
@@ -108,14 +108,14 @@ public class UserSession implements UserSessionLocal {
     @Override
     public void updateExperience(Experience exp, Long gameId) throws NoResultException {
         Experience oldExp = em.find(Experience.class, exp.getExperienceId());
-        
+
         if (gameId != oldExp.getGame().getGameId() && gameId != null) {
             Game updatedGame = em.find(Game.class, gameId);
             oldExp.setGame(updatedGame);
         }
-        
+
         oldExp.setProfileLink(exp.getProfileLink());
-        oldExp.setRank(exp.getRank());
+        oldExp.setRanking(exp.getRanking());
     }
 
     @Override

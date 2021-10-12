@@ -3,6 +3,7 @@ package entity;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -59,8 +60,8 @@ public class Post implements Serializable {
     private Payment payment;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private Request request;
-    
+    private List<Request> request;
+
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Game game;
 
@@ -168,11 +169,11 @@ public class Post implements Serializable {
         this.payment = payment;
     }
 
-    public Request getRequest() {
+    public List<Request> getRequest() {
         return request;
     }
 
-    public void setRequest(Request request) {
+    public void setRequest(List<Request> request) {
         this.request = request;
     }
 

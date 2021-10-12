@@ -1,7 +1,7 @@
 package entity;
 
-
 import java.io.Serializable;
+import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,6 +10,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 
 @Entity
 public class Experience implements Serializable {
@@ -18,24 +19,23 @@ public class Experience implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long experienceId;
-    
-    @Column(length = 32, nullable = false)
-    private String rank;
-    
-    @Column(nullable = false)
+
+    @Column(length = 32)
+    private String ranking;
+
     private String profileLink;
-    
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Game game;
 
     public Experience() {
     }
-    
-    public Experience(Long experienceId, Game game, String rank, String profileLink) {
+
+    public Experience(Game game, String rank, String profileLink) {
         this();
-        this.experienceId = experienceId;
+        //this.experienceId = experienceId;
         this.game = game;
-        this.rank = rank;
+        this.ranking = rank;
         this.profileLink = profileLink;
     }
 
@@ -55,12 +55,12 @@ public class Experience implements Serializable {
         this.game = game;
     }
 
-    public String getRank() {
-        return rank;
+    public String getRanking() {
+        return ranking;
     }
 
-    public void setRank(String rank) {
-        this.rank = rank;
+    public void setRanking(String ranking) {
+        this.ranking = ranking;
     }
 
     public String getProfileLink() {
@@ -70,4 +70,5 @@ public class Experience implements Serializable {
     public void setProfileLink(String profileLink) {
         this.profileLink = profileLink;
     }
+
 }
