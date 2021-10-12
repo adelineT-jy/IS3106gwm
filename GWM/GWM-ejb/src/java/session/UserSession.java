@@ -8,6 +8,7 @@ package session;
 import entity.Card;
 import entity.Experience;
 import entity.Game;
+import entity.Review;
 import entity.User;
 import error.ExperienceExistException;
 import java.util.List;
@@ -128,6 +129,13 @@ public class UserSession implements UserSessionLocal {
             throw new NoResultException("Experience cannot be deleted");
         }
     }
+    
+    @Override
+    public List<User> getUserFollowing(Long userId) throws NoResultException {
+        User u = getUserById(userId);
+        List<User> following = u.getFollowing();
+        return following;
+    }
 
     @Override
     public void addFollowing(Long userId, Long followingUserId) throws NoResultException {
@@ -145,7 +153,7 @@ public class UserSession implements UserSessionLocal {
 
     //should reviews be connected to user?
     @Override
-    public void viewReviewsGiven(Long userId) throws NoResultException {
+    public List<Review> viewReviewsGiven(Long userId) throws NoResultException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

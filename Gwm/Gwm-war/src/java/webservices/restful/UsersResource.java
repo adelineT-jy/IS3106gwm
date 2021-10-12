@@ -5,17 +5,17 @@
  */
 package webservices.restful;
 
+import entity.Card;
+import entity.Review;
 import entity.User;
-import error.NoResultException;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ws.rs.Path;
 import javax.enterprise.context.RequestScoped;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -35,30 +35,31 @@ import session.UserSessionLocal;
 @Path("users")
 @RequestScoped
 public class UsersResource {
-    
+
     @EJB
     private UserSessionLocal userSessionLocal;
-    
+
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public List<User> getAllUsers() {
         return userSessionLocal.searchUser(null);
     }
-    
+
     @GET
     @Path("/query")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response searchCustomers(@QueryParam("name") String name) { 
+    public Response searchCustomers(@QueryParam("name") String name) {
         if (name != null) {
             List<User> results = userSessionLocal.searchUser(name);
-            GenericEntity<List<User>> entity = new GenericEntity<List<User>>(results){};
+            GenericEntity<List<User>> entity = new GenericEntity<List<User>>(results) {
+            };
             return Response.status(200).entity(entity).build();
         } else {
-            JsonObject exception = Json.createObjectBuilder().add("error", "No query conditions").build();  
+            JsonObject exception = Json.createObjectBuilder().add("error", "No query conditions").build();
             return Response.status(400).entity(exception).build();
         }
     }
-    
+
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -67,11 +68,11 @@ public class UsersResource {
             User u = userSessionLocal.getUserById(uId);
             return Response.status(200).entity(u).type(MediaType.APPLICATION_JSON).build();
         } catch (Exception ex) {
-            JsonObject exception = Json.createObjectBuilder().add("error", "Not found").build();  
+            JsonObject exception = Json.createObjectBuilder().add("error", "Not found").build();
             return Response.status(404).entity(exception).type(MediaType.APPLICATION_JSON).build();
         }
     }
-    
+
     @PUT
     @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -82,17 +83,62 @@ public class UsersResource {
             userSessionLocal.updateUserProfile(u);
             return Response.status(404).build();
         } catch (Exception ex) {
-            JsonObject exception = Json.createObjectBuilder().add("error", "Not found").build();  
+            JsonObject exception = Json.createObjectBuilder().add("error", "Not found").build();
             return Response.status(404).entity(exception).type(MediaType.APPLICATION_JSON).build();
         }
     }
-    
+
     @POST
-    @Path("/{user_id}/contacts")
+    @Path("/{user_id}/cards")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public User addFollowing(@PathParam("user_id") Long uId, Long followId) {
-        try { 
+    public User addCard(@PathParam("user_id") Long uId, Card c) {
+        try {
+            userSessionLocal.addCard(uId, c);
+            User u = userSessionLocal.getUserById(uId);
+            return u;
+        } catch (Exception ex) {
+            System.out.println("Add card error");
+            return null;
+        }
+    }
+
+    @POST
+    @Path("/{user_id}/cards")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public User deleteCard(@PathParam("user_id") Long uId, Long cId) {
+        try {
+            userSessionLocal.deleteCard(uId, cId);
+            User u = userSessionLocal.getUserById(uId);
+            return u;
+        } catch (Exception ex) {
+            System.out.println("Add card error");
+            return null;
+        }
+    }
+
+    @GET
+    @Path("/{id}/following")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getUserFollowing(@PathParam("id") Long uId) {
+        try {
+            List<User> results = userSessionLocal.getUserFollowing(uId);
+            GenericEntity<List<User>> entity = new GenericEntity<List<User>>(results) {
+            };
+            return Response.status(200).entity(entity).build();
+        } catch (Exception ex) {
+            JsonObject exception = Json.createObjectBuilder().add("error", "Not found").build();
+            return Response.status(404).entity(exception).type(MediaType.APPLICATION_JSON).build();
+        }
+    }
+
+    @POST
+    @Path("/{user_id}/following/{follow_Id}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public User addFollowing(@PathParam("user_id") Long uId, @PathParam("follow_Id") Long followId) {
+        try {
             userSessionLocal.addFollowing(uId, followId);
             User u = userSessionLocal.getUserById(uId);
             return u;
@@ -101,10 +147,35 @@ public class UsersResource {
             return null;
         }
     }
-    
-    
-    
-        
-    
-    
+
+    @DELETE
+    @Path("/{user_id}/following/{follow_Id}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public User deleteFollowing(@PathParam("user_id") Long uId, @PathParam("follow_Id") Long followId) {
+        try {
+            userSessionLocal.deleteFollowing(uId, followId);
+            User u = userSessionLocal.getUserById(uId);
+            return u;
+        } catch (Exception ex) {
+            System.out.println("delete following error");
+            return null;
+        }
+    }
+
+    @GET
+    @Path("/{user_id}/reviews")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getReviews(Long userId) {
+        try {
+            List<Review> results = userSessionLocal.viewReviewsGiven(userId);
+            GenericEntity<List<Review>> entity = new GenericEntity<List<Review>>(results) {
+            };
+            return Response.status(200).entity(entity).build();
+        } catch (Exception ex) {
+            JsonObject exception = Json.createObjectBuilder().add("error", "Not found").build();
+            return Response.status(404).entity(exception).type(MediaType.APPLICATION_JSON).build();
+        }
+    }
+
 }

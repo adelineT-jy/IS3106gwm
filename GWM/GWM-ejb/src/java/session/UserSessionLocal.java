@@ -7,6 +7,7 @@ package session;
 
 import entity.Card;
 import entity.Experience;
+import entity.Review;
 import entity.User;
 import error.ExperienceExistException;
 import java.util.List;
@@ -39,11 +40,13 @@ public interface UserSessionLocal {
     
     public void deleteExperience(Long userId,  Long expId) throws NoResultException;
     
+    public List<User> getUserFollowing(Long userId) throws NoResultException;
+    
     public void addFollowing(Long userId, Long followingUserId) throws NoResultException;
     
     public void deleteFollowing(Long userId, Long followingUserId) throws NoResultException;
     
-    public void viewReviewsGiven(Long userId) throws NoResultException;
+    public List<Review> viewReviewsGiven(Long userId) throws NoResultException;
     
     
     
