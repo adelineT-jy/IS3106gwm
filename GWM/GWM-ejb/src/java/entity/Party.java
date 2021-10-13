@@ -50,15 +50,15 @@ public class Party implements Serializable {
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "parties")
     private List<User> users;
-    
+
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Request> requests;
-    
+
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Review> reviews;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private GroupChat chat;
+    private Chat chat;
 
     public Party() {
     }
@@ -127,11 +127,11 @@ public class Party implements Serializable {
         this.requests = requests;
     }
 
-    public GroupChat getChat() {
+    public Chat getChat() {
         return chat;
     }
 
-    public void setChat(GroupChat chat) {
+    public void setChat(Chat chat) {
         this.chat = chat;
     }
 

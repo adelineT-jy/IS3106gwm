@@ -7,8 +7,11 @@ package session;
 
 import entity.Chat;
 import entity.ChatMessage;
+import entity.Party;
+import entity.User;
 import java.util.List;
 import javax.ejb.Local;
+import javax.persistence.NoResultException;
 
 /**
  *
@@ -19,9 +22,24 @@ public interface ChatSessionLocal {
 
     public List<Chat> getAllChats(Long userId);
 
-    public List<ChatMessage> getMessage(Long chatId);
+    public List<ChatMessage> getAllMessage(Long chatId);
 
-    public void addChat(Chat chat);
+    public void addGroupChat(Chat chat, Long uid);
 
-    public void addMessage(ChatMessage message);
+    public void addChat(Chat chat, Long uid);
+
+    public void addUserToChat(Long cid, List<User> uids);
+
+    public void addUserToGroupChat(Long cid, List<User> uids);
+
+    public void addMessage(ChatMessage message, Long cid);
+
+    //helper method
+    public Chat getChat(Long cid);
+
+    public ChatMessage getChatMessage(Long cmId);
+
+    public Party getParty(Long partyId) throws NoResultException;
+
+    public User getUser(Long userId) throws NoResultException;
 }

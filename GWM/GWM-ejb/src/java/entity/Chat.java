@@ -23,7 +23,6 @@ import javax.persistence.OneToOne;
  * @author User
  */
 @Entity
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class Chat implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -31,6 +30,7 @@ public class Chat implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long chatId;
 
+    //if true is a party
     private Boolean party;
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "chats")
@@ -41,10 +41,6 @@ public class Chat implements Serializable {
 
     public Chat() {
         this.party = false;
-    }
-
-    public Chat(Boolean party1) {
-        this.party = party1;
     }
 
     public Long getChatId() {
@@ -69,6 +65,14 @@ public class Chat implements Serializable {
 
     public void setParty(Boolean party) {
         this.party = party;
+    }
+
+    public ChatMessage getChatMessage() {
+        return chatMessage;
+    }
+
+    public void setChatMessage(ChatMessage chatMessage) {
+        this.chatMessage = chatMessage;
     }
 
     @Override
