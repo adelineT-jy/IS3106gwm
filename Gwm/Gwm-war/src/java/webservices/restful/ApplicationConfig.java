@@ -28,6 +28,8 @@ public class ApplicationConfig extends Application {
      * out calling this method in getClasses().
      */
     private void addRestResourceClasses(Set<Class<?>> resources) {
+        resources.add(webservices.restful.ChatResources.class);
+        resources.add(webservices.restful.PostResources.class);
         resources.add(webservices.restful.UsersResource.class);
     }
 

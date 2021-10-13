@@ -7,6 +7,7 @@ package webservices.restful;
 
 import entity.Card;
 import entity.Chat;
+import entity.ChatMessage;
 import entity.Review;
 import entity.User;
 import java.util.List;
@@ -41,9 +42,6 @@ public class UsersResource {
 
     @EJB
     private UserSessionLocal userSessionLocal;
-
-    @EJB
-    private ChatSessionLocal chatSessionLocal;
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -94,6 +92,7 @@ public class UsersResource {
         }
     }
 
+    /*
     @POST
     @Path("/{user_id}/cards")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -107,8 +106,7 @@ public class UsersResource {
             System.out.println("Add card error");
             return null;
         }
-    }
-
+    }*/
     @POST
     @Path("/{user_id}/cards")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -116,8 +114,7 @@ public class UsersResource {
     public User deleteCard(@PathParam("user_id") Long uId, Long cId) {
         try {
             userSessionLocal.deleteCard(uId, cId);
-            User u = userSessionLocal.getUserById(uId);
-            return u;
+            return userSessionLocal.getUserById(uId);
         } catch (Exception ex) {
             System.out.println("Add card error");
             return null;
@@ -181,51 +178,6 @@ public class UsersResource {
         } catch (Exception ex) {
             JsonObject exception = Json.createObjectBuilder().add("error", "Not found").build();
             return Response.status(404).entity(exception).type(MediaType.APPLICATION_JSON).build();
-        }
-    }
-
-    @GET
-    @Path("/{user_id}/chats")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getChats(@PathParam("user_id") Long userId) {
-        try {
-            List<Chat> results = chatSessionLocal.getAllChats(userId);
-            GenericEntity<List<Chat>> entity = new GenericEntity<List<Chat>>(results) {
-            };
-            return Response.status(200).entity(entity).build();
-        } catch (Exception ex) {
-            JsonObject exception = Json.createObjectBuilder().add("error", "Not found").build();
-            return Response.status(404).entity(exception).type(MediaType.APPLICATION_JSON).build();
-        }
-    }
-
-    @POST
-    @Path("/{user_id}/chats")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public User createNewChat(@PathParam("user_id") Long uId, Chat chat) {
-        try {
-            chatSessionLocal.addChat(chat, uId);
-            User u = userSessionLocal.getUserById(uId);
-            return u;
-        } catch (Exception ex) {
-            System.out.println("creatNewChat error");
-            return null;
-        }
-    }
-
-    @POST
-    @Path("/{user_id}/chats")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public User createNewChat(@PathParam("user_id") Long uId, Chat chat) {
-        try {
-            chatSessionLocal.addChat(chat, uId);
-            User u = userSessionLocal.getUserById(uId);
-            return u;
-        } catch (Exception ex) {
-            System.out.println("creatNewChat error");
-            return null;
         }
     }
 
