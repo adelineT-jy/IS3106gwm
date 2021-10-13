@@ -264,15 +264,28 @@ public class PostSessionBean implements PostSessionBeanLocal {
     @Override
     public boolean checkPartyUser(Long partyId, Long userId) {
         try {
-            return getParty(partyId)
-                    .getUsers()
-                    .stream()
-                    .filter(x -> x.getUserId().equals(userId))
-                    .findFirst()
-                    .get() != null;
+            Party p = getParty(partyId);
+            List<User> users = p.getUsers();
+            for (User u: users) {
+                if (u.getUserId() == userId) {
+                    return true;
+                }
+            }
+            return false;
         } catch (NoResultException e) {
             return false;
         }
+
+//        try {
+//            return getParty(partyId)
+//                    .getUsers()
+//                    .stream()
+//                    .filter(x -> x.getUserId().equals(userId))
+//                    .findFirst()
+//                    .get() != null;
+//        } catch (NoResultException e) {
+//            return false;
+//        }
     }
 
     @Override
