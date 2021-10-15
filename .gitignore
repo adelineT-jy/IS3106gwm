@@ -23,6 +23,10 @@
 
 #Build
 *.properties
+/GWM/nbproject/project.properties
+/Gwm/nbproject/project.properties
+/Gwm/nbproject/private/private.properties
+/Gwm/Gwm-ejb/nbproject/private/private.properties
 
 # User-defined
 /GWM/build/
