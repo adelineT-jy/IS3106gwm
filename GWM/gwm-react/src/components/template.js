@@ -5,7 +5,7 @@ import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 
-export default function Header() {
+export function Header() {
     return (
         <Box sx={{ bgcolor: '#64b5f6', height: '20vh' }}>
             <Grid container spacing={2}>
@@ -18,6 +18,17 @@ export default function Header() {
                         <Button variant="text" href="/register">Sign Up</Button>
                     </Stack>
                 </Grid>
+            </Grid>
+            
+        </Box>
+    );
+}
+
+export function Footer() {
+    return (
+        <Box sx={{ bgcolor: '#64b5f6', height: '10vh' }}>
+            <Grid container spacing={2}>
+                <p>This is a footer</p>
             </Grid>
             
         </Box>

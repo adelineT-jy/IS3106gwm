@@ -2,6 +2,12 @@ import React from 'react';
 
 import Box from '@mui/material/Box';
 
+function Request() {
+    return (
+        <h4>Request</h4>
+    )
+}
+
 function Post() {
     return (
         <p>This is a post</p>
@@ -17,10 +23,11 @@ function Listing() {
     )
 }
 
-export default function Home() {
+export default function Posts() {
     return (
         <Box sx={{ bgcolor: '#e3f2fd', height: '70vh' }}>
             <Listing />
+            <Request />
         </Box>
     )
 }

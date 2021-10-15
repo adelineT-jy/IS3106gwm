@@ -2,25 +2,25 @@ import React from 'react';
 
 import Box from '@mui/material/Box';
 
-function Post() {
+function AdminPost() {
     return (
         <p>This is a post</p>
     )
 }
 
-function Listing() {
+function AdminListing() {
     return (
         <div>
             <h3>This is a listing</h3>
-            <Post />
+            <AdminPost />
         </div>
     )
 }
 
-export default function Home() {
+export default function AdminPosts() {
     return (
         <Box sx={{ bgcolor: '#e3f2fd', height: '70vh' }}>
-            <Listing />
+            <AdminListing />
         </Box>
     )
 }
