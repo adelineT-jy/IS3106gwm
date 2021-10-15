@@ -1,9 +1,12 @@
 package session;
 
 import entity.Admin;
+import entity.Game;
+import entity.User;
 import error.InvalidLoginException;
 import java.math.BigInteger;
 import java.security.MessageDigest;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -14,10 +17,12 @@ import javax.persistence.Query;
 public class AdminSession implements AdminSessionLocal {
     @PersistenceContext
     private EntityManager em;
+    @EJB
+    private UserSessionLocal userSessionLocal;
     
     @Override
-    public Admin getAdmin(Long userId) throws NoResultException {
-        Admin admin = em.find(Admin.class, userId);
+    public Admin getAdmin(Long adminId) throws NoResultException {
+        Admin admin = em.find(Admin.class, adminId);
         
         if (admin == null) {
             throw new NoResultException("No admin can be found from input");
@@ -90,5 +95,52 @@ public class AdminSession implements AdminSessionLocal {
         Admin admin = getAdmin(adminId);
         
         em.remove(admin);
+    }
+
+    @Override
+    public void banUser(Long userId) throws NoResultException {
+        User user = userSessionLocal.getUserById(userId);
+        if (user.isIsAvailable()) {
+            user.setIsAvailable(false);
+        } else {
+            throw new NoResultException("User is already banned.");
+        }
+    }
+
+    @Override
+    public void unbanUser(Long userId) throws NoResultException {
+        User user = userSessionLocal.getUserById(userId);
+        if (!user.isIsAvailable()) {
+            user.setIsAvailable(true);
+        } else {
+            throw new NoResultException("User is not banned.");
+        }
+    }
+
+    @Override
+    public void createGame(Game game) {
+        em.persist(game);
+    }
+
+    @Override
+    public Game getGame(Long gameId) throws NoResultException {
+        Game game = em.find(Game.class, gameId);
+            
+        if (game == null) {
+            throw new NoResultException("No game can be found from input");
+        } else {
+            return game;
+        }
+    }
+
+    @Override
+    public void updateGame(Game game) throws NoResultException {
+        Game oldGame = getGame(game.getGameId());
+        
+        oldGame.setGameDescription(game.getGameDescription());
+        oldGame.setGameDownloadLink(game.getGameDownloadLink());
+        oldGame.setGameName(game.getGameName());
+        
+        em.merge(oldGame);
     }
 }
