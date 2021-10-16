@@ -5,7 +5,12 @@
  */
 package webservices.restful;
 
+import entity.Party;
+import entity.Post;
+import entity.Request;
+import entity.Review;
 import entity.User;
+import error.NoResultException;
 import java.util.Date;
 import java.util.List;
 import javax.ejb.EJB;
@@ -13,11 +18,14 @@ import javax.enterprise.context.RequestScoped;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -37,4 +45,88 @@ public class PostResources {
     @EJB
     private PostSessionBeanLocal postSessionBeanLocal;
 
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<Post> getAllPost() {
+        return postSessionBeanLocal.searchPosts(null);
+    }
+
+    @GET
+    @Path("/query")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response searchCustomers(@QueryParam("query") String query) {
+        if (query != null) {
+            List<Post> results = postSessionBeanLocal.searchPosts(query);
+            GenericEntity<List<Post>> entity = new GenericEntity<List<Post>>(results) {
+            };
+            return Response.status(200).entity(entity).build();
+        } else {
+            JsonObject exception = Json.createObjectBuilder().add("error", "No query conditions").build();
+            return Response.status(400).entity(exception).build();
+        }
+    }
+
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public User createPost(@PathParam("id") Long uid, Post p) {
+        postSessionBeanLocal.createPost(p, uid);
+        return postSessionBeanLocal.getUser(uid);
+    }
+
+    @PUT
+    @Path("/{postId}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response editPost(@PathParam("postId") Long pId, Post p) {
+        try {
+            postSessionBeanLocal.editPost(p, pId);
+            return Response.status(404).build();
+        } catch (Exception ex) {
+            JsonObject exception = Json.createObjectBuilder().add("error", "Not found").build();
+            return Response.status(404).entity(exception).type(MediaType.APPLICATION_JSON).build();
+        }
+    }
+
+    @DELETE
+    @Path("/{postId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response deletePost(@PathParam("postId") Long pId, Long uId) {
+        try {
+            postSessionBeanLocal.deletePost(pId, uId);
+            return Response.status(204).build();
+        } catch (Exception e) {
+            JsonObject exception = Json.createObjectBuilder()
+                    .add("error", "Not found")
+                    .build();
+            return Response.status(404).entity(exception).build();
+        }
+    }
+
+    @GET
+    @Path("/{postId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getPost(@PathParam("postId") Long pId) {
+        try {
+            Post p = postSessionBeanLocal.getPost(pId);
+            return Response.status(200).entity(p)
+                    .type(MediaType.APPLICATION_JSON).build();
+
+        } catch (Exception e) {
+            JsonObject exception = Json.createObjectBuilder()
+                    .add("error", "Not found")
+                    .build();
+            return Response.status(404).entity(exception)
+                    .type(MediaType.APPLICATION_JSON).build();
+        }
+    }
+
+    @POST
+    @Path("/{postId}/request")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Post createRequest(@PathParam("postId") Long pId, Request r) {
+        postSessionBeanLocal.createRequest(r, pId);
+        return postSessionBeanLocal.getPost(pId);
+    }
 }

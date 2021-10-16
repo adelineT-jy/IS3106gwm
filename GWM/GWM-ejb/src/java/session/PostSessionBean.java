@@ -160,6 +160,16 @@ public class PostSessionBean implements PostSessionBeanLocal {
     }
 
     @Override
+    public void createPost(Post p, Long userId) {
+        User user = getUser(userId);
+        p.setIsAvailable(true);
+        p.setPostDate(new Date());
+        p.setUser(user);
+        em.persist(p);
+        user.getPosts().add(p);
+    }
+
+    @Override
     public void editPost(Post p, Long userId) throws NoResultException, AuthenticationException {
         if (!checkPostOwner(p.getPostId(), userId)) {
             throw new AuthenticationException("You are not the owner of the post.");
@@ -266,7 +276,7 @@ public class PostSessionBean implements PostSessionBeanLocal {
         try {
             Party p = getParty(partyId);
             List<User> users = p.getUsers();
-            for (User u: users) {
+            for (User u : users) {
                 if (u.getUserId() == userId) {
                     return true;
                 }
