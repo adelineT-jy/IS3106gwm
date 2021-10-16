@@ -13,10 +13,10 @@ function ChatBox() {
 
 export default function Chat() {
     return (
-        <Box sx={{ bgcolor: '#e3f2fd', height: '70vh' }}>
-            <h1>Chat</h1>
+        <Box sx={{ bgcolor: '#e3f2fd', height: '70vh', display: 'flex' }}>
             <Grid container spacing={2}>
                 <Grid item xs={6} md={4}>
+                    <h1>Chat</h1>
                     <p>Chat side bar</p>
                 </Grid>
                 <Grid item xs={6} md={8}>

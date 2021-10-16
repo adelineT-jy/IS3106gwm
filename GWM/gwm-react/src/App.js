@@ -8,7 +8,7 @@ import Home from './components/home';
 import { Account, Register, Login, Logout } from './components/account';
 import { Header, Footer } from './components/template';
 import Chat from './components/chat';
-import Posts from './components/posts';
+import { Posts, Requests } from './components/posts';
 import Party from './components/party';
 import { Users } from './components/users';
 import AdminPosts from './components/admin';
@@ -37,6 +37,7 @@ class App extends Component {
 
                         <Route exact path="/posts" component={Posts} />
                         <Route exact path="/party" component={Party} />
+                        <Route exact path="/requests" component={Requests} />
                         
                         <Route exact path="/users" component={Users} />
 

@@ -23,10 +23,18 @@ function Listing() {
     )
 }
 
-export default function Posts() {
+export function Posts() {
     return (
         <Box sx={{ bgcolor: '#e3f2fd', height: '70vh' }}>
             <Listing />
+            <Request />
+        </Box>
+    )
+}
+
+export function Requests() {
+    return (
+        <Box sx={{ bgcolor: '#e3f2fd', height: '70vh' }}>
             <Request />
         </Box>
     )
