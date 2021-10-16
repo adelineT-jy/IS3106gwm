@@ -42,6 +42,8 @@ public interface PostSessionBeanLocal {
 
     public void createPost(Post p, Long partyId, Long userId);
 
+    public void createPost(Post p, Long userId);
+
     public void editPost(Post p, Long userId) throws NoResultException, AuthenticationException;
 
     public void deletePost(Long pId, Long userId) throws NoResultException, AuthenticationException;
@@ -72,4 +74,5 @@ public interface PostSessionBeanLocal {
     public Payment getPayment(Long paymentId) throws NoResultException;
 
     public Review getReview(Long revId) throws NoResultException;
+
 }

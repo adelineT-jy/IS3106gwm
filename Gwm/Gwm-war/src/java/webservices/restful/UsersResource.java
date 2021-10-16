@@ -8,6 +8,7 @@ package webservices.restful;
 import entity.Card;
 import entity.Chat;
 import entity.ChatMessage;
+import entity.Party;
 import entity.Review;
 import entity.User;
 import java.util.List;
@@ -29,6 +30,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import session.ChatSession;
 import session.ChatSessionLocal;
+import session.PostSessionBeanLocal;
 import session.UserSessionLocal;
 
 /**
@@ -42,6 +44,9 @@ public class UsersResource {
 
     @EJB
     private UserSessionLocal userSessionLocal;
+
+    @EJB
+    private PostSessionBeanLocal postSessionBeanLocal;
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -179,6 +184,15 @@ public class UsersResource {
             JsonObject exception = Json.createObjectBuilder().add("error", "Not found").build();
             return Response.status(404).entity(exception).type(MediaType.APPLICATION_JSON).build();
         }
+    }
+
+    @POST
+    @Path("/{user_id}/Party")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public User createParty(@PathParam("user_id") Long uId, Party party) {
+        postSessionBeanLocal.createParty(party, uId);
+        return postSessionBeanLocal.getUser(uId);
     }
 
 }
