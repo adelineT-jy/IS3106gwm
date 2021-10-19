@@ -1,4 +1,21 @@
+#title{
+  font-family: Copperplate, Papyrus, fantasy;
+  font-size: xx-large;
+  color: black;
+  text-shadow: 2px 2px 1px sandybrown;
+  font-weight: 600;
+  padding: 15px;
+  padding-left: 25px;
+}
+
+
+h1{
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  padding: 10px;
+}
+
 body {
+  padding: 10px;
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',

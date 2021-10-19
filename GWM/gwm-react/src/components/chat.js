@@ -2,10 +2,11 @@ import React from 'react';
 
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
+import Paper from '@mui/material/Paper';
 
 function ChatBox() {
     return (
-        <Box sx={{ bgcolor: '#e3f2fd', height: '70vh' }}>
+        <Box sx={{ bgcolor: '#bde1ff', height: '70vh' }}>
             <h1>Chatbox</h1>
         </Box>
     )
