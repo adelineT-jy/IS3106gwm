@@ -7,6 +7,7 @@ package entity;
 
 import enumeration.RequestStatus;
 import java.io.Serializable;
+import java.util.Date;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -17,6 +18,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 /**
  *
@@ -29,6 +32,10 @@ public class Request implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long requestId;
+    
+    @Column(length = 20, nullable = false)
+    @Temporal(TemporalType.DATE)
+    private Date requestDate;
 
     @Column(length = 10, nullable = false)
     @Enumerated(EnumType.STRING)
@@ -42,6 +49,10 @@ public class Request implements Serializable {
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Post post;
+
+    public Request() {
+        this.requestDate = new Date();
+    }
 
     public Long getRequestId() {
         return requestId;
@@ -74,6 +85,24 @@ public class Request implements Serializable {
     public void setRequester(User requester) {
         this.requester = requester;
     }
+
+    public Date getRequestDate() {
+        return requestDate;
+    }
+
+    public void setRequestDate(Date requestDate) {
+        this.requestDate = requestDate;
+    }
+
+    public Post getPost() {
+        return post;
+    }
+
+    public void setPost(Post post) {
+        this.post = post;
+    }
+    
+    
 
     @Override
     public int hashCode() {

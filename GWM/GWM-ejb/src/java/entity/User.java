@@ -62,7 +62,7 @@ public class User implements Serializable {
     @ManyToMany
     private List<Party> parties;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany
     private List<Post> posts;
 
     @OneToMany(mappedBy = "requester")

@@ -1,5 +1,6 @@
 package session;
 
+import entity.Game;
 import entity.Party;
 import entity.Payment;
 import entity.Post;
@@ -11,6 +12,7 @@ import error.AuthenticationException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -22,17 +24,21 @@ public class PostSessionBean implements PostSessionBeanLocal {
 
     @PersistenceContext(unitName = "Gwm-ejbPU")
     private EntityManager em;
+    
+    @EJB
+    private GameSessionLocal gameSessionLocal;
 
     @Override
     public List<Post> searchPosts(String query) {
+        Query q;
         if (query == null) {
-            query = "";
+            q = em.createQuery("SELECT p FROM Post p");
+        } else {
+            q = em.createQuery("SELECT DISTINCT p FROM Post p WHERE p.description LIKE :query "
+                    + "OR p.title LIKE :query");
+            q.setParameter("query", "%" + query.toLowerCase() + "%");
         }
-
-        Query q = em.createQuery("SELECT DISTINCT p FROM Post p WHERE p.description LIKE :query "
-                + "OR p.title LIKE :query");
-        q.setParameter("query", "%" + query + "%");
-
+        
         return q.getResultList();
     }
 
@@ -145,28 +151,32 @@ public class PostSessionBean implements PostSessionBeanLocal {
     }
 
     @Override
-    public void createPost(Post p, Long partyId, Long userId) {
+    public void createPost(Post p, Long partyId, Long userId, Long gameId) {
         if (!checkPartyUser(partyId, userId)) {
             throw new NoResultException("You are not in this party.");
         }
         Party party = getParty(partyId);
         User user = getUser(userId);
+        Game game = gameSessionLocal.getGame(gameId);
+        p.setGame(game);
         p.setParty(party);
         p.setIsAvailable(true);
         p.setPostDate(new Date());
-        p.setUser(user);
+        p.setUserId(user.getUserId());
         em.persist(p);
         user.getPosts().add(p);
     }
 
     @Override
-    public void createPost(Post p, Long userId) {
+    public void createPost(Post p, Long userId, Long gameId) {
         User user = getUser(userId);
+        Game game = gameSessionLocal.getGame(gameId);
+        p.setGame(game);
         p.setIsAvailable(true);
-        p.setPostDate(new Date());
-        p.setUser(user);
+        p.setUserId(user.getUserId());
         em.persist(p);
         user.getPosts().add(p);
+        em.flush();
     }
 
     @Override
@@ -179,7 +189,6 @@ public class PostSessionBean implements PostSessionBeanLocal {
         oldP.setGame(p.getGame());
         oldP.setGratitude(p.getGratitude());
         oldP.setIsAvailable(p.isIsAvailable());
-        oldP.setRequestDate(p.getRequestDate());
         oldP.setRequestPrice(p.getRequestPrice());
         oldP.setRequestQty(p.getRequestQty());
         oldP.setTitle(p.getTitle());
@@ -192,7 +201,7 @@ public class PostSessionBean implements PostSessionBeanLocal {
         }
         Post p = getPost(pId);
         User u = getUser(userId);
-        p.setUser(null);
+        //p.setUser(null);
         u.getPosts().remove(p);
         em.remove(p);
     }
@@ -285,17 +294,6 @@ public class PostSessionBean implements PostSessionBeanLocal {
         } catch (NoResultException e) {
             return false;
         }
-
-//        try {
-//            return getParty(partyId)
-//                    .getUsers()
-//                    .stream()
-//                    .filter(x -> x.getUserId().equals(userId))
-//                    .findFirst()
-//                    .get() != null;
-//        } catch (NoResultException e) {
-//            return false;
-//        }
     }
 
     @Override
@@ -305,7 +303,7 @@ public class PostSessionBean implements PostSessionBeanLocal {
         if (post == null) {
             throw new NoResultException("No such post");
         }
-        post.getUser();
+        //post.getUser();
         post.getParty();
         post.getRequest();
         post.getPayment();
@@ -317,7 +315,7 @@ public class PostSessionBean implements PostSessionBeanLocal {
     public boolean checkPostOwner(Long postId, Long userId) {
         try {
             return getPost(postId)
-                    .getUser()
+                    //.getUser()
                     .getUserId()
                     .equals(userId);
         } catch (NoResultException e) {

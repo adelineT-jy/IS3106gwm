@@ -40,9 +40,9 @@ public interface PostSessionBeanLocal {
 
     public void endParty(Long partyId, Long userId) throws NoResultException, AuthenticationException;
 
-    public void createPost(Post p, Long partyId, Long userId);
+    public void createPost(Post p, Long partyId, Long userId, Long gameId);
 
-    public void createPost(Post p, Long userId);
+    public void createPost(Post p, Long userId, Long gameId);
 
     public void editPost(Post p, Long userId) throws NoResultException, AuthenticationException;
 

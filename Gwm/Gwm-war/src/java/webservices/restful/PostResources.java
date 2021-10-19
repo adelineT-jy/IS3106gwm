@@ -48,15 +48,16 @@ public class PostResources {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public List<Post> getAllPost() {
+        //System.out.println(postSessionBeanLocal.searchPosts(null));
         return postSessionBeanLocal.searchPosts(null);
     }
 
     @GET
     @Path("/query")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response searchCustomers(@QueryParam("query") String query) {
-        if (query != null) {
-            List<Post> results = postSessionBeanLocal.searchPosts(query);
+    public Response searchPosts(@QueryParam("query") String search) {
+        if (search != null) {
+            List<Post> results = postSessionBeanLocal.searchPosts(search);
             GenericEntity<List<Post>> entity = new GenericEntity<List<Post>>(results) {
             };
             return Response.status(200).entity(entity).build();
@@ -67,21 +68,22 @@ public class PostResources {
     }
 
     @POST
+    @Path("/users/{uId}/games/{gId}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public User createPost(@PathParam("id") Long uid, Post p) {
-        postSessionBeanLocal.createPost(p, uid);
-        return postSessionBeanLocal.getUser(uid);
+    public Post createPost(@PathParam("uId") Long uid, @PathParam("gId") Long gameId, Post p) {
+        postSessionBeanLocal.createPost(p, uid, gameId);
+        return p;
     }
 
     @PUT
-    @Path("/{postId}")
+    @Path("/{postId}/by/{uId}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response editPost(@PathParam("postId") Long pId, Post p) {
+    public Response editPost(@PathParam("postId") Long pId, @PathParam("uId") Long uId, Post p) {
         try {
-            postSessionBeanLocal.editPost(p, pId);
-            return Response.status(404).build();
+            postSessionBeanLocal.editPost(p, uId);
+            return Response.status(200).entity(p).type(MediaType.APPLICATION_JSON).build();
         } catch (Exception ex) {
             JsonObject exception = Json.createObjectBuilder().add("error", "Not found").build();
             return Response.status(404).entity(exception).type(MediaType.APPLICATION_JSON).build();
@@ -89,9 +91,9 @@ public class PostResources {
     }
 
     @DELETE
-    @Path("/{postId}")
+    @Path("/{postId}/by/{uId}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response deletePost(@PathParam("postId") Long pId, Long uId) {
+    public Response deletePost(@PathParam("postId") Long pId, @PathParam("uId") Long uId) {
         try {
             postSessionBeanLocal.deletePost(pId, uId);
             return Response.status(204).build();

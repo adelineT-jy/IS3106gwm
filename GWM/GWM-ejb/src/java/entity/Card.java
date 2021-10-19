@@ -16,13 +16,13 @@ public class Card implements Serializable {
     private Long cardId;
 
     @Column(length = 16, nullable = false)
-    private int cardNum;
+    private String cardNum;
     
     @Column(length = 5, nullable = false)
     private String expDate;
     
     @Column(length = 4, nullable = false)
-    private int cvv;
+    private String cvv;
     
     @Column(length = 32, nullable = false)
     private String name;
@@ -30,7 +30,7 @@ public class Card implements Serializable {
     public Card() {
     }
 
-    public Card(Long cardId, int cardNum, String expDate, int cvv, String name) {
+    public Card(Long cardId, String cardNum, String expDate, String cvv, String name) {
         this();
         this.cardId = cardId;
         this.cardNum = cardNum;
@@ -47,11 +47,11 @@ public class Card implements Serializable {
         this.cardId = cardId;
     }
 
-    public int getCardNum() {
+    public String getCardNum() {
         return cardNum;
     }
 
-    public void setCardNum(int cardNum) {
+    public void setCardNum(String cardNum) {
         this.cardNum = cardNum;
     }
 
@@ -63,11 +63,11 @@ public class Card implements Serializable {
         this.expDate = expDate;
     }
 
-    public int getCvv() {
+    public String getCvv() {
         return cvv;
     }
 
-    public void setCvv(int cvv) {
+    public void setCvv(String cvv) {
         this.cvv = cvv;
     }
 

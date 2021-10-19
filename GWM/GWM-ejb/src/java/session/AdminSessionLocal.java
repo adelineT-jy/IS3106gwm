@@ -24,12 +24,6 @@ public interface AdminSessionLocal {
     public void banUser(Long userId) throws NoResultException;
     
     public void unbanUser(Long userId) throws NoResultException;
-    
-    public void createGame(Game game);
-    
-    public Game getGame(Long gameId) throws NoResultException;
-    
-    public void updateGame(Game game) throws NoResultException;
 }
 
     

@@ -10,6 +10,7 @@ import entity.Experience;
 import entity.Game;
 import entity.Review;
 import entity.User;
+import error.CreateUserException;
 import error.ExperienceExistException;
 import java.util.List;
 import javax.ejb.Stateless;
@@ -29,8 +30,13 @@ public class UserSession implements UserSessionLocal {
     private EntityManager em;
 
     @Override
-    public void createUser(User u) {
-        em.persist(u);
+    public void createUser(User u) throws CreateUserException {
+        try {
+            em.persist(u);
+            em.flush();
+        } catch (Exception ex) {
+            throw new CreateUserException(ex.getMessage());
+        }
     }
 
     @Override
@@ -139,9 +145,13 @@ public class UserSession implements UserSessionLocal {
 
     @Override
     public void addFollowing(Long userId, Long followingUserId) throws NoResultException {
-        User u = getUserById(userId);
-        User toFollow = getUserById(followingUserId);
-        u.addFollowing(toFollow);
+        if (userId != followingUserId) {
+            User u = getUserById(userId);
+            User toFollow = getUserById(followingUserId);
+            u.addFollowing(toFollow);
+        } else {
+            throw new NoResultException("User cannot follow yourself");
+        }
     }
 
     @Override

@@ -9,6 +9,7 @@ import entity.Card;
 import entity.Experience;
 import entity.Review;
 import entity.User;
+import error.CreateUserException;
 import error.ExperienceExistException;
 import java.util.List;
 import javax.ejb.Local;
@@ -22,7 +23,7 @@ import javax.persistence.NoResultException;
 public interface UserSessionLocal {
     
     //user (profile, card, experience, history of requests/posts/parties/reviews)
-    public void createUser(User u);
+    public void createUser(User u) throws CreateUserException;
     
     public User getUserById(Long userId) throws NoResultException; 
     

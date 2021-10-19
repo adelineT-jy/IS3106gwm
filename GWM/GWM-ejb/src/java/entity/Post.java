@@ -2,22 +2,21 @@ package entity;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+
 
 @Entity
 public class Post implements Serializable {
@@ -27,7 +26,7 @@ public class Post implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long postId;
 
-    @Column(length = 20, nullable = false, unique = true)
+    @Column(length = 20, nullable = false)
     @Temporal(TemporalType.DATE)
     private Date postDate;
 
@@ -37,21 +36,20 @@ public class Post implements Serializable {
     @Column(length = 512)
     private String description;
 
-    private int gratitude;
-    private int requestQty;
-
+    private int requestQty; //num of members
+    
     @Column(scale = 2, nullable = false)
     private BigDecimal requestPrice;
 
-    @Column(length = 20, nullable = false, unique = true)
-    @Temporal(TemporalType.DATE)
-    private Date requestDate;
-
     private boolean isAvailable;
+    
+    @Column(scale = 2)
+    private BigDecimal gratitude;
 
     //Relationships
-    @ManyToOne(fetch = FetchType.LAZY)
-    private User user;
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    private User user;
+    private Long userId;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Party party;
@@ -62,8 +60,14 @@ public class Post implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Request> request;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToOne(cascade = {CascadeType.DETACH, CascadeType.REFRESH}, fetch = FetchType.EAGER)
     private Game game;
+
+    public Post() {
+        this.isAvailable = true;
+        this.postDate = new Date();
+        this.request = new ArrayList<>();
+    }
 
     public Long getPostId() {
         return postId;
@@ -105,11 +109,11 @@ public class Post implements Serializable {
         this.game = game;
     }
 
-    public int getGratitude() {
+    public BigDecimal getGratitude() {
         return gratitude;
     }
 
-    public void setGratitude(int gratitude) {
+    public void setGratitude(BigDecimal gratitude) {
         this.gratitude = gratitude;
     }
 
@@ -129,14 +133,6 @@ public class Post implements Serializable {
         this.requestPrice = requestPrice;
     }
 
-    public Date getRequestDate() {
-        return requestDate;
-    }
-
-    public void setRequestDate(Date requestDate) {
-        this.requestDate = requestDate;
-    }
-
     public boolean isIsAvailable() {
         return isAvailable;
     }
@@ -145,12 +141,20 @@ public class Post implements Serializable {
         this.isAvailable = isAvailable;
     }
 
-    public User getUser() {
-        return user;
+//    public User getUser() {
+//        return user;
+//    }
+//
+//    public void setUser(User user) {
+//        this.user = user;
+//    }
+
+    public Long getUserId() {
+        return userId;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
     public Party getParty() {

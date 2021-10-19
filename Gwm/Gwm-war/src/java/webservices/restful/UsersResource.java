@@ -57,7 +57,7 @@ public class UsersResource {
     @GET
     @Path("/query")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response searchCustomers(@QueryParam("name") String name) {
+    public Response searchUsers(@QueryParam("name") String name) {
         if (name != null) {
             List<User> results = userSessionLocal.searchUser(name);
             GenericEntity<List<User>> entity = new GenericEntity<List<User>>(results) {
@@ -68,6 +68,20 @@ public class UsersResource {
             return Response.status(400).entity(exception).build();
         }
     }
+    
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public User createUser(User u) {
+        try {
+            userSessionLocal.createUser(u);
+            return u;
+        } catch (Exception ex) {
+            return null;
+        }
+        
+    }
+    
 
     @GET
     @Path("/{id}")
@@ -87,17 +101,19 @@ public class UsersResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response editUser(@PathParam("id") Long uId, User u) {
+        System.out.println("edituser");
         u.setUserId(uId);
         try {
             userSessionLocal.updateUserProfile(u);
-            return Response.status(404).build();
+            return Response.status(200).entity(u).type(MediaType.APPLICATION_JSON).build();
         } catch (Exception ex) {
-            JsonObject exception = Json.createObjectBuilder().add("error", "Not found").build();
+            System.out.println("editUser failed");
+            JsonObject exception = Json.createObjectBuilder().add("error", "Not found ha").build();
             return Response.status(404).entity(exception).type(MediaType.APPLICATION_JSON).build();
         }
     }
 
-    /*
+    
     @POST
     @Path("/{user_id}/cards")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -111,12 +127,14 @@ public class UsersResource {
             System.out.println("Add card error");
             return null;
         }
-    }*/
-    @POST
-    @Path("/{user_id}/cards")
+    }
+    
+    
+    @DELETE
+    @Path("/{user_id}/cards/{cId}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public User deleteCard(@PathParam("user_id") Long uId, Long cId) {
+    public User deleteCard(@PathParam("user_id") Long uId, @PathParam("cId") Long cId) {
         try {
             userSessionLocal.deleteCard(uId, cId);
             return userSessionLocal.getUserById(uId);
