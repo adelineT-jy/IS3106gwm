@@ -54,7 +54,7 @@ public interface PostSessionBeanLocal {
 
     public void makePayment(Payment p, Long pId, Long userId) throws NoResultException;
 
-    public void createReview(Review rev, Long userId, Long partyId) throws NoResultException;
+    public void createReview(Review rev, Long userId, Long forUserId, Long partyId) throws NoResultException;
 
     // Helper methods
     public User getUser(Long userId) throws NoResultException;

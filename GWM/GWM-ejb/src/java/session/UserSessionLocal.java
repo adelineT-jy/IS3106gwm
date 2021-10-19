@@ -47,7 +47,7 @@ public interface UserSessionLocal {
     
     public void deleteFollowing(Long userId, Long followingUserId) throws NoResultException;
     
-    public List<Review> viewReviewsGiven(Long userId) throws NoResultException;
+    public List<Review> viewMyReviews(Long userId) throws NoResultException;
     
     
     

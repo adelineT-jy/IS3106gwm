@@ -67,6 +67,9 @@ public class User implements Serializable {
 
     @OneToMany(mappedBy = "requester")
     private List<Request> requests;
+    
+    @OneToMany
+    private List<Review> reviews;
 
     public User() {
         passwordSalt = new SecureRandom().nextInt(10000) + ""; //securerandom number from 0-9999 (4 digits)
@@ -77,6 +80,7 @@ public class User implements Serializable {
         chats = new ArrayList<>();
         parties = new ArrayList<>();
         posts = new ArrayList<>();
+        reviews = new ArrayList<>();
     }
 
     public User(String email, String username, String plainPassword, ImageIcon profileImage) {
@@ -293,4 +297,13 @@ public class User implements Serializable {
     public void removeRequest(Request req) {
         this.requests.remove(req);
     }
+
+    public List<Review> getReviews() {
+        return reviews;
+    }
+
+    public void setReviews(List<Review> reviews) {
+        this.reviews = reviews;
+    }
+    
 }

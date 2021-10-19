@@ -27,6 +27,9 @@ public class PostSessionBean implements PostSessionBeanLocal {
     
     @EJB
     private GameSessionLocal gameSessionLocal;
+    
+    @EJB
+    private UserSessionLocal userSessionLocal;
 
     @Override
     public List<Post> searchPosts(String query) {
@@ -235,7 +238,7 @@ public class PostSessionBean implements PostSessionBeanLocal {
     }
 
     @Override
-    public void createReview(Review rev, Long userId, Long partyId) throws NoResultException {
+    public void createReview(Review rev, Long userId, Long forUserId, Long partyId) throws NoResultException {
         rev.setUserId(userId);
         Party p = getParty(partyId);
         if (!checkPartyUser(partyId, userId)) {
@@ -243,7 +246,11 @@ public class PostSessionBean implements PostSessionBeanLocal {
         }
         em.persist(rev);
         p.getReviews().add(rev);
+        User forUser = userSessionLocal.getUserById(forUserId);
+        forUser.getReviews().add(rev);
+        em.flush();
     }
+
 
     @Override
     public User getUser(Long userId) throws NoResultException {

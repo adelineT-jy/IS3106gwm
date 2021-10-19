@@ -194,7 +194,7 @@ public class UsersResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getReviews(@PathParam("user_id") Long userId) {
         try {
-            List<Review> results = userSessionLocal.viewReviewsGiven(userId);
+            List<Review> results = userSessionLocal.viewMyReviews(userId);
             GenericEntity<List<Review>> entity = new GenericEntity<List<Review>>(results) {
             };
             return Response.status(200).entity(entity).build();

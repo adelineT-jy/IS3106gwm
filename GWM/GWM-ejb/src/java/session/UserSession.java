@@ -161,12 +161,14 @@ public class UserSession implements UserSessionLocal {
         u.getFollowing().remove(unfollow);
     }
 
-    //should reviews be connected to user?
+    
     @Override
-    public List<Review> viewReviewsGiven(Long userId) throws NoResultException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public List<Review> viewMyReviews(Long userId) throws NoResultException {
+        User u = getUserById(userId);
+        if (u.getReviews().size() > 0) {
+            return u.getReviews();
+        } else {
+            throw new NoResultException("User does not have any reviews");
+        }
     }
-
-    // Add business logic below. (Right-click in editor and choose
-    // "Insert Code > Add Business Method")
 }
