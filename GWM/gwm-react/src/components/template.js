@@ -135,7 +135,7 @@ export function Header() {
         <Box sx={{ bgcolor: '#64b5f6', height: '20vh' }}>
             <Grid container spacing={2} justifyContent='flex-end'>
                 <Grid item xs={8} md={9}>
-                    <h1>Game With Me</h1>
+                    <h1 id="title">Game With Me</h1>
                 </Grid>
                 <Grid item xs={4} md={3}>
                     <Switch>
