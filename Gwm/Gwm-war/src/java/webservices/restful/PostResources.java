@@ -29,6 +29,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.xml.bind.annotation.XmlTransient;
 import session.PostSessionBeanLocal;
 import session.UserSessionLocal;
 
@@ -124,11 +125,12 @@ public class PostResources {
     }
 
     @POST
-    @Path("/{postId}/request")
+    @Path("/{postId}/{uid}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Post createRequest(@PathParam("postId") Long pId, Request r) {
-        postSessionBeanLocal.createRequest(r, pId);
+    public Post createRequest(@PathParam("uid") Long uid, @PathParam("postId") Long pId, Request r) {
+        postSessionBeanLocal.createRequest(r, pId, uid);
         return postSessionBeanLocal.getPost(pId);
     }
+
 }

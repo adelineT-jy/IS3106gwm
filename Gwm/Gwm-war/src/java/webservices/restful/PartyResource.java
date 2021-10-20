@@ -84,11 +84,12 @@ public class PartyResource {
     }
 
     @POST
-    @Path("/{partyId}/request")
+    @Path("/{partyId}/requestby/{uId}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Party createRequest(@PathParam("partyId") Long pid, Request r) {
-        postSessionBeanLocal.createRequest(r, pid);
+    public Party createRequest(@PathParam("partyId") Long pid,
+            @PathParam("uId") Long uid, Request r) {
+        postSessionBeanLocal.createRequest(r, pid, uid);
         return postSessionBeanLocal.getParty(pid);
     }
 

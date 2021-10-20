@@ -42,7 +42,6 @@ public class UserSession implements UserSessionLocal {
     @Override
     public User getUserById(Long userId) throws NoResultException {
         User u = em.find(User.class, userId);
-
         if (u != null) {
             return u;
         } else {
@@ -135,7 +134,7 @@ public class UserSession implements UserSessionLocal {
             throw new NoResultException("Experience cannot be deleted");
         }
     }
-    
+
     @Override
     public List<User> getUserFollowing(Long userId) throws NoResultException {
         User u = getUserById(userId);
@@ -161,7 +160,6 @@ public class UserSession implements UserSessionLocal {
         u.getFollowing().remove(unfollow);
     }
 
-    
     @Override
     public List<Review> viewMyReviews(Long userId) throws NoResultException {
         User u = getUserById(userId);

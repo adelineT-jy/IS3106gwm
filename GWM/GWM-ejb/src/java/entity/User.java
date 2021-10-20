@@ -6,6 +6,7 @@ import java.security.MessageDigest;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
+import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,6 +17,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.swing.ImageIcon;
+import javax.xml.bind.annotation.XmlTransient;
 
 @Entity
 public class User implements Serializable {
@@ -62,12 +64,13 @@ public class User implements Serializable {
     @ManyToMany
     private List<Party> parties;
 
+    @JsonbTransient
     @OneToMany
     private List<Post> posts;
 
     @OneToMany(mappedBy = "requester")
     private List<Request> requests;
-    
+
     @OneToMany
     private List<Review> reviews;
 
@@ -305,5 +308,5 @@ public class User implements Serializable {
     public void setReviews(List<Review> reviews) {
         this.reviews = reviews;
     }
-    
+
 }

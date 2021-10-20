@@ -22,6 +22,8 @@ public interface PostSessionBeanLocal {
 
     public List<Request> searchRequestsByUser(Long userId) throws NoResultException;
 
+    public void searchRequestsResetUser(Long userId) throws NoResultException;
+
     public List<Party> searchPartiesByUser(Long userId) throws NoResultException;
 
     public List<Review> searchReviewsByUser(Long userId) throws NoResultException;
@@ -48,7 +50,7 @@ public interface PostSessionBeanLocal {
 
     public void deletePost(Long pId, Long userId) throws NoResultException, AuthenticationException;
 
-    public void createRequest(Request r, Long pId) throws NoResultException;
+    public void createRequest(Request r, Long pId, Long uId) throws NoResultException;
 
     public void deleteRequest(Long rId, Long userId) throws NoResultException, AuthenticationException;
 

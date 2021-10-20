@@ -16,6 +16,7 @@ import javax.json.JsonObject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -36,6 +37,15 @@ public class RequestResource {
     @EJB
     private PostSessionBeanLocal postSessionBeanLocal;
 
+    @POST
+    @Path("/{pid}/{uid}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Request createRequest(@PathParam("uid") Long uid, @PathParam("pid") Long pId, Request r) {
+        postSessionBeanLocal.createRequest(r, pId, uid);
+        return r;
+    }
+
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -44,6 +54,7 @@ public class RequestResource {
             List<Request> results = postSessionBeanLocal.searchRequestsByUser(uId);
             GenericEntity<List<Request>> entity = new GenericEntity<List<Request>>(results) {
             };
+            postSessionBeanLocal.searchRequestsResetUser(uId);
             return Response.status(200).entity(entity).build();
         } else {
             JsonObject exception = Json.createObjectBuilder()
@@ -53,9 +64,9 @@ public class RequestResource {
     }
 
     @DELETE
-    @Path("/{id}/{rid}")
+    @Path("/{uid}/{rid}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response deleteRequest(@PathParam("rid") Long rid, Long uid) {
+    public Response deleteRequest(@PathParam("rid") Long rid, @PathParam("uid") Long uid) {
         try {
             postSessionBeanLocal.deleteRequest(rid, uid);
             return Response.status(204).build();

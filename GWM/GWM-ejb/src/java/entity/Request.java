@@ -8,6 +8,7 @@ package entity;
 import enumeration.RequestStatus;
 import java.io.Serializable;
 import java.util.Date;
+import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -20,6 +21,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -32,7 +34,7 @@ public class Request implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long requestId;
-    
+
     @Column(length = 20, nullable = false)
     @Temporal(TemporalType.DATE)
     private Date requestDate;
@@ -44,9 +46,11 @@ public class Request implements Serializable {
     @Column(length = 512)
     private String text;
 
+    @JsonbTransient
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private User requester;
 
+    @JsonbTransient
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Post post;
 
@@ -101,8 +105,6 @@ public class Request implements Serializable {
     public void setPost(Post post) {
         this.post = post;
     }
-    
-    
 
     @Override
     public int hashCode() {

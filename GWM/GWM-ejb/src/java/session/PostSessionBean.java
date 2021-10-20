@@ -18,16 +18,17 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.xml.bind.annotation.XmlTransient;
 
 @Stateless
 public class PostSessionBean implements PostSessionBeanLocal {
 
     @PersistenceContext(unitName = "Gwm-ejbPU")
     private EntityManager em;
-    
+
     @EJB
     private GameSessionLocal gameSessionLocal;
-    
+
     @EJB
     private UserSessionLocal userSessionLocal;
 
@@ -41,7 +42,7 @@ public class PostSessionBean implements PostSessionBeanLocal {
                     + "OR p.title LIKE :query");
             q.setParameter("query", "%" + query.toLowerCase() + "%");
         }
-        
+
         return q.getResultList();
     }
 
@@ -52,7 +53,22 @@ public class PostSessionBean implements PostSessionBeanLocal {
 
     @Override
     public List<Request> searchRequestsByUser(Long userId) throws NoResultException {
-        return getUser(userId).getRequests();
+        //return getUser(userId).getRequests();
+        List<Request> r = getUser(userId).getRequests();
+        /*for (Request rr : r) {
+            rr.setRequester(null);
+        }*/
+        return r;
+    }
+
+    @Override
+    public void searchRequestsResetUser(Long userId) throws NoResultException {
+        //return getUser(userId).getRequests();
+        User u = getUser(userId);
+        List<Request> r = getUser(userId).getRequests();
+        for (Request rr : r) {
+            rr.setRequester(u);
+        }
     }
 
     @Override
@@ -210,13 +226,17 @@ public class PostSessionBean implements PostSessionBeanLocal {
     }
 
     @Override
-    public void createRequest(Request r, Long pId) throws NoResultException {
+    public void createRequest(Request r, Long pId, Long uId) throws NoResultException {
         r.setStatus(RequestStatus.PENDING);
+        User u = getUser(uId);
+        r.setRequester(u);
         em.persist(r);
-        User u = getUser(r.getRequester().getUserId());
+
         u.getRequests().add(r);
-        Party p = getParty(pId);
-        p.getRequests().add(r);
+        Post p = getPost(pId);
+        r.setPost(p);
+        p.getRequest().add(r);
+        em.flush();
     }
 
     @Override
@@ -225,9 +245,14 @@ public class PostSessionBean implements PostSessionBeanLocal {
         if (!r.getRequester().getUserId().equals(userId)) {
             throw new AuthenticationException("User not authenticated to delete request");
         }
-
         User u = getUser(userId);
-        u.getRequests().add(r);
+        Post p = getPost(r.getPost().getPostId());
+        //r.getPost().getParty().getRequests().remove(r);
+        System.out.println("XXXX");
+        r.setPost(null);
+        r.setRequester(null);
+        p.getRequest().remove(r);
+        u.getRequests().remove(r);
         em.remove(r);
         em.flush(); // need to get rid of request on party side
     }
@@ -250,7 +275,6 @@ public class PostSessionBean implements PostSessionBeanLocal {
         forUser.getReviews().add(rev);
         em.flush();
     }
-
 
     @Override
     public User getUser(Long userId) throws NoResultException {
@@ -337,6 +361,8 @@ public class PostSessionBean implements PostSessionBeanLocal {
         if (request == null) {
             throw new NoResultException("No such request");
         }
+        request.getPost();
+        request.getRequester();
 
         return request;
     }
@@ -362,4 +388,5 @@ public class PostSessionBean implements PostSessionBeanLocal {
 
         return review;
     }
+
 }

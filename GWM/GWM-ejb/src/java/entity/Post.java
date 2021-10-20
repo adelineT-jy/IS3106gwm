@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,7 +17,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-
+import javax.xml.bind.annotation.XmlTransient;
 
 @Entity
 public class Post implements Serializable {
@@ -37,12 +38,12 @@ public class Post implements Serializable {
     private String description;
 
     private int requestQty; //num of members
-    
+
     @Column(scale = 2, nullable = false)
     private BigDecimal requestPrice;
 
     private boolean isAvailable;
-    
+
     @Column(scale = 2)
     private BigDecimal gratitude;
 
@@ -57,7 +58,8 @@ public class Post implements Serializable {
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Payment payment;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JsonbTransient
+    @OneToMany(mappedBy = "post")
     private List<Request> request;
 
     @OneToOne(cascade = {CascadeType.DETACH, CascadeType.REFRESH}, fetch = FetchType.EAGER)
@@ -148,7 +150,6 @@ public class Post implements Serializable {
 //    public void setUser(User user) {
 //        this.user = user;
 //    }
-
     public Long getUserId() {
         return userId;
     }
