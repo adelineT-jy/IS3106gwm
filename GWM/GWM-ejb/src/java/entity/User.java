@@ -61,6 +61,7 @@ public class User implements Serializable {
     @ManyToMany
     private List<Chat> chats;
 
+    @JsonbTransient
     @ManyToMany
     private List<Party> parties;
 

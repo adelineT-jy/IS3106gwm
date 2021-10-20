@@ -82,14 +82,6 @@ public class DataInitialisationSession {
             u2.setIsAvailable(true);
             userSessionLocal.createUser(u2);
 
-            Request r = new Request();
-            r.setRequestDate(new Date());
-            r.setRequester(u2);
-            r.setText("i am an expert");
-            r.setPost(p);
-            postSessionBeanLocal.createRequest(r, p.getUserId(), u2.getUserId());
-            //System.out.println(userSessionLocal.getUserById(u2.getUserId()).getRequests());
-
         } catch (Exception ex) {
             Logger.getLogger(DataInitialisationSession.class.getName()).log(Level.SEVERE, null, ex);
         }

@@ -32,6 +32,8 @@ public interface PostSessionBeanLocal {
 
     public void createParty(Party party, Long userId) throws NoResultException;
 
+    public void createPartyLinkPost(Party party, Long userId, Long postId) throws NoResultException;
+
     public void joinParty(Long partyId, Long userId) throws NoResultException;
 
     public void acceptToParty(Long rId, Long partyId, Long userId) throws NoResultException, AuthenticationException;

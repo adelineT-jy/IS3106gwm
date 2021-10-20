@@ -125,12 +125,21 @@ public class PostResources {
     }
 
     @POST
-    @Path("/{postId}/{uid}")
+    @Path("/{postId}/request/{uid}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Post createRequest(@PathParam("uid") Long uid, @PathParam("postId") Long pId, Request r) {
         postSessionBeanLocal.createRequest(r, pId, uid);
         return postSessionBeanLocal.getPost(pId);
+    }
+
+    @POST
+    @Path("/{postId}/party/{uid}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Party createParty(@PathParam("uid") Long uid, @PathParam("postId") Long pId, Party p) {
+        postSessionBeanLocal.createPartyLinkPost(p, uid, pId);
+        return postSessionBeanLocal.getParty(p.getPartyId());
     }
 
 }
