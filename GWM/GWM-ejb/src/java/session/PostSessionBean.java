@@ -94,21 +94,7 @@ public class PostSessionBean implements PostSessionBeanLocal {
     }
 
     @Override
-    public void createParty(Party party, Long userId) throws NoResultException {
-        User u = getUser(userId);
-        List<User> users = new ArrayList<>();
-        users.add(u);
-
-        party.setPartyOwner(u);
-        party.setUsers(users);
-        party.setReviews(new ArrayList<>());
-        em.persist(party);
-        u.getParties().add(party);
-        em.flush();
-    }
-
-    @Override
-    public void createPartyLinkPost(Party party, Long userId, Long postId) throws NoResultException {
+    public void createParty(Party party, Long userId, Long postId) throws NoResultException {
         User u = getUser(userId);
         List<User> users = new ArrayList<>();
         users.add(u);
@@ -175,13 +161,15 @@ public class PostSessionBean implements PostSessionBeanLocal {
 
         Party p = getParty(partyId);
         if (p.getPartyEndTime() != null) {
-            throw new NoResultException("No such party cannot be deleted.");
+            throw new NoResultException("No such party. Unsuccessful deletion.");
         }
 
         for (int i = 0; i < p.getUsers().size(); i++) {
             p.getUsers().get(i).getParties().remove(p);
         }
         p.setUsers(new ArrayList<>());
+        Post po = getPostFromParty(partyId);
+        getPost(po.getPostId()).setParty(null);
         em.remove(p);
     }
 
@@ -391,6 +379,15 @@ public class PostSessionBean implements PostSessionBeanLocal {
         } catch (NoResultException e) {
             return false;
         }
+    }
+
+    @Override
+    public Post getPostFromParty(Long partyId) throws NoResultException {
+        Party p = getParty(partyId);
+        Query q = em.createQuery("SELECT po FROM Post po WHERE po.party.partyId = :partyId ");
+        q.setParameter("partyId", partyId);
+        return (Post) q.getSingleResult();
+
     }
 
     @Override

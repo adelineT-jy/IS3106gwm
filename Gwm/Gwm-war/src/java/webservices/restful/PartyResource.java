@@ -52,20 +52,19 @@ public class PartyResource {
 
     @DELETE
     @Path("/{partyId}/user/{uId}/delete")
-    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Party deleteParty(@PathParam("partyId") Long pId, @PathParam("uId") Long uId) {
+    public Response deleteParty(@PathParam("partyId") Long pId, @PathParam("uId") Long uId) {
         try {
             postSessionBeanLocal.deleteParty(pId, uId);
-            Party p = postSessionBeanLocal.getParty(pId);
-            return p;
+            return Response.status(204).build();
         } catch (Exception ex) {
-            System.out.println("delete party error");
-            return null;
+            JsonObject exception = Json.createObjectBuilder()
+                    .add("error", "Not found")
+                    .build();
+            return Response.status(404).entity(exception).build();
         }
     }
 
-    //completed
     @PUT
     @Path("/{partyId}/user/{uId}/acceptRequest/{rid}")
     @Consumes(MediaType.APPLICATION_JSON)
