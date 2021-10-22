@@ -70,9 +70,9 @@ public class ChatResources {
     }
 
     @GET
-    @Path("/{user_id}/{chat_id}")
+    @Path("/{chat_id}/user/{user_id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getChatMessgae(@PathParam("user_id") Long userId, @PathParam("chat_id") Long chatId) {
+    public Response getChatMessage(@PathParam("user_id") Long userId, @PathParam("chat_id") Long chatId) {
         try {
             List<ChatMessage> results = chatSessionLocal.getAllMessage(chatId);
             GenericEntity<List<ChatMessage>> entity = new GenericEntity<List<ChatMessage>>(results) {
@@ -85,18 +85,18 @@ public class ChatResources {
     }
 
     @POST
-    @Path("/{user_id}/{chat_id}")
+    @Path("/{chat_id}/user/{user_id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public User addNewChatMsg(@PathParam("user_id") Long uId,
+    public Response addNewChatMsg(@PathParam("user_id") Long uId,
             @PathParam("chat_id") Long cId, ChatMessage cm) {
         try {
-            chatSessionLocal.addMessage(cm, cId);
-            User u = userSessionLocal.getUserById(uId);
-            return u;
+            chatSessionLocal.addMessage(cm, uId, cId);
+            Chat c = chatSessionLocal.getChat(cId);
+            return Response.status(200).entity(c).build();
         } catch (Exception ex) {
-            System.out.println("addNewChat error");
-            return null;
+            JsonObject exception = Json.createObjectBuilder().add("error", "Not found").build();
+            return Response.status(404).entity(exception).type(MediaType.APPLICATION_JSON).build();
         }
     }
 

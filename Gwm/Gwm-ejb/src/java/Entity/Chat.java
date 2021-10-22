@@ -7,6 +7,7 @@ package entity;
 
 import java.io.Serializable;
 import java.util.List;
+import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -16,6 +17,7 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
 /**
@@ -33,11 +35,12 @@ public class Chat implements Serializable {
     //if true is a party
     private Boolean party;
 
+    @JsonbTransient
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "chats")
     private List<User> users;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private ChatMessage chatMessage;
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<ChatMessage> chatMessage;
 
     public Chat() {
         this.party = false;
@@ -67,11 +70,11 @@ public class Chat implements Serializable {
         this.party = party;
     }
 
-    public ChatMessage getChatMessage() {
+    public List<ChatMessage> getChatMessage() {
         return chatMessage;
     }
 
-    public void setChatMessage(ChatMessage chatMessage) {
+    public void setChatMessage(List<ChatMessage> chatMessage) {
         this.chatMessage = chatMessage;
     }
 

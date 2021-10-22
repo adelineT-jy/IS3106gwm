@@ -48,6 +48,9 @@ public class UsersResource {
     @EJB
     private PostSessionBeanLocal postSessionBeanLocal;
 
+    @EJB
+    private ChatSessionLocal chatSessionLocal;
+
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public List<User> getAllUsers() {

@@ -32,7 +32,7 @@ public interface ChatSessionLocal {
 
     public void addUserToGroupChat(Long cid, List<User> uids);
 
-    public void addMessage(ChatMessage message, Long cid);
+    public void addMessage(ChatMessage message, Long uid, Long cid);
 
     //helper method
     public Chat getChat(Long cid);

@@ -9,6 +9,7 @@ import entity.Chat;
 import entity.ChatMessage;
 import entity.Party;
 import entity.User;
+import java.util.Date;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -34,10 +35,8 @@ public class ChatSession implements ChatSessionLocal {
 
     @Override
     public List<ChatMessage> getAllMessage(Long chatId) {
-        Query q;
-        q = em.createQuery("SELECT c FROM Chat c WHERE c.chatId = :chatId");
-        q.setParameter("chatId", chatId);
-        return q.getResultList();
+        Chat c = getChat(chatId);
+        return c.getChatMessage();
     }
 
     @Override
@@ -81,13 +80,15 @@ public class ChatSession implements ChatSessionLocal {
     }
 
     @Override
-    public void addMessage(ChatMessage message, Long cid) {
+    public void addMessage(ChatMessage message, Long uid, Long cid) {
         if (message != null) {
+            message.setDateTime(new Date());
             em.persist(message);
+            message.setMsgOwnerId(uid);
+            Chat c = getChat(cid);
+            c.getChatMessage().add(message);
         }
 
-        Chat c = getChat(cid);
-        c.setChatMessage(message);
     }
 
     //helper method
