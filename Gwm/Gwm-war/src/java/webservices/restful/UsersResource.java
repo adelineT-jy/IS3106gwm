@@ -68,7 +68,7 @@ public class UsersResource {
             return Response.status(400).entity(exception).build();
         }
     }
-    
+
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -79,9 +79,8 @@ public class UsersResource {
         } catch (Exception ex) {
             return null;
         }
-        
+
     }
-    
 
     @GET
     @Path("/{id}")
@@ -113,7 +112,6 @@ public class UsersResource {
         }
     }
 
-    
     @POST
     @Path("/{user_id}/cards")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -128,8 +126,7 @@ public class UsersResource {
             return null;
         }
     }
-    
-    
+
     @DELETE
     @Path("/{user_id}/cards/{cId}")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -204,13 +201,18 @@ public class UsersResource {
         }
     }
 
-    @POST
-    @Path("/{user_id}/Party")
-    @Consumes(MediaType.APPLICATION_JSON)
+    @GET
+    @Path("/{uId}/party")
     @Produces(MediaType.APPLICATION_JSON)
-    public User createParty(@PathParam("user_id") Long uId, Party party) {
-        postSessionBeanLocal.createParty(party, uId);
-        return postSessionBeanLocal.getUser(uId);
+    public Response searchParty(@PathParam("uId") Long uId) {
+        if (uId != null) {
+            List<Party> results = postSessionBeanLocal.searchPartiesByUser(uId);
+            GenericEntity<List<Party>> entity = new GenericEntity<List<Party>>(results) {
+            };
+            return Response.status(200).entity(entity).build();
+        } else {
+            JsonObject exception = Json.createObjectBuilder().add("error", "No query conditions").build();
+            return Response.status(400).entity(exception).build();
+        }
     }
-
 }

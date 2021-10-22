@@ -39,7 +39,8 @@ public class Post implements Serializable {
 
     private int requestQty; //num of members
 
-    @Column(scale = 2, nullable = false)
+    //why is requestPRice nullable = false?
+    @Column(scale = 2)
     private BigDecimal requestPrice;
 
     private boolean isAvailable;

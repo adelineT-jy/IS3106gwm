@@ -54,6 +54,8 @@ public interface PostSessionBeanLocal {
 
     public void createRequest(Request r, Long pId, Long uId) throws NoResultException;
 
+    public Boolean checkRequestCreated(Long pId, Long uId);
+
     public void deleteRequest(Long rId, Long userId) throws NoResultException, AuthenticationException;
 
     public void makePayment(Payment p, Long pId, Long userId) throws NoResultException;
