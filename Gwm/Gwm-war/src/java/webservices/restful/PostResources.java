@@ -8,10 +8,6 @@ package webservices.restful;
 import entity.Party;
 import entity.Post;
 import entity.Request;
-import entity.Review;
-import entity.User;
-import error.NoResultException;
-import java.util.Date;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
@@ -29,7 +25,6 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.xml.bind.annotation.XmlTransient;
 import session.PostSessionBeanLocal;
 import session.UserSessionLocal;
 
@@ -138,7 +133,7 @@ public class PostResources {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Party createParty(@PathParam("uid") Long uid, @PathParam("postId") Long pId, Party p) {
-        postSessionBeanLocal.createPartyLinkPost(p, uid, pId);
+        postSessionBeanLocal.createParty(p, uid, pId);
         return postSessionBeanLocal.getParty(p.getPartyId());
     }
 

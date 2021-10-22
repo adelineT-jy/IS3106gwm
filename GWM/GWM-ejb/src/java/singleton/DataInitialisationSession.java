@@ -69,6 +69,9 @@ public class DataInitialisationSession {
             Post p = new Post();
             p.setTitle("finding peeps");
             p.setDescription("asap");
+            //System.out.println("dhajfhks");
+            postSessionBeanLocal.createPost(p, Long.valueOf(1), Long.valueOf(1));
+
             p.setRequestQty(1);
             p.setRequestPrice(BigDecimal.ONE);
             p.setGame(g);

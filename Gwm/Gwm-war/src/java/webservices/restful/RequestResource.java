@@ -37,15 +37,6 @@ public class RequestResource {
     @EJB
     private PostSessionBeanLocal postSessionBeanLocal;
 
-    @POST
-    @Path("/{pid}/{uid}")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Request createRequest(@PathParam("uid") Long uid, @PathParam("pid") Long pId, Request r) {
-        postSessionBeanLocal.createRequest(r, pId, uid);
-        return r;
-    }
-
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)

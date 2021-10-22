@@ -6,11 +6,6 @@
 package webservices.restful;
 
 import entity.Party;
-import entity.Post;
-import entity.User;
-import entity.Request;
-import entity.Review;
-import java.util.List;
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
 import javax.json.Json;
@@ -41,27 +36,14 @@ public class PartyResource {
     private PostSessionBeanLocal postSessionBeanLocal;
 
     @PUT
-    @Path("/{partyId}/joinParty")
+    @Path("/{partyId}/user/{uId}/end")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response joinParty(@PathParam("partyId") Long pId, Long uId) {
-        try {
-            postSessionBeanLocal.joinParty(pId, uId);
-            return Response.status(404).build();
-        } catch (Exception ex) {
-            JsonObject exception = Json.createObjectBuilder().add("error", "Not found").build();
-            return Response.status(404).entity(exception).type(MediaType.APPLICATION_JSON).build();
-        }
-    }
-
-    @PUT
-    @Path("/{partyId}/endParty")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response endParty(@PathParam("partyId") Long pId, Long uId) {
+    public Response endParty(@PathParam("uId") Long uId, @PathParam("partyId") Long pId) {
         try {
             postSessionBeanLocal.endParty(pId, uId);
-            return Response.status(404).build();
+            Party p = postSessionBeanLocal.getParty(pId);
+            return Response.status(200).entity(p).type(MediaType.APPLICATION_JSON).build();
         } catch (Exception ex) {
             JsonObject exception = Json.createObjectBuilder().add("error", "Not found").build();
             return Response.status(404).entity(exception).type(MediaType.APPLICATION_JSON).build();
@@ -69,39 +51,31 @@ public class PartyResource {
     }
 
     @DELETE
-    @Path("/{partyId}")
-    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/{partyId}/user/{uId}/delete")
     @Produces(MediaType.APPLICATION_JSON)
-    public Party deleteParty(@PathParam("partyId") Long pId, Long uId) {
+    public Response deleteParty(@PathParam("partyId") Long pId, @PathParam("uId") Long uId) {
         try {
             postSessionBeanLocal.deleteParty(pId, uId);
-            Party p = postSessionBeanLocal.getParty(pId);
-            return p;
+            return Response.status(204).build();
         } catch (Exception ex) {
-            System.out.println("delete party error");
-            return null;
+            JsonObject exception = Json.createObjectBuilder()
+                    .add("error", "Not found")
+                    .build();
+            return Response.status(404).entity(exception).build();
         }
     }
 
-    @POST
-    @Path("/{partyId}/requestby/{uId}")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Party createRequest(@PathParam("partyId") Long pid,
-            @PathParam("uId") Long uid, Request r) {
-        postSessionBeanLocal.createRequest(r, pid, uid);
-        return postSessionBeanLocal.getParty(pid);
-    }
-
     @PUT
-    @Path("/{partyId}/request/{rid}/accept")
+    @Path("/{partyId}/user/{uId}/acceptRequest/{rid}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response acceptParty(@PathParam("partyId") Long pId,
-            @PathParam("rid") Long rid, Long uId) {
+    public Response acceptRequest(@PathParam("partyId") Long pId,
+            @PathParam("uId") Long uId,
+            @PathParam("rid") Long rid) {
         try {
             postSessionBeanLocal.acceptToParty(rid, pId, uId);
-            return Response.status(404).build();
+            Party p = postSessionBeanLocal.getParty(pId);
+            return Response.status(200).entity(p).type(MediaType.APPLICATION_JSON).build();
         } catch (Exception ex) {
             JsonObject exception = Json.createObjectBuilder().add("error", "Not found").build();
             return Response.status(404).entity(exception).type(MediaType.APPLICATION_JSON).build();
@@ -109,32 +83,18 @@ public class PartyResource {
     }
 
     @PUT
-    @Path("/{partyId}/request/{rid}/reject")
+    @Path("/{partyId}/user/{uId}/rejectRequest/{rid}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response rejectParty(@PathParam("partyId") Long pId,
-            @PathParam("rid") Long rid, Long uId) {
+    public Response rejectRequest(@PathParam("partyId") Long pId,
+            @PathParam("rid") Long rid, @PathParam("partyId") Long uId) {
         try {
             postSessionBeanLocal.rejectFromParty(rid, pId, uId);
-            return Response.status(404).build();
+            Party p = postSessionBeanLocal.getParty(pId);
+            return Response.status(200).entity(p).type(MediaType.APPLICATION_JSON).build();
         } catch (Exception ex) {
             JsonObject exception = Json.createObjectBuilder().add("error", "Not found").build();
             return Response.status(404).entity(exception).type(MediaType.APPLICATION_JSON).build();
-        }
-    }
-
-    @GET
-    @Path("/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response searchParty(@PathParam("id") Long pId) {
-        if (pId != null) {
-            List<Party> results = postSessionBeanLocal.searchPartiesByUser(pId);
-            GenericEntity<List<Party>> entity = new GenericEntity<List<Party>>(results) {
-            };
-            return Response.status(200).entity(entity).build();
-        } else {
-            JsonObject exception = Json.createObjectBuilder().add("error", "No query conditions").build();
-            return Response.status(400).entity(exception).build();
         }
     }
 

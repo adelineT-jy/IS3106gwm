@@ -30,9 +30,7 @@ public interface PostSessionBeanLocal {
 
     public List<Review> searchReviewsOfUser(Long userId) throws NoResultException;
 
-    public void createParty(Party party, Long userId) throws NoResultException;
-
-    public void createPartyLinkPost(Party party, Long userId, Long postId) throws NoResultException;
+    public void createParty(Party party, Long userId, Long postId) throws NoResultException;
 
     public void joinParty(Long partyId, Long userId) throws NoResultException;
 
@@ -54,6 +52,8 @@ public interface PostSessionBeanLocal {
 
     public void createRequest(Request r, Long pId, Long uId) throws NoResultException;
 
+    public Boolean checkRequestCreated(Long pId, Long uId);
+
     public void deleteRequest(Long rId, Long userId) throws NoResultException, AuthenticationException;
 
     public void makePayment(Payment p, Long pId, Long userId) throws NoResultException;
@@ -70,6 +70,8 @@ public interface PostSessionBeanLocal {
     public boolean checkPartyUser(Long partyId, Long userId);
 
     public Post getPost(Long postId) throws NoResultException;
+
+    public Post getPostFromParty(Long partyId) throws NoResultException;
 
     public boolean checkPostOwner(Long postId, Long userId);
 
