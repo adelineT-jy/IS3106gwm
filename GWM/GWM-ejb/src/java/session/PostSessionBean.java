@@ -43,7 +43,11 @@ public class PostSessionBean implements PostSessionBeanLocal {
             q.setParameter("query", "%" + query.toLowerCase() + "%");
         }
 
-        return q.getResultList();
+        List<Post> results = q.getResultList();
+        for (int i = 0; i < results.size(); i++) {
+            results.get(i).getParty();
+        }
+        return results;
     }
 
     @Override
@@ -198,6 +202,7 @@ public class PostSessionBean implements PostSessionBeanLocal {
         p.setUserId(user.getUserId());
         em.persist(p);
         user.getPosts().add(p);
+        em.flush();
     }
 
     @Override
@@ -208,6 +213,7 @@ public class PostSessionBean implements PostSessionBeanLocal {
         p.setIsAvailable(true);
         p.setUserId(user.getUserId());
         em.persist(p);
+        
         user.getPosts().add(p);
         em.flush();
     }

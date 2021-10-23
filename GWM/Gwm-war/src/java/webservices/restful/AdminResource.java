@@ -6,6 +6,7 @@ import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
 import javax.json.Json;
 import javax.json.JsonObject;
+import javax.persistence.NoResultException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -41,7 +42,7 @@ public class AdminResource {
             Admin admin = adminSessionLocal.getAdmin(adminId);
             return Response.status(200).entity(admin).type(MediaType.APPLICATION_JSON).build();
         } catch (Exception ex) {
-            JsonObject exception = Json.createObjectBuilder().add("error", "Not found").build();
+            JsonObject exception = Json.createObjectBuilder().add("error", ex.getMessage()).build();
             return Response.status(404).entity(exception).type(MediaType.APPLICATION_JSON).build();
         }
     }
@@ -52,11 +53,12 @@ public class AdminResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response editAdmin(@PathParam("adminId") Long adminId, Admin admin) {
         admin.setUserId(adminId);
+      
         try {
             adminSessionLocal.updateAdmin(admin);
-            return Response.status(404).build();
-        } catch (Exception ex) {
-            JsonObject exception = Json.createObjectBuilder().add("error", "Not found").build();
+            return Response.status(204).build();
+        } catch (NoResultException ex) {
+            JsonObject exception = Json.createObjectBuilder().add("error", ex.getMessage()).build();
             return Response.status(404).entity(exception).type(MediaType.APPLICATION_JSON).build();
         }
     }
@@ -64,12 +66,12 @@ public class AdminResource {
     @DELETE
     @Path("/{adminId}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response deleteCustomer(@PathParam("adminId") Long adminId) {
+    public Response deleteAdmin(@PathParam("adminId") Long adminId) {
         try {
             adminSessionLocal.deleteAdmin(adminId);
             return Response.status(204).build();
         } catch (Exception ex) {
-            JsonObject exception = Json.createObjectBuilder().add("error", "Not found").build();
+            JsonObject exception = Json.createObjectBuilder().add("error", ex.getMessage()).build();
             return Response.status(404).entity(exception).build();
         }
     }
@@ -81,9 +83,9 @@ public class AdminResource {
     public Response banUser(@PathParam("userId") Long userId) {
         try {
             adminSessionLocal.banUser(userId);
-            return Response.status(404).build();
-        } catch (Exception ex) {
-            JsonObject exception = Json.createObjectBuilder().add("error", "Not found").build();
+            return Response.status(204).build();
+        } catch (NoResultException ex) {
+            JsonObject exception = Json.createObjectBuilder().add("error", ex.getMessage()).build();
             return Response.status(404).entity(exception).type(MediaType.APPLICATION_JSON).build();
         }
     }
@@ -95,9 +97,9 @@ public class AdminResource {
     public Response unbanUser(@PathParam("userId") Long userId) {
         try {
             adminSessionLocal.unbanUser(userId);
-            return Response.status(404).build();
-        } catch (Exception ex) {
-            JsonObject exception = Json.createObjectBuilder().add("error", "Not found").build();
+            return Response.status(204).build();
+        } catch (NoResultException ex) {
+            JsonObject exception = Json.createObjectBuilder().add("error", ex.getMessage()).build();
             return Response.status(404).entity(exception).type(MediaType.APPLICATION_JSON).build();
         }
     }
@@ -119,7 +121,7 @@ public class AdminResource {
             Game game = adminSessionLocal.getGame(gameId);
             return Response.status(200).entity(game).type(MediaType.APPLICATION_JSON).build();
         } catch (Exception ex) {
-            JsonObject exception = Json.createObjectBuilder().add("error", "Not found").build();
+            JsonObject exception = Json.createObjectBuilder().add("error", ex.getMessage()).build();
             return Response.status(404).entity(exception).type(MediaType.APPLICATION_JSON).build();
         }
     }
@@ -132,9 +134,9 @@ public class AdminResource {
         game.setGameId(gameId);
         try {
             adminSessionLocal.updateGame(game);
-            return Response.status(404).build();
+            return Response.status(204).build();
         } catch (Exception ex) {
-            JsonObject exception = Json.createObjectBuilder().add("error", "Not found").build();
+            JsonObject exception = Json.createObjectBuilder().add("error", ex.getMessage()).build();
             return Response.status(404).entity(exception).type(MediaType.APPLICATION_JSON).build();
         }
     }
