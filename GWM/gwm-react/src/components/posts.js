@@ -1,12 +1,22 @@
 import React, { useEffect } from 'react';
 
 import Box from '@mui/material/Box';
-import { Button, Card, CardActions, CardContent, Chip, Grid, IconButton, Popover, Stack, TextField, Typography } from '@mui/material';
+import { Button, Card, CardActions, CardContent, Chip, Grid, IconButton, Modal, Popover, Stack, TextField, Typography } from '@mui/material';
 import Search from '@mui/icons-material/Search';
 import Check from '@mui/icons-material/Check';
 import Close from '@mui/icons-material/Close';
 
 import { Party } from './party';
+import { dummyParty } from './party';
+
+const modalStyle = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    minWidth: 300,
+    boxShadow: 24,
+};
 
 function Request() {
     return (
@@ -16,8 +26,9 @@ function Request() {
 
 const Post = (post) => {
     const [anchorEl, setAnchorEl] = React.useState(null);
-    const [openParty, setOpenParty] = React.useState(false);
     const [gamePopover, setGamePopover] = React.useState(null);
+
+    const [openParty, setOpenParty] = React.useState(false);
     const [partyPopover, setPartyPopover] = React.useState(null);
 
     const open = Boolean(anchorEl);
@@ -42,8 +53,9 @@ const Post = (post) => {
 
     function handlePartyPopover(event, party) {
         setPartyPopover(
-            <Party/>
+            <Party {...dummyParty} />
         )
+        setOpenParty(true);
     }
 
     return (
@@ -54,11 +66,13 @@ const Post = (post) => {
                 {gamePopover}
             </Popover>
 
-            <Popover open={openParty} onClose={handleClose} anchorReference="anchorPosition"
-                anchorPosition={{ vertical: '50vh', horizontal: '50vw' }}
-                transformOrigin={{ vertical: 'center', horizontal: 'center' }}>
-                {partyPopover}
-            </Popover>
+            <Modal open={openParty} onClose={handleClose}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description">
+                <Box sx={modalStyle}>
+                    {partyPopover}
+                </Box>
+            </Modal>
 
             <Card sx={{ maxWidth: '250px' }}>
                 <CardContent>
@@ -105,7 +119,7 @@ export function Posts() {
         }
     }
 
-    function handleSubmit() {
+    const handleSubmit = () => {
         console.log(query);
         try {
             fetch(`http://localhost:8080/Gwm-war/webresources/posts/query?query=${query}`, {
