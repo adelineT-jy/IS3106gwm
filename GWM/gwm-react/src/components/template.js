@@ -133,7 +133,7 @@ function UserMenu() {
 export function Header() {
     return (
         <Box sx={{ bgcolor: '#64b5f6', height: '20vh' }}>
-            <Grid container spacing={2} justifyContent='flex-end'>
+            <Grid container justifyContent='flex-end'>
                 <Grid item xs={8} md={9}>
                     <h1 id="title">Game With Me</h1>
                 </Grid>
@@ -170,10 +170,7 @@ export function Header() {
 export function Footer() {
     return (
         <Box sx={{ bgcolor: '#64b5f6', height: '10vh', display: 'flex' }}>
-            <Grid container spacing={2}>
                 <p>This is a footer</p>
-            </Grid>
-
         </Box>
     );
 }

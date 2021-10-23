@@ -43,7 +43,11 @@ public class PostSessionBean implements PostSessionBeanLocal {
             q.setParameter("query", "%" + query.toLowerCase() + "%");
         }
 
-        return q.getResultList();
+        List<Post> results = q.getResultList();
+        for (int i = 0; i < results.size(); i++) {
+            results.get(i).getParty();
+        }
+        return results;
     }
 
     @Override

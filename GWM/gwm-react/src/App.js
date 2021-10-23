@@ -9,7 +9,7 @@ import { Account, Register, Login, Logout } from './components/account';
 import { Header, Footer } from './components/template';
 import Chat from './components/chat';
 import { Posts, Requests } from './components/posts';
-import Party from './components/party';
+import { Parties } from './components/party';
 import { Users } from './components/users';
 import AdminPosts from './components/admin';
 import { AdminTools } from './components/adminTools';
@@ -21,10 +21,10 @@ import './App.css';
 class App extends Component {
     render() {
         return (
-        <React.Fragment>
-            <CssBaseline />
-                <Container maxWidth="md">
-                    <Header sx={{height:'20vh'}} />
+            <React.Fragment>
+                <CssBaseline />
+                <Container maxWidth="md" sx={{ boxSizing: 'content-box' }}>
+                    <Header sx={{ minHeight: '20vh' }} />
                     <Switch>
                         <Route exact path="/" component={Home} />
 
@@ -36,17 +36,17 @@ class App extends Component {
                         <Route exact path="/account/chats" component={Chat} />
 
                         <Route exact path="/posts" component={Posts} />
-                        <Route exact path="/party" component={Party} />
+                        <Route exact path="/party" component={Parties} />
                         <Route exact path="/requests" component={Requests} />
-                        
+
                         <Route exact path="/users" component={Users} />
 
                         <Route exact path="/admin" component={AdminPosts} />
                         <Route exact path="/admin/tools" component={AdminTools} />
                     </Switch>
-                    <Footer sx={{height:'10vh'}} />
-            </Container>
-        </React.Fragment>
+                    <Footer sx={{ maxHeight: '10vh' }} />
+                </Container>
+            </React.Fragment>
         )
     }
 }
