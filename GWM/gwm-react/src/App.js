@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { Switch, Route } from 'react-router-dom';
 
 import CssBaseline from '@mui/material/CssBaseline';
-import Container from '@mui/material/Container';
 
 import Home from './components/home';
 import { Account, Register, Login, Logout } from './components/account';
@@ -13,6 +12,7 @@ import { Parties } from './components/party';
 import { Users } from './components/users';
 import AdminPosts from './components/admin';
 import { AdminTools } from './components/adminTools';
+import {ThemeProvider} from '@mui/material/styles';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
@@ -23,8 +23,7 @@ class App extends Component {
         return (
             <React.Fragment>
                 <CssBaseline />
-                <Container maxWidth="md" sx={{ boxSizing: 'content-box' }}>
-                    <Header sx={{ minHeight: '20vh' }} />
+                    <Header />
                     <Switch>
                         <Route exact path="/" component={Home} />
 
@@ -44,8 +43,7 @@ class App extends Component {
                         <Route exact path="/admin" component={AdminPosts} />
                         <Route exact path="/admin/tools" component={AdminTools} />
                     </Switch>
-                    <Footer sx={{ maxHeight: '10vh' }} />
-                </Container>
+                    <Footer/>
             </React.Fragment>
         )
     }

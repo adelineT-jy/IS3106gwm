@@ -1,8 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter } from 'react-router-dom';
-import { ThemeProvider } from 'atomize';
-
+import { createTheme, ThemeProvider} from "@mui/material/styles";
 import App from './App';
 
 import './index.css';
@@ -10,13 +9,35 @@ import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
+import { fontFamily, fontWeight } from '@mui/system';
 
-const theme = {
-  colors: {
-    primary: 'blue',
-    accent: 'yellow',
-  },
-};
+
+const theme = createTheme({
+    palette: {
+        primary: {
+            main: '#fafafa',
+        },
+        secondary: {
+            main: '#ff4655'
+        }
+    },
+
+    components: {
+      MuiInputLabel: {
+        styleOverrides: {
+          root: {
+            color: '#5f615f',
+            textTransform: 'uppercase',
+            fontSize: "0.8rem", 
+            fontFamily: "Roboto",
+            fontWeight: "bold",
+          }
+        }
+      }
+   }
+
+
+});
 
 ReactDOM.render(
   <ThemeProvider theme={theme}>

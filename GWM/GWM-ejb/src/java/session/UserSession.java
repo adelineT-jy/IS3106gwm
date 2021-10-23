@@ -12,10 +12,12 @@ import entity.Review;
 import entity.User;
 import error.CreateUserException;
 import error.ExperienceExistException;
+import error.InvalidLoginException;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
+import javax.persistence.NonUniqueResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
@@ -28,6 +30,32 @@ public class UserSession implements UserSessionLocal {
 
     @PersistenceContext
     private EntityManager em;
+    
+    @Override
+    public User doLogin(String username, String password) throws InvalidLoginException {
+        try {
+            User user = getUserByUsername(username);
+            if (user.getProtectedPassword() == password && user.isIsAvailable()) {
+                return user;
+            } else {
+                throw new InvalidLoginException("Password Incorrect");
+            }
+        } catch (NoResultException ex) {
+            throw new InvalidLoginException(ex.getMessage()); 
+        }
+    }
+    
+    private User getUserByUsername(String username) throws NoResultException {
+        Query query = em.createQuery("SELECT u FROM User u WHERE u.username = :username");
+        query.setParameter("username", username);
+
+        try {
+            User u = (User) query.getSingleResult();
+            return u;
+        } catch (javax.persistence.NoResultException | NonUniqueResultException ex) {
+            throw new NoResultException("Username does not exist");
+        }
+    }
 
     @Override
     public void createUser(User u) throws CreateUserException {

@@ -97,6 +97,21 @@ public class UsersResource {
             return Response.status(404).entity(exception).type(MediaType.APPLICATION_JSON).build();
         }
     }
+    
+    @GET
+    @Path("/login/{username}/{password}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response login(@PathParam("username") String username, 
+            @PathParam("password") String password) {
+        try {
+            User u = userSessionLocal.doLogin(username, password);
+            return Response.status(200).entity(u).type(MediaType.APPLICATION_JSON).build();
+        } catch (Exception ex) {
+            JsonObject exception = Json.createObjectBuilder().add("error", "Not found").build();
+            return Response.status(404).entity(exception).type(MediaType.APPLICATION_JSON).build();
+        }
+        
+    }
 
     @PUT
     @Path("/{id}")

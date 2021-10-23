@@ -19,7 +19,7 @@ function Listing() {
 
 export default function Home() {
     return (
-        <Box sx={{ bgcolor: '#e3f2fd', height: '70vh' }}>
+        <Box sx={{ height: '90vh'}}>
             <Listing />
         </Box>
     )

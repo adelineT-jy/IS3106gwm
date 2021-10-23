@@ -11,6 +11,7 @@ import entity.Review;
 import entity.User;
 import error.CreateUserException;
 import error.ExperienceExistException;
+import error.InvalidLoginException;
 import java.util.List;
 import javax.ejb.Local;
 import javax.persistence.NoResultException;
@@ -24,6 +25,8 @@ public interface UserSessionLocal {
     
     //user (profile, card, experience, history of requests/posts/parties/reviews)
     public void createUser(User u) throws CreateUserException;
+    
+    public User doLogin(String username, String password) throws InvalidLoginException;
     
     public User getUserById(Long userId) throws NoResultException; 
     

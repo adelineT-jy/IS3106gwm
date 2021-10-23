@@ -42,7 +42,7 @@ export function AdminTabs() {
     const currentTab = routeMatch?.path;
 
     return (
-        <Box sx={{ width: '100%', alignItems: 'center', textAlign: 'right' }}>
+        <Box sx={{ bgcolor: "#fffff", width: '100%', alignItems: 'center', textAlign: 'right' }}>
             <Tabs value={currentTab} centered>
                 <Tab icon={<Home />} label="Home" value="/admin" to="/admin" component={Link} />
                 <Tab icon={<AdminPanelSettings />} label="Tools" value="/admin/tools" to="/admin/tools" component={Link} />
@@ -132,7 +132,7 @@ function UserMenu() {
 
 export function Header() {
     return (
-        <Box sx={{ bgcolor: '#64b5f6', height: '20vh' }}>
+        <Box sx={{ bgcolor: '#111', height: '10vh' }}>
             <Grid container justifyContent='flex-end'>
                 <Grid item xs={8} md={9}>
                     <h1 id="title">Game With Me</h1>
@@ -162,14 +162,13 @@ export function Header() {
                     </Switch>
                 </Grid>
             </Grid>
-
         </Box>
     );
 }
 
 export function Footer() {
     return (
-        <Box sx={{ bgcolor: '#64b5f6', height: '10vh', display: 'flex' }}>
+        <Box sx={{ bgcolor: '#111', height: '10vh', display: 'flex' }}>
                 <p>This is a footer</p>
         </Box>
     );

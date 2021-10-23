@@ -1,9 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@300;400&display=swap');
+
 #title{
-  font-family: Copperplate, Papyrus, fantasy;
+  font-family: Valorant, 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
   font-size: xx-large;
-  color: black;
-  text-shadow: 2px 2px 1px sandybrown;
-  font-weight: 600;
+  color: white;
   padding: 15px;
   padding-left: 25px;
 }
@@ -23,8 +23,7 @@ body {
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
 
 html, body, #root {
