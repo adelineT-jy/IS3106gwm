@@ -54,9 +54,6 @@ public class Post implements Serializable {
     private Long userId;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private Party party;
-
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Payment payment;
 
     @JsonbTransient
@@ -157,14 +154,6 @@ public class Post implements Serializable {
 
     public void setUserId(Long userId) {
         this.userId = userId;
-    }
-
-    public Party getParty() {
-        return party;
-    }
-
-    public void setParty(Party party) {
-        this.party = party;
     }
 
     public Payment getPayment() {

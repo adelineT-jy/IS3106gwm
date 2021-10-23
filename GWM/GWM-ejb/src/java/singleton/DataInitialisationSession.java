@@ -6,6 +6,7 @@
 package singleton;
 
 import entity.Game;
+import entity.Party;
 import entity.Post;
 import entity.Request;
 import entity.User;
@@ -59,21 +60,11 @@ public class DataInitialisationSession {
 
         try {
             User u = new User();
-
             u.setEmail("first@gmail.com");
             u.setUsername("firstUser");
             u.setProtectedPassword("fff");
             u.setIsAvailable(true);
             userSessionLocal.createUser(u);
-
-            Post p = new Post();
-            p.setTitle("finding peeps");
-            p.setDescription("asap");
-            p.setRequestQty(1);
-            p.setRequestPrice(BigDecimal.ONE);
-            p.setGame(g);
-            //System.out.println("dhajfhks");
-            postSessionBeanLocal.createPost(p, Long.valueOf(1), Long.valueOf(1));
 
             User u2 = new User();
             u2.setEmail("second@gmail.com");
@@ -81,6 +72,20 @@ public class DataInitialisationSession {
             u2.setProtectedPassword("fff");
             u2.setIsAvailable(true);
             userSessionLocal.createUser(u2);
+
+            Party party = new Party();
+            party.setInviteLink("xxxLOLshhaicnru.djannic.lol");
+            party.setPartyStartTime(new Date());
+            postSessionBeanLocal.createParty(party, Long.valueOf(1));
+
+            Post p = new Post();
+            p.setTitle("finding peeps");
+            p.setDescription("asap");
+            p.setRequestQty(1);
+            p.setRequestPrice(BigDecimal.ONE);
+            p.setGame(g);
+            postSessionBeanLocal.createPost(p, Long.valueOf(1), Long.valueOf(1));
+
 
         } catch (Exception ex) {
             Logger.getLogger(DataInitialisationSession.class.getName()).log(Level.SEVERE, null, ex);

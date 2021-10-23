@@ -63,15 +63,6 @@ public class PostResources {
         }
     }
 
-    @POST
-    @Path("/users/{uId}/games/{gId}")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Post createPost(@PathParam("uId") Long uid, @PathParam("gId") Long gameId, Post p) {
-        postSessionBeanLocal.createPost(p, uid, gameId);
-        return p;
-    }
-
     @PUT
     @Path("/{postId}/by/{uId}")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -126,15 +117,6 @@ public class PostResources {
     public Post createRequest(@PathParam("uid") Long uid, @PathParam("postId") Long pId, Request r) {
         postSessionBeanLocal.createRequest(r, pId, uid);
         return postSessionBeanLocal.getPost(pId);
-    }
-
-    @POST
-    @Path("/{postId}/party/{uid}")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Party createParty(@PathParam("uid") Long uid, @PathParam("postId") Long pId, Party p) {
-        postSessionBeanLocal.createParty(p, uid, pId);
-        return postSessionBeanLocal.getParty(p.getPartyId());
     }
 
 }
