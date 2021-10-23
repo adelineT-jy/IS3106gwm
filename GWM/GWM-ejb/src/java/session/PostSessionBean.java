@@ -202,6 +202,7 @@ public class PostSessionBean implements PostSessionBeanLocal {
         p.setUserId(user.getUserId());
         em.persist(p);
         user.getPosts().add(p);
+        em.flush();
     }
 
     @Override
@@ -212,6 +213,7 @@ public class PostSessionBean implements PostSessionBeanLocal {
         p.setIsAvailable(true);
         p.setUserId(user.getUserId());
         em.persist(p);
+        
         user.getPosts().add(p);
         em.flush();
     }
