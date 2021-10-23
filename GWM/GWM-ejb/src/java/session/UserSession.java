@@ -67,7 +67,7 @@ public class UserSession implements UserSessionLocal {
         User oldU = getUserById(u.getUserId());
 
         oldU.setEmail(u.getEmail());
-        //this should be a method on its own?
+        oldU.setPasswordSalt(u.getPasswordSalt());
         oldU.setProtectedPassword(u.getProtectedPassword());
         oldU.setUsername(u.getUsername());
     }

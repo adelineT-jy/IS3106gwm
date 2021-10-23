@@ -15,6 +15,7 @@ import javax.persistence.Query;
 
 @Stateless
 public class AdminSession implements AdminSessionLocal {
+
     @PersistenceContext
     private EntityManager em;
     @EJB
@@ -30,24 +31,24 @@ public class AdminSession implements AdminSessionLocal {
             return admin;
         }
     }
-
+    
     @Override
-    public Admin getAdminByEmail(String email)  throws NoResultException {
-        Query q = em.createQuery("SELECT a FROM Administrator a WHERE a.email = :email");
+    public Admin getAdminByEmail(String email) throws NoResultException {
+        Query q = em.createQuery("SELECT a FROM Admin a WHERE a.email = :email");
         q.setParameter("email", email);
-
+        
         Admin admin = (Admin) q.getSingleResult();
         return admin;
     }
-
+    
     private static String generateProtectedPassword(String passwordSalt, String plainPassword) {
         String generatedPassword = null;
-
+        
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-512");
             md.reset();
             md.update((passwordSalt + plainPassword).getBytes("utf8"));
-
+            
             generatedPassword = String.format("%0128x", new BigInteger(1, md.digest()));
         } catch (Exception ex) {
         }
@@ -56,11 +57,8 @@ public class AdminSession implements AdminSessionLocal {
     
     @Override
     public Long loginAdmin(String email, String password) throws InvalidLoginException {
-        
-        
         try {
-            Admin admin;    
-            admin = getAdminByEmail(email);
+            Admin admin = getAdminByEmail(email);
             
             String passwordCompare = generateProtectedPassword(admin.getPasswordSalt(), password);
             if (admin.getProtectedPassword().equals(passwordCompare)) {
@@ -71,23 +69,20 @@ public class AdminSession implements AdminSessionLocal {
             throw new InvalidLoginException("Login details are invalid.");
         }
     }
-
+    
     @Override
     public void createAdmin(Admin admin) {
         em.persist(admin);
     }
-
+    
     @Override
     public void updateAdmin(Admin admin) throws NoResultException {
         Admin oldAdmin = getAdmin(admin.getUserId());
-        
         oldAdmin.setEmail(admin.getEmail());
+        oldAdmin.setPasswordSalt(admin.getPasswordSalt());
+        oldAdmin.setProtectedPassword(admin.getProtectedPassword());
         
-        if (admin.getProtectedPassword() != null) { //password is changed
-            oldAdmin.setProtectedPassword(admin.getProtectedPassword());
-        }
-        
-       em.merge(oldAdmin);
+        em.merge(oldAdmin);
     }
     
     @Override
@@ -96,7 +91,7 @@ public class AdminSession implements AdminSessionLocal {
         
         em.remove(admin);
     }
-
+    
     @Override
     public void banUser(Long userId) throws NoResultException {
         User user = userSessionLocal.getUserById(userId);
@@ -106,7 +101,7 @@ public class AdminSession implements AdminSessionLocal {
             throw new NoResultException("User is already banned.");
         }
     }
-
+    
     @Override
     public void unbanUser(Long userId) throws NoResultException {
         User user = userSessionLocal.getUserById(userId);
@@ -116,23 +111,23 @@ public class AdminSession implements AdminSessionLocal {
             throw new NoResultException("User is not banned.");
         }
     }
-
+    
     @Override
     public void createGame(Game game) {
         em.persist(game);
     }
-
+    
     @Override
     public Game getGame(Long gameId) throws NoResultException {
         Game game = em.find(Game.class, gameId);
-            
+        
         if (game == null) {
             throw new NoResultException("No game can be found from input");
         } else {
             return game;
         }
     }
-
+    
     @Override
     public void updateGame(Game game) throws NoResultException {
         Game oldGame = getGame(game.getGameId());

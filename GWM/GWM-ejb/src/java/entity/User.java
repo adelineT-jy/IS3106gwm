@@ -39,7 +39,7 @@ public class User implements Serializable {
     private String protectedPassword;
 
     @Column(nullable = false)
-    private boolean isAvailable = true;
+    private boolean isAvailable;
 
     @Column(scale = 2, nullable = false)
     private double wallet = 0.00;
@@ -76,6 +76,7 @@ public class User implements Serializable {
     private List<Review> reviews;
 
     public User() {
+        isAvailable = true;
         passwordSalt = new SecureRandom().nextInt(10000) + ""; //securerandom number from 0-9999 (4 digits)
         notify = new ArrayList<>();
         following = new ArrayList<>();
