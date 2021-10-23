@@ -44,9 +44,9 @@ public class PostSessionBean implements PostSessionBeanLocal {
         }
 
         List<Post> results = q.getResultList();
-        for (int i = 0; i < results.size(); i++) {
+        /*  for (int i = 0; i < results.size(); i++) {
             results.get(i).getParty();
-        }
+        }*/
         return results;
     }
 
@@ -98,7 +98,7 @@ public class PostSessionBean implements PostSessionBeanLocal {
     }
 
     @Override
-    public void createParty(Party party, Long userId, Long postId) throws NoResultException {
+    public void createParty(Party party, Long userId) throws NoResultException {
         User u = getUser(userId);
         List<User> users = new ArrayList<>();
         users.add(u);
@@ -108,16 +108,29 @@ public class PostSessionBean implements PostSessionBeanLocal {
         party.setReviews(new ArrayList<>());
 
         em.persist(party);
+        u.getParties().add(party);
+    }
+
+    /*@Override
+    public void createParty(Party party, Long userId, Long postId) throws NoResultException {
+        User u = getUser(userId);
+        List<User> users = new ArrayList<>();
+        users.add(u);
+
+        party.setPartyOwner(u);
+        party.setUsers(users);
+        party.setReviews(new ArrayList<>());
+        Post p = getPost(postId);
+        party.setPost(p);
+
+        em.persist(party);
         // em.flush();
         u.getParties().add(party);
 
-        Post p = getPost(postId);
-        p.setParty(party);
-    }
-
+        //p.setParty(party);
+    }*/
     @Override
     public void joinParty(Long partyId, Long userId) throws NoResultException {
-        System.out.println("Xxx");
         User u = getUser(userId);
         System.out.println(u);
         Party party = getParty(partyId);
@@ -127,7 +140,6 @@ public class PostSessionBean implements PostSessionBeanLocal {
             return;
         }
 
-        System.out.println("SSS");
         party.getUsers().add(u);
         u.getParties().add(party);
     }
@@ -172,8 +184,8 @@ public class PostSessionBean implements PostSessionBeanLocal {
             p.getUsers().get(i).getParties().remove(p);
         }
         p.setUsers(new ArrayList<>());
-        Post po = getPostFromParty(partyId);
-        getPost(po.getPostId()).setParty(null);
+        // Post po = getPostFromParty(partyId);
+        // getPost(po.getPostId()).setParty(null);
         em.remove(p);
     }
 
@@ -191,21 +203,23 @@ public class PostSessionBean implements PostSessionBeanLocal {
         if (!checkPartyUser(partyId, userId)) {
             throw new NoResultException("You are not in this party.");
         }
-        System.err.println("ssss");
-        Party party = getParty(partyId);
+
         User user = getUser(userId);
         Game game = gameSessionLocal.getGame(gameId);
         p.setGame(game);
-        p.setParty(party);
         p.setIsAvailable(true);
         p.setPostDate(new Date());
         p.setUserId(user.getUserId());
+
         em.persist(p);
-        user.getPosts().add(p);
         em.flush();
+
+        user.getPosts().add(p);
+        Party party = getParty(partyId);
+        party.setPost(p);
     }
 
-    @Override
+    /* @Override
     public void createPost(Post p, Long userId, Long gameId) {
         User user = getUser(userId);
         Game game = gameSessionLocal.getGame(gameId);
@@ -213,13 +227,13 @@ public class PostSessionBean implements PostSessionBeanLocal {
         p.setIsAvailable(true);
         p.setUserId(user.getUserId());
         em.persist(p);
-        
+
         user.getPosts().add(p);
         em.flush();
-    }
-
+    }*/
     @Override
     public void editPost(Post p, Long userId) throws NoResultException, AuthenticationException {
+
         if (!checkPostOwner(p.getPostId(), userId)) {
             throw new AuthenticationException("You are not the owner of the post.");
         }
@@ -240,8 +254,9 @@ public class PostSessionBean implements PostSessionBeanLocal {
         }
         Post p = getPost(pId);
         User u = getUser(userId);
-        //p.setUser(null);
         u.getPosts().remove(p);
+        Party party = getPartyFromPost(pId);
+        party.setPost(null);
         em.remove(p);
     }
 
@@ -368,7 +383,7 @@ public class PostSessionBean implements PostSessionBeanLocal {
             throw new NoResultException("No such post");
         }
 
-        post.getParty();
+        //  post.getParty();
         post.getRequest();
         post.getPayment();
 
@@ -388,11 +403,10 @@ public class PostSessionBean implements PostSessionBeanLocal {
     }
 
     @Override
-    public Post getPostFromParty(Long partyId) throws NoResultException {
-        Party p = getParty(partyId);
-        Query q = em.createQuery("SELECT po FROM Post po WHERE po.party.partyId = :partyId ");
-        q.setParameter("partyId", partyId);
-        return (Post) q.getSingleResult();
+    public Party getPartyFromPost(Long postId) throws NoResultException {
+        Query q = em.createQuery("SELECT p FROM Party p WHERE p.post.postId = :postId ");
+        q.setParameter("postId", postId);
+        return (Party) q.getSingleResult();
 
     }
 

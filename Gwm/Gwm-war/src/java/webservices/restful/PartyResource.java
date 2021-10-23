@@ -6,6 +6,7 @@
 package webservices.restful;
 
 import entity.Party;
+import entity.Post;
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
 import javax.json.Json;
@@ -31,9 +32,17 @@ public class PartyResource {
 
     @EJB
     private UserSessionLocal userSessionLocal;
-
     @EJB
     private PostSessionBeanLocal postSessionBeanLocal;
+
+    @POST
+    @Path("/{uid}/create")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Party createParty(@PathParam("uid") Long uid, Party p) {
+        postSessionBeanLocal.createParty(p, uid);
+        return p;
+    }
 
     @PUT
     @Path("/{partyId}/user/{uId}/end")
@@ -95,6 +104,57 @@ public class PartyResource {
         } catch (Exception ex) {
             JsonObject exception = Json.createObjectBuilder().add("error", "Not found").build();
             return Response.status(404).entity(exception).type(MediaType.APPLICATION_JSON).build();
+        }
+    }
+
+    @POST
+    @Path("/{partyId}/users/{uId}/games/{gId}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Post createPost(@PathParam("partyId") Long partyid, @PathParam("uId") Long uid,
+            @PathParam("gId") Long gameId, Post p) {
+        postSessionBeanLocal.createPost(p, partyid, uid, gameId);
+        return p;
+    }
+
+    @PUT
+    @Path("/{partyId}/post/{postId}/editBy/{uId}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response editPost(@PathParam("partyId") Long partyid,
+            @PathParam("postId") Long pId, @PathParam("uId") Long uId, Post p) {
+
+        try {
+            if (postSessionBeanLocal.getParty(partyid).getPost().getPostId().equals(pId)) {
+                p.setPostId(pId);
+                postSessionBeanLocal.editPost(p, uId);
+                return Response.status(200).entity(p).type(MediaType.APPLICATION_JSON).build();
+            } else {
+                throw new Exception();
+            }
+        } catch (Exception ex) {
+            JsonObject exception = Json.createObjectBuilder().add("error", "Not found").build();
+            return Response.status(404).entity(exception).type(MediaType.APPLICATION_JSON).build();
+        }
+    }
+
+    @DELETE
+    @Path("/{partyId}/post/{postId}/deleteBy/{uId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response deletePost(@PathParam("partyId") Long partyid,
+            @PathParam("postId") Long pId, @PathParam("uId") Long uId) {
+        try {
+            if (postSessionBeanLocal.getParty(partyid).getPost().getPostId().equals(pId)) {
+                postSessionBeanLocal.deletePost(pId, uId);
+                return Response.status(204).build();
+            } else {
+                throw new Exception();
+            }
+        } catch (Exception e) {
+            JsonObject exception = Json.createObjectBuilder()
+                    .add("error", "Not found")
+                    .build();
+            return Response.status(404).entity(exception).build();
         }
     }
 

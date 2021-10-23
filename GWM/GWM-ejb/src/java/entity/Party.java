@@ -52,6 +52,9 @@ public class Party implements Serializable {
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "parties")
     private List<User> users;
 
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Post post;
+
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Review> reviews;
 
@@ -125,6 +128,14 @@ public class Party implements Serializable {
         this.chat = chat;
     }
 
+    public Post getPost() {
+        return post;
+    }
+
+    public void setPost(Post post) {
+        this.post = post;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -148,6 +159,10 @@ public class Party implements Serializable {
     @Override
     public String toString() {
         return "entity.Party[ id=" + partyId + " ]";
+    }
+
+    public void getPartyStartTime(Date date) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }
