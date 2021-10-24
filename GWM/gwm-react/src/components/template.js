@@ -29,7 +29,7 @@ export function NavTabs() {
     const currentTab = routeMatch?.path;
 
     return (
-        <Box sx={{ width: '100%', alignItems: 'center', textAlign: 'right' }}>
+        <Box sx={{ bgcolor: "#ff4655", width: '100%', alignItems: 'center', textAlign: 'right' }}>
             <Tabs value={currentTab} centered>
                 <Tab icon={<Description />} label="Posts" value="/posts" to="/posts" component={Link} />
                 <Tab icon={<PeopleAlt />} label="Party" value="/party" to="/party" component={Link} />
@@ -43,9 +43,9 @@ export function AdminTabs() {
     const currentTab = routeMatch?.path;
 
     return (
-        <Box sx={{ bgcolor: "#fffff", width: '100%', alignItems: 'center', textAlign: 'right' }}>
-            <Tabs value={currentTab} centered>
-                <Tab icon={<Home />} label="Home" value="/admin" to="/admin" component={Link} />
+        <Box sx={{ bgcolor: "#ff4655", width: '100%', alignItems: 'center', textAlign: 'right' }}>
+            <Tabs value={currentTab} centered textColor="secondary">
+                <Tab icon={<Home />} label="Home" value="/admin" to="/admin" component={<Link color="secondary"/>} />
                 <Tab icon={<AdminPanelSettings />} label="Tools" value="/admin/tools" to="/admin/tools" component={Link} />
                 <Tab icon={<PermIdentity />} label="Users" value="/admin/users" to="/admin/users" component={Link} />
             </Tabs>
@@ -136,20 +136,10 @@ export function Header() {
     return (
         <Box sx={{ bgcolor: 'black', height: '10vh' }}>
             <Grid container justifyContent='flex-end'>
-                <Grid item xs={8} md={9}>
+                <Grid item xs={5} md={3}>
                     <h1 id="title">Game With Me</h1>
                 </Grid>
-                <Grid item xs={4} md={3}>
-                    <Switch>
-                        <Route exact path="/" component={GuestMenu} />
-                        <Route exact path="/login" component={GuestMenu} />
-                        <Route exact path="/register" component={GuestMenu} />
-                        <Route exact path="/logout" component={GuestMenu} />
-                        <Route path="/admin" component={AdminMenu} />
-                        <Route path="/" component={UserMenu} />
-                    </Switch>
-                </Grid>
-                <Grid item xs={12}>
+                <Grid item xs={5} md={6}>
                     <Switch>
                         <Route exact path="/" />
                         <Route exact path="/login" />
@@ -159,6 +149,18 @@ export function Header() {
                         <Route path="/admin" component={AdminTabs} />
 
                         <Route path="/" component={NavTabs} />
+                    </Switch>
+                </Grid>
+                <Grid item xs={2} md={3}>
+                    <Switch>
+                        <Route exact path="/" component={GuestMenu} />
+                        <Route exact path="/login" component={GuestMenu} />
+                        <Route exact path="/register" component={GuestMenu} />
+                        <Route exact path="/logout" component={GuestMenu} />
+                        
+                        <Route path="/admin" component={AdminMenu} />
+
+                        <Route path="/" component={UserMenu} />
                     </Switch>
                 </Grid>
             </Grid>

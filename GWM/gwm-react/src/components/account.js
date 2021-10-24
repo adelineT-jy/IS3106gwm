@@ -54,7 +54,7 @@ export function Login() {
             .then((data) => {
                 console.log(data);
                 setUser(data);
-
+                
 
             });
     } catch (e) {
