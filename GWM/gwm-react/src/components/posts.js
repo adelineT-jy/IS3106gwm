@@ -9,13 +9,36 @@ import Close from '@mui/icons-material/Close';
 import { Party } from './party';
 import { dummyParty } from './party';
 
+const dummyPost = {
+    postId: 1,
+    title: "test",
+    userId: 1,
+    postDate: "2021-10-22T12:00:00",
+    description: "test",
+    game: {
+        gameName: "LOL",
+        gameDescription: "Battle of Wits",
+        gameDownloadLink: "https://lol.com",
+        gameId: 1
+    },
+    requestPrice: 1,
+    requestQty: 1,
+    party: dummyParty,
+    isAvailable: true,
+}
+
+const dummyPosts = [dummyPost, dummyPost, dummyPost, dummyPost]
+
+
 const modalStyle = {
     position: 'absolute',
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    minWidth: 300,
+    minWidth: 400,
     boxShadow: 24,
+    bgcolor: '#ff4655',
+    padding: 2
 };
 
 function Request() {
@@ -30,6 +53,7 @@ const Post = (post) => {
 
     const [openParty, setOpenParty] = React.useState(false);
     const [partyPopover, setPartyPopover] = React.useState(null);
+    const [text, setText] = React.useState("");
 
     const open = Boolean(anchorEl);
 
@@ -51,15 +75,45 @@ const Post = (post) => {
         );
     };
 
-    function handlePartyPopover(event, party) {
+    function handlePartyPopover(party) {
         setPartyPopover(
-            <Party {...dummyParty} />
+            <Party {...party} />
         )
         setOpenParty(true);
     }
 
+    function submitRequest(post) {
+        let uId;
+        try {
+            uId = JSON.parse(sessionStorage.user).id;
+        }
+        catch (e) {
+            uId = 0;
+            console.log(e);
+        }
+
+        const req = { text: text };
+        const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(req),
+        };
+        fetch(`http://localhost:8080/Gwm-war/webresources/posts/${post.postId}/request/${uId}`, requestOptions)
+            .then((response) => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error('Request cannot be made');
+                }
+            })
+            .catch((error) => {
+                console.log(error)
+            });
+        handleClose();
+    }
+
     return (
-        <Grid item xs={6} sm={4} key={post.postId}>
+        <Grid item xs={6} sm={4} md={3} lg={2} key={post.postId}>
             <Popover open={open} anchorEl={anchorEl} onClose={handleClose}
                 anchorOrigin={{ vertical: 'center', horizontal: 'center' }}
                 transformOrigin={{ vertical: 'center', horizontal: 'center' }}>
@@ -69,8 +123,13 @@ const Post = (post) => {
             <Modal open={openParty} onClose={handleClose}
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description">
-                <Box sx={modalStyle}>
+                <Box sx={modalStyle} centered>
                     {partyPopover}
+                    <TextField sx={{ width: '100%', mt: 1 }} variant="outlined" placeholder="Type your request here!"
+                        value={text} onChange={(e) => setText(e.target.value)}>Request Text</TextField>
+                    <Button sx={{ width: '100%' }} onClick={() => submitRequest(post)}>
+                        Request to Join Party
+                    </Button>
                 </Box>
             </Modal>
 
@@ -98,7 +157,7 @@ const Post = (post) => {
                         color={post.requestPrice === 0 ? "info" : "warning"} />
                 </CardContent>
                 <CardActions sx={{ justifyContent: 'center' }}>
-                    <Button onClick={(e) => handlePartyPopover(e, post.party)}>View Party</Button>
+                    <Button variant="filled" onClick={() => handlePartyPopover(post.party)}>View Party</Button>
                 </CardActions>
             </Card>
         </Grid>
@@ -134,6 +193,7 @@ export function Posts() {
                 })
                 .then((data) => {
                     setPosts(data);
+                    setPosts(dummyPosts);
                 });
         } catch (e) {
             console.log(e);

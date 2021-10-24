@@ -21,7 +21,7 @@ export const dummyParty = {
 
 export const Party = (party) => {
     return (
-        <Card sx={{ minWidth: '600px', maxWidth: '1000px' }}>
+        <Card sx={{ width: '100%' }}>
             <CardContent>
                 <Typography sx={{ mb: 1.5, mt: 1 }} color="text.secondary">
                     Party Id: {party.partyId}

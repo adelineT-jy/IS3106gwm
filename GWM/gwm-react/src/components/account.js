@@ -43,6 +43,7 @@ export function Login() {
 //             })
 //             .then((data) => {
 //                 setPosts(data);
+//                 sessionStorage.set("user", JSON.stringify(user)) // for saving session scoped
 //             });
 //     } catch (e) {
 //         console.log(e);
