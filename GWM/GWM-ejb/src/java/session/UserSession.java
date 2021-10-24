@@ -31,9 +31,11 @@ public class UserSession implements UserSessionLocal {
     @PersistenceContext
     private EntityManager em;
     
+
     @Override
     public User doLogin(String username, String password) throws InvalidLoginException {
         try {
+            System.out.println("EJB: login");
             User user = getUserByUsername(username);
             if (user.getPassword().equals(password) && user.isIsAvailable()) {
                 return user;
