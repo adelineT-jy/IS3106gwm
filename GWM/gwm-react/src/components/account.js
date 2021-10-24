@@ -41,8 +41,8 @@ export function Login() {
 //                     throw new Error('Something went wrong');
 //                 }
 //             })
-//             .then((data) => {
-//                 setPosts(data);
+//             .then((user) => {
+//                 setPosts(user);
 //                 sessionStorage.set("user", JSON.stringify(user)) // for saving session scoped
 //             });
 //     } catch (e) {
