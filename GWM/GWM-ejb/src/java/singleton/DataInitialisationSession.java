@@ -5,12 +5,11 @@
  */
 package singleton;
 
+import entity.Admin;
 import entity.Game;
 import entity.Party;
 import entity.Post;
-import entity.Request;
 import entity.User;
-import error.CreateUserException;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.logging.Level;
@@ -62,14 +61,14 @@ public class DataInitialisationSession {
             User u = new User();
             u.setEmail("first@gmail.com");
             u.setUsername("firstUser");
-            u.setProtectedPassword("fff");
+            u.setPassword("password");
             u.setIsAvailable(true);
             userSessionLocal.createUser(u);
 
             User u2 = new User();
             u2.setEmail("second@gmail.com");
             u2.setUsername("secondUser");
-            u2.setProtectedPassword("fff");
+            u2.setPassword("password");
             u2.setIsAvailable(true);
             userSessionLocal.createUser(u2);
 
@@ -77,16 +76,23 @@ public class DataInitialisationSession {
             party.setInviteLink("xxxLOLshhaicnru.djannic.lol");
             party.setPartyStartTime(new Date());
             postSessionBeanLocal.createParty(party, Long.valueOf(1));
-
+            
+            Game game = new Game();
+            game.setGameName("League of Legends");
+            game.setGameDescription("League of Legends is a team-based game with over 140 champions to make epic plays with.");
+            game.setGameDownloadLink("https://signup.na.leagueoflegends.com/en/signup/redownload");
+            
             Post p = new Post();
             p.setTitle("finding peeps");
             p.setDescription("asap");
             p.setRequestQty(1);
             p.setRequestPrice(BigDecimal.ONE);
             p.setGame(g);
-            postSessionBeanLocal.createPost(p, Long.valueOf(1), Long.valueOf(1));
+            postSessionBeanLocal.createPost(p,1L, 1L, 1L);
 
-
+            Admin admin = new Admin();
+            admin.setEmail("admin@gmail.com");
+            admin.setPassword("password");
         } catch (Exception ex) {
             Logger.getLogger(DataInitialisationSession.class.getName()).log(Level.SEVERE, null, ex);
         }

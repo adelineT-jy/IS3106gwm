@@ -1,13 +1,9 @@
 package entity;
 
 import java.io.Serializable;
-import java.math.BigInteger;
-import java.security.MessageDigest;
-import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
 import javax.json.bind.annotation.JsonbTransient;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -17,7 +13,6 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.swing.ImageIcon;
-import javax.xml.bind.annotation.XmlTransient;
 
 @Entity
 public class User implements Serializable {
@@ -33,10 +28,8 @@ public class User implements Serializable {
     @Column(length = 32, nullable = false, unique = true)
     private String username;
 
-    @Column(length = 4, nullable = false)
-    private String passwordSalt;
-    @Column(length = 128, nullable = false)
-    private String protectedPassword;
+    @Column(length = 32, nullable = false)
+    private String password;
 
     @Column(nullable = false)
     private boolean isAvailable;
@@ -77,7 +70,6 @@ public class User implements Serializable {
 
     public User() {
         isAvailable = true;
-        passwordSalt = new SecureRandom().nextInt(10000) + ""; //securerandom number from 0-9999 (4 digits)
         notify = new ArrayList<>();
         following = new ArrayList<>();
         experiences = new ArrayList<>();
@@ -88,10 +80,10 @@ public class User implements Serializable {
         reviews = new ArrayList<>();
     }
 
-    public User(String email, String username, String plainPassword, ImageIcon profileImage) {
+    public User(String email, String username, String password, ImageIcon profileImage) {
         this.email = email;
         this.username = username;
-        this.protectedPassword = generateProtectedPassword(passwordSalt, plainPassword);
+        this.password = password;
         this.profileImage = profileImage;
     }
 
@@ -120,35 +112,12 @@ public class User implements Serializable {
         this.username = username;
     }
 
-    private static String generateProtectedPassword(String passwordSalt, String plainPassword) {
-
-        String generatedPassword = null;
-
-        try {
-            MessageDigest md = MessageDigest.getInstance("SHA-512");
-            md.reset();
-            md.update((passwordSalt + plainPassword).getBytes("utf8"));
-
-            generatedPassword = String.format("%0128x", new BigInteger(1, md.digest()));
-        } catch (Exception ex) {
-        }
-        return generatedPassword;
+    public String getPassword() {
+        return password;
     }
 
-    public String getPasswordSalt() {
-        return passwordSalt;
-    }
-
-    public void setPasswordSalt(String passwordSalt) {
-        this.passwordSalt = passwordSalt;
-    }
-
-    public String getProtectedPassword() {
-        return protectedPassword;
-    }
-
-    public void setProtectedPassword(String plainPassword) {
-        this.protectedPassword = generateProtectedPassword(this.passwordSalt, plainPassword);
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public boolean isIsAvailable() {

@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package session;
+package session; 
 
 import entity.Card;
 import entity.Experience;
@@ -35,13 +35,13 @@ public class UserSession implements UserSessionLocal {
     public User doLogin(String username, String password) throws InvalidLoginException {
         try {
             User user = getUserByUsername(username);
-            if (user.getProtectedPassword() == password && user.isIsAvailable()) {
+            if (user.getPassword().equals(password) && user.isIsAvailable()) {
                 return user;
             } else {
                 throw new InvalidLoginException("Password Incorrect");
             }
         } catch (NoResultException ex) {
-            throw new InvalidLoginException(ex.getMessage()); 
+            throw new InvalidLoginException("Invalid login details"); 
         }
     }
     
@@ -95,8 +95,7 @@ public class UserSession implements UserSessionLocal {
         User oldU = getUserById(u.getUserId());
 
         oldU.setEmail(u.getEmail());
-        oldU.setPasswordSalt(u.getPasswordSalt());
-        oldU.setProtectedPassword(u.getProtectedPassword());
+        oldU.setPassword(u.getPassword());
         oldU.setUsername(u.getUsername());
     }
 
