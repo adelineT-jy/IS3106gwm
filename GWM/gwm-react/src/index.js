@@ -15,10 +15,10 @@ import { fontFamily, fontWeight } from '@mui/system';
 const theme = createTheme({
     palette: {
         primary: {
-            main: '#fafafa',
+            main: '#fafafa', //white
         },
         secondary: {
-            main: '#ff4655'
+            main: '#ff4655' //red (for buttons etc.)
         }
     },
 
@@ -31,6 +31,7 @@ const theme = createTheme({
             fontSize: "0.8rem", 
             fontFamily: "Roboto",
             fontWeight: "bold",
+            backgroundColor: "white"
           }
         }
       }

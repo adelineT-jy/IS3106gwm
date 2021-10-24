@@ -22,6 +22,7 @@ import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
+import Toolbar from '@mui/material/Toolbar';
 
 export function NavTabs() {
     const routeMatch = useRouteMatch(['/posts', '/party', '/requests']);
@@ -52,12 +53,13 @@ export function AdminTabs() {
     );
 }
 
+//change to appbar
 function GuestMenu() {
     return (
-        <Stack spacing={2} direction="row">
-            <Button variant="text" href="/login">Sign In</Button>
-            <Button variant="text" href="/register">Sign Up</Button>
-        </Stack>
+        <Toolbar>
+            <Button href="/login" variant="contained" color="secondary">Login</Button>
+            <Button href="/register" variant="text">Register</Button>
+        </Toolbar>
     )
 }
 
@@ -132,7 +134,7 @@ function UserMenu() {
 
 export function Header() {
     return (
-        <Box sx={{ bgcolor: '#111', height: '10vh' }}>
+        <Box sx={{ bgcolor: 'black', height: '10vh' }}>
             <Grid container justifyContent='flex-end'>
                 <Grid item xs={8} md={9}>
                     <h1 id="title">Game With Me</h1>
@@ -143,9 +145,7 @@ export function Header() {
                         <Route exact path="/login" component={GuestMenu} />
                         <Route exact path="/register" component={GuestMenu} />
                         <Route exact path="/logout" component={GuestMenu} />
-                        
                         <Route path="/admin" component={AdminMenu} />
-
                         <Route path="/" component={UserMenu} />
                     </Switch>
                 </Grid>

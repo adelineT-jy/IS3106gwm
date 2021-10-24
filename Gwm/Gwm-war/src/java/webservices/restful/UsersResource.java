@@ -104,10 +104,11 @@ public class UsersResource {
     public Response login(@PathParam("username") String username, 
             @PathParam("password") String password) {
         try {
+            System.out.println("REST: login");
             User u = userSessionLocal.doLogin(username, password);
             return Response.status(200).entity(u).type(MediaType.APPLICATION_JSON).build();
         } catch (Exception ex) {
-            JsonObject exception = Json.createObjectBuilder().add("error", "Not found").build();
+            JsonObject exception = Json.createObjectBuilder().add("error", ex.getMessage()).build();
             return Response.status(404).entity(exception).type(MediaType.APPLICATION_JSON).build();
         }
         

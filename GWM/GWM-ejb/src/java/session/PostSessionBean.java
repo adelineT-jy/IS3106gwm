@@ -109,6 +109,7 @@ public class PostSessionBean implements PostSessionBeanLocal {
 
         em.persist(party);
         u.getParties().add(party);
+        em.flush();
     }
 
     /*@Override
