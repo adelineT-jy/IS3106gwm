@@ -54,8 +54,7 @@ export function Login() {
             .then((data) => {
                 console.log(data);
                 setUser(data);
-                
-
+                sessionStorage.set('user', JSON.stringify((user)));
             });
     } catch (e) {
         console.log(e);
