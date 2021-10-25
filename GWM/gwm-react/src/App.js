@@ -38,7 +38,7 @@ class App extends Component {
                         <Route exact path="/party" component={Parties} />
                         <Route exact path="/requests" component={Requests} />
 
-                        <Route exact path="/users" component={Users} />
+                        <Route exact path="/admin/users" component={Users} />
 
                         <Route exact path="/admin" component={AdminPosts} />
                         <Route exact path="/admin/tools" component={AdminTools} />
