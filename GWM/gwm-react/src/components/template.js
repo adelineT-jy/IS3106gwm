@@ -44,8 +44,8 @@ export function AdminTabs() {
 
     return (
         <Box sx={{ bgcolor: "#ff4655", width: '100%', alignItems: 'center', textAlign: 'right' }}>
-            <Tabs value={currentTab} centered textColor="secondary">
-                <Tab icon={<Home />} label="Home" value="/admin" to="/admin" component={<Link color="secondary"/>} />
+            <Tabs value={currentTab} centered>
+                <Tab icon={<Home />} label="Home" value="/admin" to="/admin" component={Link} />
                 <Tab icon={<AdminPanelSettings />} label="Tools" value="/admin/tools" to="/admin/tools" component={Link} />
                 <Tab icon={<PermIdentity />} label="Users" value="/admin/users" to="/admin/users" component={Link} />
             </Tabs>
