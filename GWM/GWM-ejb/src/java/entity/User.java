@@ -37,7 +37,7 @@ public class User implements Serializable {
     @Column(scale = 2, nullable = false)
     private double wallet = 0.00;
 
-    private ImageIcon profileImage;
+//    private ImageIcon profileImage;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
     private List<Notification> notify;
@@ -79,13 +79,20 @@ public class User implements Serializable {
         posts = new ArrayList<>();
         reviews = new ArrayList<>();
     }
-
-    public User(String email, String username, String password, ImageIcon profileImage) {
+    
+    public User(String email, String username, String password) {
         this.email = email;
         this.username = username;
         this.password = password;
-        this.profileImage = profileImage;
     }
+
+
+//    public User(String email, String username, String password, ImageIcon profileImage) {
+//        this.email = email;
+//        this.username = username;
+//        this.password = password;
+//        this.profileImage = profileImage;
+//    }
 
     //Required constructors to be added here
     public Long getUserId() {
@@ -136,13 +143,13 @@ public class User implements Serializable {
         this.wallet = wallet;
     }
 
-    public ImageIcon getProfileImage() {
-        return profileImage;
-    }
-
-    public void setProfileImage(ImageIcon profileImage) {
-        this.profileImage = profileImage;
-    }
+//    public ImageIcon getProfileImage() {
+//        return profileImage;
+//    }
+//
+//    public void setProfileImage(ImageIcon profileImage) {
+//        this.profileImage = profileImage;
+//    }
 
     public List<Notification> getNotify() {
         return notify;

@@ -93,7 +93,7 @@ public class UsersResource {
             User u = userSessionLocal.getUserById(uId);
             return Response.status(200).entity(u).type(MediaType.APPLICATION_JSON).build();
         } catch (Exception ex) {
-            JsonObject exception = Json.createObjectBuilder().add("error", "Not found").build();
+            JsonObject exception = Json.createObjectBuilder().add("error", ex.getMessage()).build();
             return Response.status(404).entity(exception).type(MediaType.APPLICATION_JSON).build();
         }
     }
@@ -108,6 +108,7 @@ public class UsersResource {
             User u = userSessionLocal.doLogin(username, password);
             return Response.status(200).entity(u).type(MediaType.APPLICATION_JSON).build();
         } catch (Exception ex) {
+            System.out.println(ex.getMessage());
             JsonObject exception = Json.createObjectBuilder().add("error", ex.getMessage()).build();
             return Response.status(404).entity(exception).type(MediaType.APPLICATION_JSON).build();
         }
