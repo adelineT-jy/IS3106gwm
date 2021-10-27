@@ -1,33 +1,30 @@
 import React, { useEffect } from 'react';
 
 import Box from '@mui/material/Box';
-import { Button, Card, CardActions, CardContent, Chip, Grid, IconButton, Modal, Popover, Stack, TextField, Typography } from '@mui/material';
+import { Button, Card, CardActions, CardContent, Chip, Container, Grid, IconButton, Modal, Popover, Stack, TextField, Typography } from '@mui/material';
 import Search from '@mui/icons-material/Search';
 import Check from '@mui/icons-material/Check';
 import Close from '@mui/icons-material/Close';
 
-import { Party } from './party';
-import { dummyParty } from './party';
 
-const dummyPost = {
-    postId: 1,
-    title: "test",
-    userId: 1,
-    postDate: "2021-10-22T12:00:00",
-    description: "test",
-    game: {
-        gameName: "LOL",
-        gameDescription: "Battle of Wits",
-        gameDownloadLink: "https://lol.com",
-        gameId: 1
-    },
-    requestPrice: 1,
-    requestQty: 1,
-    party: dummyParty,
-    isAvailable: true,
-}
+// const dummyPost = {
+//     postId: 1,
+//     title: "test",
+//     userId: 1,
+//     postDate: "2021-10-22T12:00:00",
+//     description: "test",
+//     game: {
+//         gameName: "LOL",
+//         gameDescription: "Battle of Wits",
+//         gameDownloadLink: "https://lol.com",
+//         gameId: 1
+//     },
+//     requestPrice: 1,
+//     requestQty: 1,
+//     isAvailable: true,
+// }
 
-const dummyPosts = [dummyPost, dummyPost, dummyPost, dummyPost]
+// const dummyPosts = [dummyPost, dummyPost, dummyPost, dummyPost, dummyPost, dummyPost, dummyPost]
 
 
 const modalStyle = {
@@ -37,8 +34,9 @@ const modalStyle = {
     transform: 'translate(-50%, -50%)',
     minWidth: 400,
     boxShadow: 24,
-    bgcolor: '#ff4655',
-    padding: 2
+    bgcolor: '#ffacbb',
+    padding: 4,
+    borderRadius: '3px',
 };
 
 function Request() {
@@ -47,19 +45,19 @@ function Request() {
     )
 }
 
-const Post = (post) => {
+export const Post = (post) => {
+    const uId = JSON.parse(window.localStorage.user).userId;
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [gamePopover, setGamePopover] = React.useState(null);
 
-    const [openParty, setOpenParty] = React.useState(false);
-    const [partyPopover, setPartyPopover] = React.useState(null);
+    const [openModal, setOpenModal] = React.useState(false);
     const [text, setText] = React.useState("");
 
     const open = Boolean(anchorEl);
 
     const handleClose = () => {
         setAnchorEl(null);
-        setOpenParty(false);
+        setOpenModal(false);
     };
 
     function handleGamePopover(event, game) {
@@ -75,23 +73,7 @@ const Post = (post) => {
         );
     };
 
-    function handlePartyPopover(party) {
-        setPartyPopover(
-            <Party {...party} />
-        )
-        setOpenParty(true);
-    }
-
     function submitRequest(post) {
-        let uId;
-        try {
-            uId = JSON.parse(sessionStorage.user).id;
-        }
-        catch (e) {
-            uId = 0;
-            console.log(e);
-        }
-
         const req = { text: text };
         const requestOptions = {
             method: 'POST',
@@ -113,27 +95,30 @@ const Post = (post) => {
     }
 
     return (
-        <Grid item xs={6} sm={4} md={3} lg={2} key={post.postId}>
+        <Grid item xs={6} sm={4} key={post.postId}>
             <Popover open={open} anchorEl={anchorEl} onClose={handleClose}
                 anchorOrigin={{ vertical: 'center', horizontal: 'center' }}
                 transformOrigin={{ vertical: 'center', horizontal: 'center' }}>
                 {gamePopover}
             </Popover>
 
-            <Modal open={openParty} onClose={handleClose}
+            <Modal open={openModal} onClose={handleClose}
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description">
                 <Box sx={modalStyle} centered>
-                    {partyPopover}
-                    <TextField sx={{ width: '100%', mt: 1 }} variant="outlined" placeholder="Type your request here!"
+                    <Typography variant="h6">Please append any additional information to your request</Typography>
+                    <TextField sx={{ width: '100%', mt: 1, mb: 1 }} variant="outlined" placeholder="Type your request here!"
                         value={text} onChange={(e) => setText(e.target.value)}>Request Text</TextField>
-                    <Button sx={{ width: '100%' }} onClick={() => submitRequest(post)}>
-                        Request to Join Party
+                    <Button sx={{ width: '50%' }} onClick={handleClose} color="error" variant="contained">
+                        Cancel
+                    </Button>
+                    <Button sx={{ width: '50%' }} onClick={() => submitRequest(post)} color="success" variant="contained">
+                        Request to Join
                     </Button>
                 </Box>
             </Modal>
 
-            <Card sx={{ maxWidth: '250px' }}>
+            <Card sx={{ maxWidth: '400px' }}>
                 <CardContent>
                     <Typography sx={{ mb: 1.5, mt: 1 }} color="text.secondary">
                         Post Id: {post.postId}
@@ -148,7 +133,7 @@ const Post = (post) => {
                         {post.description}
                     </Typography>
 
-                    <Chip sx={{ margin: '2px' }} label={post.game.gameName} color="primary" onClick={(e) => handleGamePopover(e, post.game)} />
+                    <Chip sx={{ margin: '2px' }} label={post.game.gameName} color="info" onClick={(e) => handleGamePopover(e, post.game)} />
                     <Chip sx={{ margin: '2px' }} label={`Looking for ${post.requestQty}`} color="secondary" />
                     <Chip sx={{ margin: '2px' }} label={post.isAvailable ? "Available" : "Busy"}
                         color={post.isAvailable ? "success" : "error"}
@@ -157,7 +142,7 @@ const Post = (post) => {
                         color={post.requestPrice === 0 ? "info" : "warning"} />
                 </CardContent>
                 <CardActions sx={{ justifyContent: 'center' }}>
-                    <Button variant="filled" onClick={() => handlePartyPopover(post.party)}>View Party</Button>
+                    <Button variant="filled" onClick={setOpenModal}>Create a Request</Button>
                 </CardActions>
             </Card>
         </Grid>
@@ -193,7 +178,7 @@ export function Posts() {
                 })
                 .then((data) => {
                     setPosts(data);
-                    setPosts(dummyPosts);
+                    // setPosts(dummyPosts);
                 });
         } catch (e) {
             console.log(e);
@@ -202,19 +187,20 @@ export function Posts() {
 
     return (
         <Box sx={{ bgcolor: '#e3f2fd', minHeight: '70vh' }}>
-
-            <Grid container spacing={2} sx={{ padding: '1em', width: '100%' }}>
-                <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'center' }}>
-                    <TextField id="outlined-basic" label="Search for Posts" variant="filled" value={query}
-                        onChange={(e) => setQuery(e.target.value)} onKeyDown={handleKeyDown} sx={{ minWidth: '60%' }} />
-                    <IconButton color="primary" component="span" onClick={handleSubmit} sx={{ height: '60px', width: '60px' }}>
-                        <Search />
-                    </IconButton>
+            <Container maxWidth="md">
+                <Grid container spacing={2} sx={{ padding: '1em', width: '100%' }}>
+                    <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'center' }}>
+                        <TextField id="outlined-basic" label="Search for Posts" variant="filled" value={query}
+                            onChange={(e) => setQuery(e.target.value)} onKeyDown={handleKeyDown} sx={{ minWidth: '60%' }} />
+                        <IconButton color="primary" component="span" onClick={handleSubmit} sx={{ height: '60px', width: '60px' }}>
+                            <Search />
+                        </IconButton>
+                    </Grid>
+                    {
+                        posts.map((post) => <Post {...post} />)
+                    }
                 </Grid>
-                {
-                    posts.map((post) => <Post {...post} />)
-                }
-            </Grid>
+            </Container>
         </Box>
     )
 }

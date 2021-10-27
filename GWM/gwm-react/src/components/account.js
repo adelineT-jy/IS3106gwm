@@ -59,7 +59,7 @@ export function Login() {
                 .then((data) => {
                     console.log(data);
                     window.localStorage.setItem("user", JSON.stringify(data));
-                    history.push("/");
+                    history.push("/posts");
                 })
         } catch (e) {
             console.log(e.message);

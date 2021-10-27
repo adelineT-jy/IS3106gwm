@@ -7,6 +7,7 @@ package webservices.restful;
 
 import entity.Party;
 import entity.Post;
+import java.util.List;
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
 import javax.json.Json;
@@ -155,6 +156,21 @@ public class PartyResource {
                     .add("error", "Not found")
                     .build();
             return Response.status(404).entity(exception).build();
+        }
+    }
+    
+    @GET
+    @Path("/parties/{uId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getUserPosts(@PathParam("uId") Long uId) {
+        try {
+            List<Party> parties = postSessionBeanLocal.searchPartiesByUser(uId);
+            GenericEntity<List<Party>> entity = new GenericEntity<List<Party>>(parties) {
+            };
+            return Response.status(200).entity(entity).type(MediaType.APPLICATION_JSON).build();
+        } catch (Exception ex) {
+            JsonObject exception = Json.createObjectBuilder().add("error", "Not found").build();
+            return Response.status(404).entity(exception).type(MediaType.APPLICATION_JSON).build();
         }
     }
 
