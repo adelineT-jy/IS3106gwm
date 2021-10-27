@@ -67,7 +67,11 @@ export const Post = (post) => {
                 <Stack spacing={1}>
                     <Typography variant="h6">{game.gameName}</Typography>
                     <Typography variant="body2">{game.gameDescription}</Typography>
-                    <a href={`https://${game.gameDownloadLink}`} target='_blank'>Download game</a>
+                    <Button color="primary" variant="filled" onClick={() => {
+                        var otherWindow = window.open();
+                        otherWindow.opener = null;
+                        otherWindow.location = `https://${game.gameDownloadLink}`;
+                    }}>Download Link</Button>
                 </Stack>
             </Card>
         );
@@ -118,7 +122,7 @@ export const Post = (post) => {
                 </Box>
             </Modal>
 
-            <Card sx={{ maxWidth: '400px' }}>
+            <Card sx={{ maxWidth: '400px' }} boxShadow={6}>
                 <CardContent>
                     <Typography sx={{ mb: 1.5, mt: 1 }} color="text.secondary">
                         Post Id: {post.postId}

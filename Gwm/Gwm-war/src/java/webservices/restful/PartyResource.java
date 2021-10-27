@@ -5,6 +5,7 @@
  */
 package webservices.restful;
 
+import entity.Game;
 import entity.Party;
 import entity.Post;
 import java.util.List;
@@ -24,6 +25,8 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import session.GameSession;
+import session.GameSessionLocal;
 import session.PostSessionBeanLocal;
 import session.UserSessionLocal;
 
@@ -35,6 +38,8 @@ public class PartyResource {
     private UserSessionLocal userSessionLocal;
     @EJB
     private PostSessionBeanLocal postSessionBeanLocal;
+    @EJB
+    private GameSessionLocal gameSessionBeanLocal;
 
     @POST
     @Path("/{uid}/create")
@@ -158,20 +163,15 @@ public class PartyResource {
             return Response.status(404).entity(exception).build();
         }
     }
-    
+
     @GET
-    @Path("/parties/{uId}")
+    @Path("/games")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getUserPosts(@PathParam("uId") Long uId) {
-        try {
-            List<Party> parties = postSessionBeanLocal.searchPartiesByUser(uId);
-            GenericEntity<List<Party>> entity = new GenericEntity<List<Party>>(parties) {
-            };
-            return Response.status(200).entity(entity).type(MediaType.APPLICATION_JSON).build();
-        } catch (Exception ex) {
-            JsonObject exception = Json.createObjectBuilder().add("error", "Not found").build();
-            return Response.status(404).entity(exception).type(MediaType.APPLICATION_JSON).build();
-        }
+    public Response getAllGames() {
+        List<Game> games = gameSessionBeanLocal.getAllGames();
+        GenericEntity<List<Game>> entity = new GenericEntity<List<Game>>(games) {
+        };
+        return Response.status(200).entity(entity).build();
     }
 
 }
