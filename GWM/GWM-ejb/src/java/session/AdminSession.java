@@ -6,6 +6,7 @@ import entity.User;
 import error.InvalidLoginException;
 import java.math.BigInteger;
 import java.security.MessageDigest;
+import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -111,6 +112,19 @@ public class AdminSession implements AdminSessionLocal {
         } else {
             return game;
         }
+    }
+    
+    @Override
+    public List<Game> searchGame(String name) throws NoResultException {
+        Query q;
+        if (name != null) {
+            q = em.createQuery("SELECT g FROM Game g WHERE LOWER(g.gameName) LIKE :name");
+            q.setParameter("name", "%" + name.toLowerCase() + "%");
+        } else {
+            q = em.createQuery("SELECT g from Game g");
+        }
+
+        return q.getResultList();
     }
 
     @Override
