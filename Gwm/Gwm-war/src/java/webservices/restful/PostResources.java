@@ -62,20 +62,20 @@ public class PostResources {
             return Response.status(400).entity(exception).build();
         }
     }
-
-    @PUT
-    @Path("/{postId}/by/{uId}")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response editPost(@PathParam("postId") Long pId, @PathParam("uId") Long uId, Post p) {
-        try {
-            postSessionBeanLocal.editPost(p, uId);
-            return Response.status(200).entity(p).type(MediaType.APPLICATION_JSON).build();
-        } catch (Exception ex) {
-            JsonObject exception = Json.createObjectBuilder().add("error", "Not found").build();
-            return Response.status(404).entity(exception).type(MediaType.APPLICATION_JSON).build();
-        }
-    }
+//
+//    @PUT
+//    @Path("/{postId}/by/{uId}")
+//    @Consumes(MediaType.APPLICATION_JSON)
+//    @Produces(MediaType.APPLICATION_JSON)
+//    public Response editPost(@PathParam("postId") Long pId, @PathParam("uId") Long uId, Post p) {
+//        try {
+//            postSessionBeanLocal.editPost(p, uId);
+//            return Response.status(200).entity(p).type(MediaType.APPLICATION_JSON).build();
+//        } catch (Exception ex) {
+//            JsonObject exception = Json.createObjectBuilder().add("error", "Not found").build();
+//            return Response.status(404).entity(exception).type(MediaType.APPLICATION_JSON).build();
+//        }
+//    }
 
     @DELETE
     @Path("/{postId}/by/{uId}")

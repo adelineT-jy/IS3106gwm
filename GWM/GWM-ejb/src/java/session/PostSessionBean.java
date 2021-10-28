@@ -133,9 +133,7 @@ public class PostSessionBean implements PostSessionBeanLocal {
     @Override
     public void joinParty(Long partyId, Long userId) throws NoResultException {
         User u = getUser(userId);
-        System.out.println(u);
         Party party = getParty(partyId);
-        System.out.println(party);
 
         if (party.getUsers().contains(u)) {
             return;
@@ -143,6 +141,11 @@ public class PostSessionBean implements PostSessionBeanLocal {
 
         party.getUsers().add(u);
         u.getParties().add(party);
+        Post p = party.getPost();
+        p.setRequestQty(p.getRequestQty() - 1);
+        if (p.getRequestQty() == 0) {
+            p.setIsAvailable(false);
+        }
     }
 
     @Override
@@ -246,6 +249,7 @@ public class PostSessionBean implements PostSessionBeanLocal {
         oldP.setIsAvailable(p.isIsAvailable());
         oldP.setRequestPrice(p.getRequestPrice());
         oldP.setRequestQty(p.getRequestQty());
+        oldP.setIsAvailable(p.getRequestQty() != 0);
         oldP.setTitle(p.getTitle());
     }
 

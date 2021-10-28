@@ -2,9 +2,7 @@ import React, { useEffect } from 'react';
 
 import Box from '@mui/material/Box';
 import { Button, Card, CardActions, CardContent, Chip, Container, Grid, IconButton, Modal, Popover, Stack, TextField, Typography } from '@mui/material';
-import Search from '@mui/icons-material/Search';
-import Check from '@mui/icons-material/Check';
-import Close from '@mui/icons-material/Close';
+import { Check, Close, Search } from '@mui/icons-material';
 
 
 // const dummyPost = {
@@ -146,7 +144,7 @@ export const Post = (post) => {
                         : (post.requestPrice > 0 ? `Costs G${post.requestPrice}` : `Pays  G${-post.requestPrice}`)}
                         color={post.requestPrice === 0 ? "info" : "warning"} />
                 </CardContent>
-                { post.request ?
+                { post.request && post.userId !== uId && post.isAvailable ?
                         <CardActions sx={{ justifyContent: 'center' }}>
                             <Button variant="filled" onClick={setOpenModal}>Create a Request</Button>
                         </CardActions> : null}
@@ -156,7 +154,6 @@ export const Post = (post) => {
 }
 
 export function Posts() {
-    const uId = JSON.parse(window.localStorage.user).userId;
     const [query, setQuery] = React.useState("");
     const [posts, setPosts] = React.useState([]);
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Switch, Route, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
@@ -33,7 +33,7 @@ export function Register() {
 export function Login() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
-    const [error, setError] = useState("");
+    // const [error, setError] = useState("");
     let history = useHistory(); 
 
 
@@ -46,7 +46,7 @@ export function Login() {
                 crossDomain: true
             })
                 .then((response) => {
-                    if (response.status == 200) {
+                    if (response.status === 200) {
                         console.log("login success");
                         return response.json();
                     } else {
@@ -94,6 +94,8 @@ export function Login() {
 }
 
 export function Logout() {
+    window.localStorage.removeItem("user");
+
     return (
         <Box sx={{ height: '70vh' }}>
             <h1>You have logged out</h1>

@@ -1,9 +1,10 @@
 import React, { useEffect } from 'react';
 
 import Box from '@mui/material/Box';
-import { Avatar, Button, Card, CardActions, CardContent, Chip, Container, FormControl, Grid, InputAdornment, InputLabel, MenuItem, Modal, Select, Stack, TextField, Typography } from '@mui/material';
+import { Avatar, Button, Card, CardActions, CardContent, Chip, Container, FormControl, Grid, InputAdornment, InputLabel, List, MenuItem, Modal, Select, Stack, TextField, Typography } from '@mui/material';
 
 import { Post } from './posts';
+import { Request } from './requests';
 
 const modalStyle = {
     position: 'absolute',
@@ -33,7 +34,7 @@ const UserCard = (user) => {
                         <Stack direction="row" spacing={1}><Chip color={user.isAvailable ? "success" : "error"}
                             label={user.isAvailable ? "Available" : "Busy"} />
                             <Chip color={user.isCreator ? "info" : "secondary"}
-                                label={user.isAvailable ? "Party Creator" : "Member"} /></Stack>
+                                label={user.isCreator ? "Party Creator" : "Member"} /></Stack>
 
                     </Stack>
                 </CardContent>
@@ -84,7 +85,7 @@ export const Party = (party) => {
     };
 
     const handleRequestQty = (e) => {
-        if (e.target.value > 0) {
+        if (e.target.value >= 0) {
             setRequestQty(e.target.value);
         }
     }
@@ -122,6 +123,42 @@ export const Party = (party) => {
             method: 'DELETE',
         };
         fetch(`http://localhost:8080/Gwm-war/webresources/party/${party.partyId}/post/${party.post.postId}/deleteBy/${uId}`, requestOptions)
+            .then((response) => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error('Request cannot be made');
+                }
+            })
+            .catch((error) => {
+                console.log(error)
+            });
+        window.location.reload(false);
+    }
+
+    const acceptRequest = (rId) => {
+        const requestOptions = {
+            method: 'PUT',
+        };
+        fetch(`http://localhost:8080/Gwm-war/webresources/party/${party.partyId}/user/${uId}/acceptRequest/${rId}`, requestOptions)
+            .then((response) => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error('Request cannot be made');
+                }
+            })
+            .catch((error) => {
+                console.log(error)
+            });
+        window.location.reload(false);
+    }
+
+    const rejectRequest = (rId) => {
+        const requestOptions = {
+            method: 'PUT',
+        };
+        fetch(`http://localhost:8080/Gwm-war/webresources/party/${party.partyId}/user/${uId}/rejectRequest/${rId}`, requestOptions)
             .then((response) => {
                 if (response.ok) {
                     return response.json();
@@ -200,20 +237,41 @@ export const Party = (party) => {
                 </Typography>
                 <Grid container spacing={2}>
                     {
-                        party.users.map((user) => <UserCard key={user.userId} {...user} isCreator={party.partyOwner === user} />)
+                        party.users.map((user) => <UserCard key={user.userId} {...user} isCreator={party.partyOwner.userId === user.userId} />)
                     }
                 </Grid>
-                <Typography sx={{ mt: 4 }} variant="body1">
-                    Posts
-                </Typography>
                 <Grid container spacing={2}>
+                    <Grid item xs={6} sm={4}>
+                        <Typography sx={{ mt: 4 }} variant="body1">
+                            Posts
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={6} sm={8} >
+                        <Typography sx={{ mt: 4 }} variant="body1">
+                            Requests
+                        </Typography>
+                    </Grid>
                     {
                         party.post === undefined
-                            ? <Grid item xs={6} sm={4}>
-                                <Typography variant="body2">You have no posts</Typography>
-
+                            ? <Grid item xs={12} >
+                                <Typography variant="body2">You have no posts or requests</Typography>
                             </Grid>
                             : <Post {...party.post} request={false} />}
+                    <Grid item xs={6} sm={8} >
+                        <List>
+                            {
+                                party.post.request.length === 0
+                                    ? <Typography variant="body2">Your post has no requests</Typography>
+                                    : party.post.request.map((request) => {
+                                        return (
+                                            <Request key={request.requestId} {...request}
+                                                acceptRequest={() => acceptRequest(request.requestId)}
+                                                rejectRequest={() => rejectRequest(request.requestId)} />
+                                        )
+                                    })
+                            }
+                        </List>
+                    </Grid>
                 </Grid>
                 <Stack spacing={1}>
                     <Button sx={{ width: '50%' }} onClick={handleOpen} color={party.post === undefined ? "success" : "warning"} variant="contained">
