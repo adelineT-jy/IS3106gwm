@@ -40,7 +40,7 @@ class App extends Component {
 
                         <Route exact path="/admin/users" component={Users} />
 
-                        <Route exact path="/admin" component={AdminPosts} />
+                        <Route exact path="/admin" component={Posts} />
                         <Route exact path="/admin/tools" component={AdminTools} />
                     </Switch>
                     <Footer/>

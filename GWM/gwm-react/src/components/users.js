@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 
-import { Box, IconButton, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TextField } from '@mui/material';
-import Search from '@mui/icons-material/Search';
+import { Box, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TextField } from '@mui/material';
 
 
 
@@ -11,13 +10,7 @@ export function Users() {
 
     useEffect(() => {
         handleSubmit();
-    }, [users]);
-
-    const handleKeyDown = (event) => {
-        if (event.key === 'Enter') {
-            handleSubmit();
-        }
-    }
+    }, [query]);
 
     const handleSubmit = () => {
         try {
@@ -51,7 +44,7 @@ export function Users() {
             };
             fetch(`http://localhost:8080/Gwm-war/webresources/admin/ban/${userId}`, requestOptions)
                 .then(response => response.json())
-                
+
         }
 
         function unbanUser(userId) {
@@ -62,15 +55,12 @@ export function Users() {
             };
             fetch(`http://localhost:8080/Gwm-war/webresources/admin/unban/${userId}`, requestOptions)
                 .then(response => response.json())
-                .then((data) => {
-                    setUsers(data);
-                });
         }
 
         if (isAvailable)
             return (
-                <button
-                    variant="primary"
+                <Button
+                    variant="contained"
                     onClick={() => {
                         const confirmBox = window.confirm(
                             "Are you sure you want to ban this user?"
@@ -79,12 +69,12 @@ export function Users() {
                             banUser(userId);
                         }
                     }}> Ban
-                </button>
+                </Button>
             )
         else {
             return (
-                <button
-                    variant="priamry"
+                <Button
+                    variant="contained"
                     onClick={() => {
                         const confirmBox = window.confirm(
                             "Are you sure you want to unban this user?"
@@ -93,7 +83,7 @@ export function Users() {
                             unbanUser(userId);
                         }
                     }}> Unban
-                </button>
+                </Button>
             )
         }
     }
@@ -101,11 +91,8 @@ export function Users() {
     return (
         <Box sx={{ bgcolor: '#e3f2fd', minHeight: '70vh' }}>
             <div className="container">
-                <TextField id="outlined-basic" label="Enter username to serch for users" variant="filled" value={query}
-                    onChange={(e) => setQuery(e.target.value)} onKeyDown={handleKeyDown} sx={{ minWidth: '60%' }} />
-                <IconButton color="secondary" component="span" onClick={handleSubmit} sx={{ height: '60px', width: '60px' }}>
-                    <Search />
-                </IconButton>
+                <TextField id="outlined-basic" placeholder="Search" variant="filled" value={query}
+                    onChange={(e) => setQuery(e.target.value)} sx={{ minWidth: '100%' }} />
                 <TableContainer component={Paper}>
                     <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
                         <TableHead>
