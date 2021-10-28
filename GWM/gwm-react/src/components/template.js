@@ -29,11 +29,11 @@ export function NavTabs() {
     const currentTab = routeMatch?.path;
 
     return (
-        <Box sx={{ bgcolor: "#ff4655", width: '100%', alignItems: 'center', textAlign: 'right' }}>
+        <Box sx={{width: '100%', alignItems: 'center', textAlign: 'right' }}>
             <Tabs value={currentTab} centered>
-                <Tab icon={<Description />} label="Posts" value="/posts" to="/posts" component={Link} />
-                <Tab icon={<PeopleAlt />} label="My Parties and Posts" value="/party" to="/party" component={Link} />
-                <Tab icon={<CleanHands />} label="My Requests" value="/requests" to="/requests" component={Link} />
+                <Tab icon={<Description />} label="Posts" value="/posts" to="/posts" component={Link} sx={{color:'primary.main'}}/>
+                <Tab icon={<PeopleAlt />} label="My Parties and Posts" value="/party" to="/party" component={Link} sx={{color:'primary.main'}}/>
+                <Tab icon={<CleanHands />} label="My Requests" value="/requests" to="/requests" component={Link} sx={{color:'primary.main'}}/>
             </Tabs>
         </Box>
     );
@@ -43,11 +43,11 @@ export function AdminTabs() {
     const currentTab = routeMatch?.path;
 
     return (
-        <Box sx={{ bgcolor: "#ff4655", width: '100%', alignItems: 'center', textAlign: 'right' }}>
+        <Box sx={{width: '100%', alignItems: 'center', textAlign: 'right' }}>
             <Tabs value={currentTab} centered>
-                <Tab icon={<Home />} label="Home" value="/admin" to="/admin" component={Link} />
-                <Tab icon={<AdminPanelSettings />} label="Tools" value="/admin/tools" to="/admin/tools" component={Link} />
-                <Tab icon={<PermIdentity />} label="Users" value="/admin/users" to="/admin/users" component={Link} />
+                <Tab icon={<Home />} label="Home" value="/admin" to="/admin" component={Link} sx={{color:'primary.main'}}/>
+                <Tab icon={<AdminPanelSettings />} label="Tools" value="/admin/tools" to="/admin/tools" component={Link} sx={{color:'primary.main'}} />
+                <Tab icon={<PermIdentity />} label="Users" value="/admin/users" to="/admin/users" component={Link} sx={{color:'primary.main'}}/>
             </Tabs>
         </Box>
     );
