@@ -45,7 +45,7 @@ public interface PostSessionBeanLocal {
     public void createPost(Post p, Long partyId, Long userId, Long gameId);
 
     //public void createPost(Post p, Long userId, Long gameId);
-    public void editPost(Post p, Long userId) throws NoResultException, AuthenticationException;
+    public void editPost(Post p, Long userId, Long gameId) throws NoResultException, AuthenticationException;
 
     public void deletePost(Long pId, Long userId) throws NoResultException, AuthenticationException;
 

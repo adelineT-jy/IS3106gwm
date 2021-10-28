@@ -233,14 +233,15 @@ public class PostSessionBean implements PostSessionBeanLocal {
         em.flush();
     }*/
     @Override
-    public void editPost(Post p, Long userId) throws NoResultException, AuthenticationException {
+    public void editPost(Post p, Long userId, Long gameId) throws NoResultException, AuthenticationException {
 
         if (!checkPostOwner(p.getPostId(), userId)) {
             throw new AuthenticationException("You are not the owner of the post.");
         }
+        Game game = gameSessionLocal.getGame(gameId);
         Post oldP = getPost(p.getPostId());
         oldP.setDescription(p.getDescription());
-        oldP.setGame(p.getGame());
+        oldP.setGame(game);
         oldP.setGratitude(p.getGratitude());
         oldP.setIsAvailable(p.isIsAvailable());
         oldP.setRequestPrice(p.getRequestPrice());

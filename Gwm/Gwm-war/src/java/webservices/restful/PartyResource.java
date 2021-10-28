@@ -124,16 +124,17 @@ public class PartyResource {
     }
 
     @PUT
-    @Path("/{partyId}/post/{postId}/editBy/{uId}")
+    @Path("/{partyId}/post/{postId}/users/{uId}/games/{gId}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response editPost(@PathParam("partyId") Long partyid,
-            @PathParam("postId") Long pId, @PathParam("uId") Long uId, Post p) {
+            @PathParam("postId") Long pId, @PathParam("uId") Long uId,
+            @PathParam("gId") Long gameId, Post p) {
 
         try {
             if (postSessionBeanLocal.getParty(partyid).getPost().getPostId().equals(pId)) {
                 p.setPostId(pId);
-                postSessionBeanLocal.editPost(p, uId);
+                postSessionBeanLocal.editPost(p, uId, gameId);
                 return Response.status(200).entity(p).type(MediaType.APPLICATION_JSON).build();
             } else {
                 throw new Exception();

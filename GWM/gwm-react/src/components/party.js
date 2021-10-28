@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 
 import Box from '@mui/material/Box';
-import { Avatar, Button, Card, CardActions, CardContent, Chip, Container, FormControl, Grid, InputLabel, MenuItem, Modal, Select, Stack, TextField, Typography } from '@mui/material';
+import { Avatar, Button, Card, CardActions, CardContent, Chip, Container, FormControl, Grid, InputAdornment, InputLabel, MenuItem, Modal, Select, Stack, TextField, Typography } from '@mui/material';
 
 import { Post } from './posts';
 
@@ -12,7 +12,7 @@ const modalStyle = {
     transform: 'translate(-50%, -50%)',
     minWidth: 400,
     boxShadow: 24,
-    bgcolor: '#ffacbb',
+    bgcolor: '#ffffff',
     padding: 4,
     borderRadius: '3px',
 };
@@ -49,9 +49,9 @@ export const Party = (party) => {
     const [gameId, setGameId] = React.useState(0);
     const [title, setTitle] = React.useState("");
     const [description, setDescription] = React.useState("");
+    const [requestSign, setRequestSign] = React.useState(0);
     const [requestPrice, setRequestPrice] = React.useState(0);
-    const [requestQty, setRequestQty] = React.useState(0);
-
+    const [requestQty, setRequestQty] = React.useState(1);
 
     const handleOpen = () => {
         if (games.length === 0) {
@@ -68,6 +68,14 @@ export const Party = (party) => {
                     setGameId(data[0].gameId);
                 });
         }
+        if (party.post !== undefined) {
+            setTitle(party.post.title);
+            setDescription(party.post.description);
+            setGameId(party.post.game.gameId);
+            setRequestQty(party.post.requestQty);
+            setRequestPrice(Math.abs(party.post.requestPrice));
+            setRequestSign(party.post.requestPrice === 0 ? 0 : party.post.requestPrice / requestPrice);
+        }
         setOpenModal(true);
     }
 
@@ -75,8 +83,56 @@ export const Party = (party) => {
         setOpenModal(false);
     };
 
-    const createPost = () => {
-        console.log('haha');
+    const handleRequestQty = (e) => {
+        if (e.target.value > 0) {
+            setRequestQty(e.target.value);
+        }
+    }
+
+    const handleRequestPrice = (e) => {
+        if (e.target.value > 0) {
+            setRequestPrice(e.target.value);
+        }
+    }
+
+    const savePost = () => {
+        const post = { title: title, userId: uId, description: description, requestPrice: requestSign * requestPrice, requestQty: requestQty };
+        const editString = party.post === undefined ? "" : `/post/${party.post.postId}`;
+        const requestOptions = {
+            method: party.post === undefined ? 'POST' : 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(post),
+        };
+        fetch(`http://localhost:8080/Gwm-war/webresources/party/${party.partyId}${editString}/users/${uId}/games/${gameId}`, requestOptions)
+            .then((response) => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error('Request cannot be made');
+                }
+            })
+            .catch((error) => {
+                console.log(error)
+            });
+        window.location.reload(false);
+    }
+
+    const deletePost = () => {
+        const requestOptions = {
+            method: 'DELETE',
+        };
+        fetch(`http://localhost:8080/Gwm-war/webresources/party/${party.partyId}/post/${party.post.postId}/deleteBy/${uId}`, requestOptions)
+            .then((response) => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error('Request cannot be made');
+                }
+            })
+            .catch((error) => {
+                console.log(error)
+            });
+        window.location.reload(false);
     }
 
     return (
@@ -85,22 +141,41 @@ export const Party = (party) => {
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description">
                 <Box sx={modalStyle} centered>
-                    <Typography variant="h6">Create a Post</Typography>
+                    <Typography variant="h6">{party.post === undefined ? "Create a " : "Edit your "} Post</Typography>
                     <TextField sx={{ width: '100%', mt: 1, mb: 1 }} variant="outlined" placeholder="Title"
                         value={title} onChange={(e) => setTitle(e.target.value)}>Post Title</TextField>
                     <TextField sx={{ width: '100%', mt: 1, mb: 1 }} variant="outlined" placeholder="Description"
                         value={description} onChange={(e) => setDescription(e.target.value)}>Post Description</TextField>
                     <FormControl fullWidth variant="outlined" color="primary">
                         <InputLabel id="label">Game</InputLabel>
-                        <Select label="Game" labelId="label" onChange={(e) => setGameId(e.target.value)}>
-                            {games.map((game) => <MenuItem value={game.gameId}>{game.gameName}</MenuItem>)}
+                        <Select value={gameId} label="Game" labelId="label" onChange={(e) => setGameId(e.target.value)}>
+                            {games.map((game) => <MenuItem key={game.gameId} value={game.gameId}>{game.gameName}</MenuItem>)}
                         </Select>
                     </FormControl>
+                    <Typography variant="body2">Number of members needed</Typography>
+                    <TextField sx={{ width: '100%', mt: 1, mb: 1 }} type="number" variant="outlined" placeholder="Requested Quantity"
+                        value={requestQty} onChange={handleRequestQty}>How many players do you need?</TextField>
+                    <Stack direction="row" spacing={1}>
+                        <Button sx={{ width: '33%' }} onClick={() => setRequestSign(1)} color="error" variant="contained">
+                            Pay to join
+                        </Button>
+                        <Button sx={{ width: '33%' }} onClick={() => { setRequestSign(0); setRequestPrice(0) }} color="info" variant="contained">
+                            Make it free
+                        </Button>
+                        <Button sx={{ width: '33%' }} onClick={() => setRequestSign(-1)} color="success" variant="contained">
+                            Offer to join
+                        </Button>
+                    </Stack>
+                    <TextField disabled={requestSign === 0} sx={{ width: '100%', mt: 1, mb: 2 }} type="number" variant="outlined" placeholder="Requested Price"
+                        value={requestPrice} onChange={handleRequestPrice} InputProps={{
+                            startAdornment: <InputAdornment position="start">You will {requestSign >= 0 ? "earn" : "offer"}</InputAdornment>,
+                            endAdornment: <InputAdornment position="start"> Gratitude</InputAdornment>,
+                        }} />
                     <Button sx={{ width: '50%' }} onClick={handleClose} color="error" variant="contained">
                         Cancel
                     </Button>
-                    <Button sx={{ width: '50%' }} onClick={createPost} color="success" variant="contained">
-                        Create a Post
+                    <Button sx={{ width: '50%' }} onClick={savePost} color="success" variant="contained">
+                        Save Post
                     </Button>
                 </Box>
             </Modal>
@@ -125,7 +200,7 @@ export const Party = (party) => {
                 </Typography>
                 <Grid container spacing={2}>
                     {
-                        party.users.map((user) => <UserCard {...user} isCreator={party.partyOwner === user} />)
+                        party.users.map((user) => <UserCard key={user.userId} {...user} isCreator={party.partyOwner === user} />)
                     }
                 </Grid>
                 <Typography sx={{ mt: 4 }} variant="body1">
@@ -134,14 +209,22 @@ export const Party = (party) => {
                 <Grid container spacing={2}>
                     {
                         party.post === undefined
-                            ? <Grid item xs={6} sm={4} key={1}>
+                            ? <Grid item xs={6} sm={4}>
                                 <Typography variant="body2">You have no posts</Typography>
-                                <Button sx={{ width: '50%' }} onClick={handleOpen} color="success" variant="contained">
-                                    Create a Post
-                                </Button>
+
                             </Grid>
-                            : <Post {...party.post} />}
+                            : <Post {...party.post} request={false} />}
                 </Grid>
+                <Stack spacing={1}>
+                    <Button sx={{ width: '50%' }} onClick={handleOpen} color={party.post === undefined ? "success" : "warning"} variant="contained">
+                        {party.post === undefined ? "Create a " : "Edit your "} Post
+                    </Button>
+                    {party.post === undefined ? null :
+                        <Button sx={{ width: '50%' }} onClick={deletePost} color="error" variant="contained">
+                            Delete your Post
+                        </Button>
+                    }
+                </Stack>
             </CardContent>
             <CardActions sx={{ justifyContent: 'center' }}>
                 <Button variant="contained">Button</Button>
@@ -171,9 +254,7 @@ export function Parties() {
                     }
                 })
                 .then((data) => {
-                    data[0].post = undefined;
                     setParties(data);
-                    console.log(data);
                 });
         } catch (e) {
             console.log(e);

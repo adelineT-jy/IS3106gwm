@@ -122,7 +122,7 @@ export const Post = (post) => {
                 </Box>
             </Modal>
 
-            <Card sx={{ maxWidth: '400px' }} boxShadow={6}>
+            <Card sx={{ maxWidth: '400px' }}>
                 <CardContent>
                     <Typography sx={{ mb: 1.5, mt: 1 }} color="text.secondary">
                         Post Id: {post.postId}
@@ -142,18 +142,21 @@ export const Post = (post) => {
                     <Chip sx={{ margin: '2px' }} label={post.isAvailable ? "Available" : "Busy"}
                         color={post.isAvailable ? "success" : "error"}
                         icon={post.isAvailable ? <Check /> : <Close />} />
-                    <Chip sx={{ margin: '2px' }} label={post.requestPrice === 0 ? "Free" : `Costs $${post.requestPrice}`}
+                    <Chip sx={{ margin: '2px' }} label={post.requestPrice === 0 ? "Free" 
+                        : (post.requestPrice > 0 ? `Costs G${post.requestPrice}` : `Pays  G${-post.requestPrice}`)}
                         color={post.requestPrice === 0 ? "info" : "warning"} />
                 </CardContent>
-                <CardActions sx={{ justifyContent: 'center' }}>
-                    <Button variant="filled" onClick={setOpenModal}>Create a Request</Button>
-                </CardActions>
+                { post.request ?
+                        <CardActions sx={{ justifyContent: 'center' }}>
+                            <Button variant="filled" onClick={setOpenModal}>Create a Request</Button>
+                        </CardActions> : null}
             </Card>
         </Grid>
     )
 }
 
 export function Posts() {
+    const uId = JSON.parse(window.localStorage.user).userId;
     const [query, setQuery] = React.useState("");
     const [posts, setPosts] = React.useState([]);
 
@@ -201,7 +204,7 @@ export function Posts() {
                         </IconButton>
                     </Grid>
                     {
-                        posts.map((post) => <Post {...post} />)
+                        posts.map((post) => <Post {...post} request={true} />)
                     }
                 </Grid>
             </Container>
