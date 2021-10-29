@@ -106,6 +106,7 @@ public class PostSessionBean implements PostSessionBeanLocal {
         party.setPartyOwner(u);
         party.setUsers(users);
         party.setReviews(new ArrayList<>());
+        party.setPartyStartTime(new Date());
 
         em.persist(party);
         u.getParties().add(party);

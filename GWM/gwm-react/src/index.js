@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter } from 'react-router-dom';
-import { createTheme, ThemeProvider} from "@mui/material/styles";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
 import App from './App';
 
 import './index.css';
@@ -23,28 +23,28 @@ const theme = createTheme({
     },
 
     components: {
-      MuiInputLabel: {
-        styleOverrides: {
-          root: {
-            color: '#5f615f',
-            textTransform: 'uppercase',
-            fontSize: "0.8rem", 
-            fontFamily: "Roboto",
-            fontWeight: "bold",
-            // backgroundColor: "white"
-          }
-        }
-      }
-   }
+        MuiInputLabel: {
+            styleOverrides: {
+                root: {
+                    color: '#5f615f',
+                    textTransform: 'uppercase',
+                    fontSize: "0.8rem",
+                    fontFamily: "Roboto",
+                    fontWeight: "bold",
+                    // backgroundColor: "white"
+                }
+            }
+        },
+    }
 
 
 });
 
 ReactDOM.render(
-  <ThemeProvider theme={theme}>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
-  </ThemeProvider>,
-  document.getElementById('root')
+    <ThemeProvider theme={theme}>
+        <BrowserRouter>
+            <App />
+        </BrowserRouter>
+    </ThemeProvider>,
+    document.getElementById('root')
 );

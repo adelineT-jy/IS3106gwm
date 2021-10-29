@@ -37,12 +37,6 @@ const modalStyle = {
     borderRadius: '3px',
 };
 
-function Request() {
-    return (
-        <h4>Request</h4>
-    )
-}
-
 export const Post = (post) => {
     const uId = JSON.parse(window.localStorage.user).userId;
     const [anchorEl, setAnchorEl] = React.useState(null);

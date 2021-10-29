@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
-
-import Box from '@mui/material/Box';
-import { Avatar, Button, Card, CardActions, CardContent, Chip, Container, FormControl, Grid, InputAdornment, InputLabel, List, MenuItem, Modal, Select, Stack, TextField, Typography } from '@mui/material';
+import { styled } from '@mui/material/styles';
+import { Avatar, Box, Button, Card, CardActions, CardContent, Chip, Collapse, Container, FormControl, Grid, IconButton, InputAdornment, InputLabel, List, MenuItem, Modal, Select, Stack, TextField, Typography } from '@mui/material';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 import { Post } from './posts';
 import { Request } from './requests';
@@ -17,6 +17,17 @@ const modalStyle = {
     padding: 4,
     borderRadius: '3px',
 };
+
+const ExpandMore = styled((props) => {
+    const { expand, ...other } = props;
+    return <IconButton {...other} />;
+})(({ theme, expand }) => ({
+    transform: !expand ? 'rotate(0deg)' : 'rotate(180deg)',
+    marginLeft: 'auto',
+    transition: theme.transitions.create('transform', {
+        duration: theme.transitions.duration.shortest,
+    }),
+}));
 
 const UserCard = (user) => {
     return (
@@ -53,6 +64,12 @@ export const Party = (party) => {
     const [requestSign, setRequestSign] = React.useState(0);
     const [requestPrice, setRequestPrice] = React.useState(0);
     const [requestQty, setRequestQty] = React.useState(1);
+
+    const [expanded, setExpanded] = React.useState(false);
+
+    const handleExpandClick = () => {
+        setExpanded(!expanded);
+    };
 
     const handleOpen = () => {
         if (games.length === 0) {
@@ -172,8 +189,44 @@ export const Party = (party) => {
         window.location.reload(false);
     }
 
+    const endParty = () => {
+        const requestOptions = {
+            method: 'PUT',
+        };
+        fetch(`http://localhost:8080/Gwm-war/webresources/party/${party.partyId}/user/${uId}/end`, requestOptions)
+            .then((response) => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error('Request cannot be made');
+                }
+            })
+            .catch((error) => {
+                console.log(error)
+            });
+        party.setReload(party.reload + 1);
+    }
+
+    const deleteParty = () => {
+        const requestOptions = {
+            method: 'DELETE',
+        };
+        fetch(`http://localhost:8080/Gwm-war/webresources/party/${party.partyId}/user/${uId}/delete`, requestOptions)
+            .then((response) => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error('Request cannot be made');
+                }
+            })
+            .catch((error) => {
+                console.log(error)
+            });
+        party.setReload(party.reload + 1);
+    }
+
     return (
-        <Card sx={{ maxWidth: '800' }}>
+        <Card sx={{ maxWidth: '800', mb: 2 }}>
             <Modal open={openModal} onClose={handleClose}
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description">
@@ -218,9 +271,15 @@ export const Party = (party) => {
             </Modal>
 
             <CardContent>
-                <Typography variant="h5" component="div">
-                    Party Id: {party.partyId}
-                </Typography>
+                <Stack direction="row" justifyContent="space-between">
+                    <Typography variant="h5" component="div">
+                        Party Id: {party.partyId}
+                    </Typography>
+                    <Stack spacing={2} direction="row">
+                        <Button variant="contained" color="warning" onClick={endParty}>End party</Button>
+                        <Button variant="contained" color="error" onClick={deleteParty}>Delete party</Button>
+                    </Stack>
+                </Stack>
                 <Typography sx={{ mb: 1.5, mt: 1 }} color="text.secondary">
                     Party Invite Link: <Button color="primary" variant="filled" href={`https://${party.inviteLink}`} onClick={() => {
                         var otherWindow = window.open();
@@ -232,61 +291,68 @@ export const Party = (party) => {
                     Created by {party.partyOwner.username}
                 </Typography>
                 <Chip sx={{ margin: '2px' }} label={`Party created on ${party.partyStartTime.substring(0, 10)} at ${party.partyStartTime.substring(11, 16)}`} color="secondary" />
-                <Typography sx={{ mt: 4 }} variant="body1">
-                    Party Members
-                </Typography>
-                <Grid container spacing={2}>
-                    {
-                        party.users.map((user) => <UserCard key={user.userId} {...user} isCreator={party.partyOwner.userId === user.userId} />)
-                    }
-                </Grid>
-                <Grid container spacing={2}>
-                    <Grid item xs={6} sm={4}>
-                        <Typography sx={{ mt: 4 }} variant="body1">
-                            Posts
-                        </Typography>
-                    </Grid>
-                    <Grid item xs={6} sm={8} >
-                        <Typography sx={{ mt: 4 }} variant="body1">
-                            Requests
-                        </Typography>
-                    </Grid>
-                    {
-                        party.post === undefined
-                            ? <Grid item xs={12} >
-                                <Typography variant="body2">You have no posts or requests</Typography>
-                            </Grid>
-                            : <Post {...party.post} request={false} />}
-                    <Grid item xs={6} sm={8} >
-                        <List>
-                            {
-                                party.post.request.length === 0
-                                    ? <Typography variant="body2">Your post has no requests</Typography>
-                                    : party.post.request.map((request) => {
-                                        return (
-                                            <Request key={request.requestId} {...request}
-                                                acceptRequest={() => acceptRequest(request.requestId)}
-                                                cancelRequest={() => rejectRequest(request.requestId)} />
-                                        )
-                                    })
-                            }
-                        </List>
-                    </Grid>
-                </Grid>
-                <Stack spacing={1}>
-                    <Button sx={{ width: '50%' }} onClick={handleOpen} color={party.post === undefined ? "success" : "warning"} variant="contained">
-                        {party.post === undefined ? "Create a " : "Edit your "} Post
-                    </Button>
-                    {party.post === undefined ? null :
-                        <Button sx={{ width: '50%' }} onClick={deletePost} color="error" variant="contained">
-                            Delete your Post
-                        </Button>
-                    }
-                </Stack>
             </CardContent>
-            <CardActions sx={{ justifyContent: 'center' }}>
-                <Button variant="contained">Button</Button>
+            <CardActions sx={{ p: 2 }} onClick={handleExpandClick}>
+                <Typography variant="button">View {expanded ? "Less" : "More"}</Typography>
+                <ExpandMore expand={expanded}>
+                    <ExpandMoreIcon />
+                </ExpandMore>
             </CardActions>
+            <CardContent>
+                <Collapse in={expanded} timeout="auto" unmountOnExit>
+                    <Typography sx={{ mt: 4 }} variant="body1">
+                        Party Members
+                    </Typography>
+                    <Grid container spacing={2}>
+                        {
+                            party.users.map((user) => <UserCard key={user.userId} {...user} isCreator={party.partyOwner.userId === user.userId} />)
+                        }
+                    </Grid>
+                    <Grid container spacing={2}>
+                        <Grid item xs={6} sm={4}>
+                            <Typography sx={{ mt: 4 }} variant="body1">
+                                Posts
+                            </Typography>
+                        </Grid>
+                        <Grid item xs={6} sm={8} >
+                            <Typography sx={{ mt: 4 }} variant="body1">
+                                Requests
+                            </Typography>
+                        </Grid>
+                        {
+                            party.post === undefined
+                                ? <Grid item xs={12} >
+                                    <Typography variant="body2">You have no posts or requests</Typography>
+                                </Grid>
+                                : <Post {...party.post} request={false} />}
+                        <Grid item xs={6} sm={8} >
+                            <List>
+                                {
+                                    party.post === undefined || party.post.request.length === 0
+                                        ? <Typography variant="body2">Your post has no requests</Typography>
+                                        : party.post.request.map((request) => {
+                                            return (
+                                                <Request key={request.requestId} {...request}
+                                                    acceptRequest={() => acceptRequest(request.requestId)}
+                                                    cancelRequest={() => rejectRequest(request.requestId)} />
+                                            )
+                                        })
+                                }
+                            </List>
+                        </Grid>
+                    </Grid>
+                    <Stack spacing={1}>
+                        <Button sx={{ width: '50%' }} onClick={handleOpen} color={party.post === undefined ? "success" : "warning"} variant="contained">
+                            {party.post === undefined ? "Create a " : "Edit your "} Post
+                        </Button>
+                        {party.post === undefined ? null :
+                            <Button sx={{ width: '50%' }} onClick={deletePost} color="error" variant="contained">
+                                Delete your Post
+                            </Button>
+                        }
+                    </Stack>
+                </Collapse>
+            </CardContent>
         </Card>
     )
 }
@@ -294,10 +360,46 @@ export const Party = (party) => {
 export default function Parties() {
     const [parties, setParties] = React.useState([]);
     const uId = JSON.parse(window.localStorage.user).userId;
+    const [reload, setReload] = React.useState(0);
+
+    const [inviteLink, setInviteLink] = React.useState("");
+
+    const [openModal, setOpenModal] = React.useState(false);
 
     useEffect(() => {
         handleSubmit();
-    }, []);
+    }, [reload]);
+
+    const handleOpen = () => {
+        setOpenModal(true);
+    }
+
+    const handleClose = () => {
+        setOpenModal(false);
+    };
+
+    const createParty = () => {
+        const party = { inviteLink: inviteLink };
+        try {
+            fetch(`http://localhost:8080/Gwm-war/webresources/party/${uId}/create`, {
+                crossDomain: true,
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(party),
+            })
+                .then((response) => {
+                    if (response.ok) {
+                        return response.json();
+                    } else {
+                        throw new Error('Something went wrong');
+                    }
+                })
+        } catch (e) {
+            console.log(e);
+        }
+        handleClose();
+        setReload(reload + 1);
+    }
 
     const handleSubmit = () => {
         try {
@@ -322,11 +424,27 @@ export default function Parties() {
     return (
         <Box sx={{ bgcolor: '#e3f2fd', minHeight: '80vh', padding: 3 }}>
             <Container maxwidth="md">
-                <h1>Party</h1>
+                <Stack direction="row" spacing={2} justifyContent="space-between" sx={{ mb: 1 }}>
+                    <h1>Party</h1>
+                    <Button variant="contained" color="success" onClick={handleOpen}>Create Party</Button>
+                </Stack>
                 {
                     parties.filter((party) => party.partyEndTime === undefined)
-                        .map((party) => <Party key={party.partyId} {...party} />)
+                        .map((party) => <Party key={party.partyId} {...party} reload={reload} setReload={setReload} />)
                 }
+                <Modal open={openModal} onClose={handleClose}>
+                    <Box sx={modalStyle} centered>
+                        <Typography variant="h6">Are you sure you want to create a party?</Typography>
+                        <TextField sx={{ width: '100%', mt: 1 }} variant="outlined" placeholder="Invite Link"
+                            value={inviteLink} onChange={(e) => setInviteLink(e.target.value)}>Party Invite Link</TextField>
+                        <Button sx={{ width: '50%' }} onClick={handleClose} color="error" variant="contained">
+                            Cancel
+                        </Button>
+                        <Button sx={{ width: '50%' }} onClick={createParty} color="success" variant="contained">
+                            Create
+                        </Button>
+                    </Box>
+                </Modal>
             </Container>
         </Box>
     )
