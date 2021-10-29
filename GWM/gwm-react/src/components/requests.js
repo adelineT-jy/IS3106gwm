@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 
-import { Container, IconButton, ListItem, ListItemText, Stack } from "@mui/material";
+import { Container, IconButton, ListItem, ListItemText, Stack, Typography } from "@mui/material";
 import { Check, Close } from "@mui/icons-material";
 import { Box } from "@mui/system";
 
@@ -85,7 +85,7 @@ export default function Requests() {
         <Box sx={{ bgcolor: '#e3f2fd', minHeight: '80vh', padding: 3 }}>
             <Container maxwidth="md">
                 <h1>Requests</h1>
-                {
+                {   requests.length === 0 ? <Typography variant="body1">You have not made any requests</Typography> :
                     requests.map((request) => <Request key={request.requestId} {...request}
                         cancelRequest = {() => deleteRequest(request.requestId)}/>)
                 }
