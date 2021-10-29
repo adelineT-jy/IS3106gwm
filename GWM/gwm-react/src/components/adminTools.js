@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 
-import { Card, Box, Modal, Typography, Button, TextField, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
+import { Card, Box, Modal, Typography, Button, TextField, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Grid } from '@mui/material';
 
 const modalStyle = {
     position: 'absolute',
@@ -16,9 +16,7 @@ const modalStyle = {
 
 function PartyManager() {
     return (
-        <Box sx={{ bgcolor: '#e3f2fd', height: '20vh' }}>
-            <h1>Party Manager</h1>
-        </Box>
+        <h1>Party Manager</h1>
     )
 }
 
@@ -34,7 +32,7 @@ function GameManager() {
 
     useEffect(() => {
         searchGames();
-    }, [games]);
+    }, [query]);
 
     const handleClose = () => {
         setCreateGameModal(false);
@@ -85,7 +83,9 @@ function GameManager() {
                 } else {
                     throw new Error('Something went wrong');
                 }
-            }).then(handleClose);
+            })
+            .then(handleClose)
+            .then(searchGames)
     }
 
     function openEditGameModal(game) {
@@ -102,7 +102,7 @@ function GameManager() {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({  
+            body: JSON.stringify({
                 gameName: gameName,
                 gameDescription: gameDesc,
                 gameDownloadLink: gameURL
@@ -115,12 +115,12 @@ function GameManager() {
                 } else {
                     throw new Error('Something went wrong');
                 }
-            })
-            handleClose();
-        }
+            }).then(setQuery(query + " "))
+        handleClose()
+    }
 
     return (
-        <Card sx={{ maxWidth: '800' }}>
+        <div>
             <Modal open={createGameModal} onClose={handleClose}
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description">
@@ -161,58 +161,56 @@ function GameManager() {
                 </Box>
             </Modal>
 
-            <Box sx={{ bgcolor: '#e3f2fd', minHeight: '70vh' }}>
-                <h1>Game Manager</h1>
-                <div className="container">
-                    <TextField id="outlined-basic" placeholder="Search" variant="filled" value={query}
-                        onChange={(e) => setQuery(e.target.value)} sx={{ minWidth: '100%' }} />
-                    <TableContainer component={Paper}>
-                        <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell>gameId</TableCell>
-                                    <TableCell align="right">Game Name</TableCell>
-                                    <TableCell align="right">Game Description</TableCell>
-                                    <TableCell align="right">Game Download Link</TableCell>
-                                    <TableCell align="right" />
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {games.map((game) => (
-                                    <TableRow
-                                        key={game.gameId}
-                                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                                    >
-                                        <TableCell component="th" scope="row">
-                                            {game.gameId}
-                                        </TableCell>
-                                        <TableCell align="right">{game.gameName}</TableCell>
-                                        <TableCell align="right">{game.gameDescription}</TableCell>
-                                        <TableCell align="right">{game.gameDownloadLink}</TableCell>
-                                        <TableCell align="right">
-                                            <Button onClick={() => openEditGameModal(game)} color="warning" variant="contained">
-                                                Edit
-                                            </Button>
-                                        </TableCell>
-                                    </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
-                    <Button onClick={openCreateGameModal} color="secondary" variant="contained" >
-                        Add a Game
-                    </Button>
-                </div>
-            </Box >
-        </Card>
+            <h1>Game Manager</h1>
+            <TextField id="outlined-basic" placeholder="Search" variant="filled" value={query}
+                onChange={(e) => setQuery(e.target.value)} sx={{ minWidth: '100%' }} />
+            <TableContainer component={Paper}>
+                <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
+                    <TableHead>
+                        <TableRow>
+                            <TableCell>gameId</TableCell>
+                            <TableCell align="right">Game Name</TableCell>
+                            <TableCell align="right">Game Description</TableCell>
+                            <TableCell align="right">Game Download Link</TableCell>
+                            <TableCell align="right" />
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {games.map((game) => (
+                            <TableRow
+                                key={game.gameId}
+                                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                            >
+                                <TableCell component="th" scope="row">
+                                    {game.gameId}
+                                </TableCell>
+                                <TableCell align="right">{game.gameName}</TableCell>
+                                <TableCell align="right">{game.gameDescription}</TableCell>
+                                <TableCell align="right">{game.gameDownloadLink}</TableCell>
+                                <TableCell align="right">
+                                    <Button onClick={() => openEditGameModal(game)} color="warning" variant="contained">
+                                        Edit
+                                    </Button>
+                                </TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </TableContainer>
+            <Grid container justifyContent="flex-end">
+                <Button onClick={openCreateGameModal} color="secondary" variant="contained" sx={{ mt: 1 }}>
+                    Add a Game
+                </Button>
+            </Grid>
+        </div>
     )
 }
 
 export function AdminTools() {
     return (
-        <Box sx={{ bgcolor: '#e3f2fd', height: '70vh' }}>
+        <div className='container'>
             <PartyManager />
             <GameManager />
-        </Box>
+        </div>
     )
 }
