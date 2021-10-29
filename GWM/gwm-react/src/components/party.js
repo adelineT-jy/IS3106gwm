@@ -266,7 +266,7 @@ export const Party = (party) => {
                                         return (
                                             <Request key={request.requestId} {...request}
                                                 acceptRequest={() => acceptRequest(request.requestId)}
-                                                rejectRequest={() => rejectRequest(request.requestId)} />
+                                                cancelRequest={() => rejectRequest(request.requestId)} />
                                         )
                                     })
                             }
@@ -291,7 +291,7 @@ export const Party = (party) => {
     )
 }
 
-export function Parties() {
+export default function Parties() {
     const [parties, setParties] = React.useState([]);
     const uId = JSON.parse(window.localStorage.user).userId;
 
@@ -320,7 +320,7 @@ export function Parties() {
     }
 
     return (
-        <Box sx={{ bgcolor: '#e3f2fd', minHeight: '70vh', padding: 3 }}>
+        <Box sx={{ bgcolor: '#e3f2fd', minHeight: '80vh', padding: 3 }}>
             <Container maxwidth="md">
                 <h1>Party</h1>
                 {

@@ -153,7 +153,7 @@ export const Post = (post) => {
     )
 }
 
-export function Posts() {
+export default function Posts() {
     const [query, setQuery] = React.useState("");
     const [posts, setPosts] = React.useState([]);
 
@@ -190,8 +190,9 @@ export function Posts() {
     }
 
     return (
-        <Box sx={{ bgcolor: '#e3f2fd', minHeight: '70vh' }}>
+        <Box sx={{ bgcolor: '#e3f2fd', minHeight: '80vh' }}>
             <Container maxWidth="md">
+                <h1>Posts</h1>
                 <Grid container spacing={2} sx={{ padding: '1em', width: '100%' }}>
                     <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'center' }}>
                         <TextField id="outlined-basic" label="Search for Posts" variant="filled" value={query}
@@ -201,18 +202,10 @@ export function Posts() {
                         </IconButton>
                     </Grid>
                     {
-                        posts.map((post) => <Post {...post} request={true} />)
+                        posts.map((post) => <Post key={post.postId} {...post} request={true} />)
                     }
                 </Grid>
             </Container>
-        </Box>
-    )
-}
-
-export function Requests() {
-    return (
-        <Box sx={{ bgcolor: '#e3f2fd', height: '70vh' }}>
-            <Request />
         </Box>
     )
 }

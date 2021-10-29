@@ -31,7 +31,7 @@ const theme = createTheme({
             fontSize: "0.8rem", 
             fontFamily: "Roboto",
             fontWeight: "bold",
-            backgroundColor: "white"
+            // backgroundColor: "white"
           }
         }
       }
