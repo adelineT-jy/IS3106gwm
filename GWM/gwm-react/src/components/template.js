@@ -32,8 +32,8 @@ export function NavTabs() {
         <Box sx={{ width: '100%', alignItems: 'center', textAlign: 'right' }}>
             <Tabs value={currentTab} centered>
                 <Tab icon={<Description />} label="Posts" value="/posts" to="/posts" component={Link} sx={{ color: 'primary.main' }} />
-                <Tab icon={<PeopleAlt />} label="My Parties and Posts" value="/party" to="/party" component={Link} sx={{ color: 'primary.main' }} />
-                <Tab icon={<CleanHands />} label="My Requests" value="/requests" to="/requests" component={Link} sx={{ color: 'primary.main' }} />
+                <Tab icon={<PeopleAlt />} label="Ongoing Parties and Posts" value="/party" to="/party" component={Link} sx={{ color: 'primary.main' }} />
+                <Tab icon={<CleanHands />} label="Ongoing Requests" value="/requests" to="/requests" component={Link} sx={{ color: 'primary.main' }} />
             </Tabs>
         </Box>
     );

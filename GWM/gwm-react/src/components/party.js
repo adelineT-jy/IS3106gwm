@@ -324,7 +324,8 @@ export default function Parties() {
             <Container maxwidth="md">
                 <h1>Party</h1>
                 {
-                    parties.map((party) => <Party key={party.partyId} {...party} />)
+                    parties.filter((party) => party.partyEndTime === undefined)
+                        .map((party) => <Party key={party.partyId} {...party} />)
                 }
             </Container>
         </Box>
