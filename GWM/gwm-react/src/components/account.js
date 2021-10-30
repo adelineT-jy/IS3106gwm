@@ -8,7 +8,7 @@ import Stack from '@mui/material/Stack';
 import Container from '@mui/material/Container';
 import { Typography } from '@mui/material';
 import Link from '@mui/material/Link';
-import { Paper } from '@mui/material';
+import { Paper, Grid } from '@mui/material';
 
 export function Account() {
     return (
@@ -19,14 +19,33 @@ export function Account() {
 }
 
 export function Register() {
+    const [email, setEmail] = useState("");
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
+
+    const handleRegister = (event) => {
+    
+    }
     return (
-        <Box sx={{ height: '70vh' }}>
-            <h1>Register</h1>
-            <form>
-                <label>
-                    Login:
-                </label>
-            </form>
+        <Box component="form" onSubmit={handleRegister}
+                display="flex" alignItems="center" justifyContent="center" textAlign="center"
+                sx={{ height: '85vh'}}>
+            <Paper sx={{width: '120vh', height: '60vh'}}>
+                <Typography variant="h6">Register</Typography>
+                <Grid spacing={2}>
+                    <Grid item xs={6}>
+                        <TextField id="outlined-basic" label="Email" value={email}
+                        required autoFocus
+                        onChange={(event) => setEmail(event.target.value)} />
+                        <TextField id="outlined-basic" label="Username" value={username}
+                        required 
+                        onChange={(event) => setUsername(event.target.value)} />
+                        <TextField id="outlined-password-input" label="Password" required
+                        type="password" autoComplete="current-password" value={password}
+                        onChange={(event) => setPassword(event.target.value)} />
+                    </Grid>
+                </Grid>
+            </Paper>
         </Box>
     )
 }
@@ -69,7 +88,6 @@ export function Login() {
     
 
     return (
-        
             <Box component="form" onSubmit={handleLogin}
                 display="flex" alignItems="center" justifyContent="center" textAlign="center"
                 sx={{ height: '85vh'}}>
