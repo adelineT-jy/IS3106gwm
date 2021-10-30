@@ -22,7 +22,10 @@ import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
+import { AppBar, Typography } from '@mui/material';
 import Toolbar from '@mui/material/Toolbar';
+
+import logo from "../images/gwm.jpg"
 
 export function NavTabs() {
     const routeMatch = useRouteMatch(['/posts', '/party', '/requests']);
@@ -53,10 +56,14 @@ export function AdminTabs() {
     );
 }
 
-//change to appbar
+
 function GuestMenu() {
     return (
         <Toolbar>
+            <Avatar src={logo}/>
+            <Typography id="title" sx={{ flexGrow: 1 }}>
+                    Game With Me
+            </Typography>
             <Button href="/login" variant="contained" color="secondary">Login</Button>
             <Button href="/register" variant="text">Register</Button>
         </Toolbar>
@@ -65,9 +72,13 @@ function GuestMenu() {
 
 function AdminMenu() {
     return (
-        <Stack spacing={2} direction="row">
+        <Toolbar>
+            <Avatar src={logo}/>
+            <Typography id="title" sx={{ flexGrow: 1 }}>
+                    Game With Me
+            </Typography>
             <Button variant="text" href="/logout">Sign out</Button>
-        </Stack>
+        </Toolbar>
     )
 }
 
@@ -134,12 +145,9 @@ function UserMenu() {
 
 export function Header() {
     return (
-        <Box sx={{ bgcolor: 'black', height: '10vh' }}>
-            <Grid container justifyContent='flex-end'>
-                <Grid item xs={5} md={3}>
-                    <h1 id="title">Game With Me</h1>
-                </Grid>
-                <Grid item xs={5} md={6}>
+        <header>
+            <Box sx={{bgcolor: 'black', flexGrow: 1}}>  
+                <AppBar sx={{bgcolor: 'black'}} position="static">
                     <Switch>
                         <Route exact path="/" />
                         <Route exact path="/login" />
@@ -149,9 +157,7 @@ export function Header() {
                         <Route path="/admin" component={AdminTabs} />
 
                         <Route path="/" component={NavTabs} />
-                    </Switch>
-                </Grid>
-                <Grid item xs={2} md={3}>
+                    </Switch>  
                     <Switch>
                         <Route exact path="/" component={GuestMenu} />
                         <Route exact path="/login" component={GuestMenu} />
@@ -162,17 +168,50 @@ export function Header() {
 
                         <Route path="/" component={UserMenu} />
                     </Switch>
-                </Grid>
-            </Grid>
-        </Box>
+                </AppBar>
+            </Box>
+        </header>
+        // <Box sx={{ bgcolor: 'black', height: '10vh' }}>
+        //     <Grid container justifyContent='flex-end'>
+        //         <Grid item xs={5} md={3}>
+        //             <h1 id="title">Game With Me</h1>
+        //         </Grid>
+        //         <Grid item xs={5} md={6}>
+                    // <Switch>
+                    //     <Route exact path="/" />
+                    //     <Route exact path="/login" />
+                    //     <Route exact path="/register" />
+                    //     <Route exact path="/logout" />
+
+                    //     <Route path="/admin" component={AdminTabs} />
+
+                    //     <Route path="/" component={NavTabs} />
+                    // </Switch>
+        //         </Grid>
+        //         <Grid item xs={2} md={3}>
+                    // <Switch>
+                    //     <Route exact path="/" component={GuestMenu} />
+                    //     <Route exact path="/login" component={GuestMenu} />
+                    //     <Route exact path="/register" component={GuestMenu} />
+                    //     <Route exact path="/logout" component={GuestMenu} />
+
+                    //     <Route path="/admin" component={AdminMenu} />
+
+                    //     <Route path="/" component={UserMenu} />
+                    // </Switch>
+        //         </Grid>
+        //     </Grid>
+        // </Box>
     );
 }
 
 export function Footer() {
     return (
-        <Box sx={{ bgcolor: '#111', color:'white', height: '10vh', mt:5, pt:1 }}>
-            <p><strong>Copyright &copy; 2021</strong> Game With Me Production</p>
-            <p>All rights reserved.</p>
-        </Box>
+        <footer>
+            <Box sx={{ bgcolor: '#111', color:'white', mt:5, pt:1, bottom:0, left: 0, right: 0, position:'absolute'}}>
+                <p><strong>Copyright &copy; 2021</strong> Game With Me Production</p>
+                <p>All rights reserved.</p>
+            </Box>            
+        </footer>
     );
 }

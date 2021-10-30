@@ -8,6 +8,7 @@ import Stack from '@mui/material/Stack';
 import Container from '@mui/material/Container';
 import { Typography } from '@mui/material';
 import Link from '@mui/material/Link';
+import { Paper } from '@mui/material';
 
 export function Account() {
     return (
@@ -68,11 +69,12 @@ export function Login() {
     
 
     return (
-        <Container maxwidth="xs" sx={{ bgcolor: 'white' }}>
-            <Box component="form" onSubmit={handleLogin} 
+        
+            <Box component="form" onSubmit={handleLogin}
                 display="flex" alignItems="center" justifyContent="center" textAlign="center"
-                sx={{ height: '80vh' }}>
-                <Stack spacing={2} sx={{ justifyContent: 'center' }}>
+                sx={{ height: '85vh'}}>
+                <Paper sx={{width: '45vh', height: '55vh'}}>
+                <Stack spacing={2} sx={{ justifyContent: 'center', margin: '8vh'}}>
                     <Typography variant="h6">Login</Typography>
                     
                     <TextField id="outlined-basic" label="Username" value={username}
@@ -88,8 +90,9 @@ export function Login() {
                     </Button>
                     <Link href="/register" fontSize="small" color="secondary" fontWeight="bold">Create an account</Link>
                 </Stack>
+                </Paper>
             </Box>
-        </Container>
+
     )
 }
 
