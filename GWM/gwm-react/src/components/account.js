@@ -9,6 +9,11 @@ import Container from '@mui/material/Container';
 import { Typography } from '@mui/material';
 import Link from '@mui/material/Link';
 import { Paper, Grid } from '@mui/material';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormHelperText from '@mui/material/FormHelperText';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
 
 export function Account() {
     return (
@@ -22,27 +27,57 @@ export function Register() {
     const [email, setEmail] = useState("");
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    const [gender, setGender] = useState("");
 
     const handleRegister = (event) => {
+        event.preventDefault();
+        
     
     }
     return (
         <Box component="form" onSubmit={handleRegister}
                 display="flex" alignItems="center" justifyContent="center" textAlign="center"
                 sx={{ height: '85vh'}}>
-            <Paper sx={{width: '120vh', height: '60vh'}}>
-                <Typography variant="h6">Register</Typography>
-                <Grid spacing={2}>
-                    <Grid item xs={6}>
+            <Paper sx={{width: '60vh', height: '60vh'}}>
+                <Typography variant="h6" sx={{padding: "5vh", paddingBottom: "3vh"}}>Register</Typography>
+                <Grid container spacing={2} display="flex">
+                    <Grid item xs={12}>
                         <TextField id="outlined-basic" label="Email" value={email}
                         required autoFocus
                         onChange={(event) => setEmail(event.target.value)} />
+                    </Grid>
+                    <Grid item xs={12}>
                         <TextField id="outlined-basic" label="Username" value={username}
                         required 
                         onChange={(event) => setUsername(event.target.value)} />
+                    </Grid>
+                    <Grid item xs={12}>
                         <TextField id="outlined-password-input" label="Password" required
                         type="password" autoComplete="current-password" value={password}
                         onChange={(event) => setPassword(event.target.value)} />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <FormControl sx={{ minWidth: 195 }}>
+                            <InputLabel id="demo-simple-select-helper-label">Gender</InputLabel>
+                            <Select
+                            labelId="demo-simple-select-helper-label"
+                            id="demo-simple-select-helper"
+                            value={gender}
+                            label="Gender"
+                            onChange={(event) => setGender(event.target.value)}
+                            >
+                            <MenuItem value={0}>Female</MenuItem>
+                            <MenuItem value={1}>Male</MenuItem>
+                            <MenuItem value={2}>Rather Not Say</MenuItem>
+                            </Select>
+                        </FormControl>
+                    </Grid>
+                    {/* <Grid item xs={6} md={8}>
+                    </Grid> */}
+                    <Grid item xs={12}>
+                        <Button color="secondary" variant="contained" type="submit">
+                            Register
+                        </Button>
                     </Grid>
                 </Grid>
             </Paper>

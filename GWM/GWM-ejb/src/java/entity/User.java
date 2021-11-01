@@ -30,6 +30,9 @@ public class User implements Serializable {
 
     @Column(length = 32, nullable = false)
     private String password;
+    
+    @Column(nullable=false)
+    private byte gender;
 
     @Column(nullable = false)
     private boolean isAvailable;
@@ -80,10 +83,11 @@ public class User implements Serializable {
         reviews = new ArrayList<>();
     }
     
-    public User(String email, String username, String password) {
+    public User(String email, String username, String password, byte gender) {
         this.email = email;
         this.username = username;
         this.password = password;
+        this.gender = gender;
     }
 
 
@@ -125,6 +129,14 @@ public class User implements Serializable {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public byte getGender() {
+        return gender;
+    }
+
+    public void setGender(byte gender) {
+        this.gender = gender;
     }
 
     public boolean isIsAvailable() {
