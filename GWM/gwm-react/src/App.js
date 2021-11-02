@@ -11,9 +11,9 @@ import Posts from './components/posts';
 import Requests from './components/requests';
 import Parties from './components/party';
 import { Users } from './components/users';
-import AdminPosts from './components/admin';
+// import AdminPosts from './components/admin';
 import { AdminTools } from './components/adminTools';
-import {ThemeProvider} from '@mui/material/styles';
+// import {ThemeProvider} from '@mui/material/styles';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';

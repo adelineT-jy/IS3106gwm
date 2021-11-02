@@ -367,8 +367,24 @@ export default function Parties() {
     const [openModal, setOpenModal] = React.useState(false);
 
     useEffect(() => {
-        handleSubmit();
-    }, [reload]);
+        try {
+            fetch(`http://localhost:8080/Gwm-war/webresources/users/${uId}/party`, {
+                crossDomain: true
+            })
+                .then((response) => {
+                    if (response.ok) {
+                        return response.json();
+                    } else {
+                        throw new Error('Something went wrong');
+                    }
+                })
+                .then((data) => {
+                    setParties(data);
+                });
+        } catch (e) {
+            console.log(e);
+        }
+    }, [reload, uId]);
 
     const handleOpen = () => {
         setOpenModal(true);
@@ -399,26 +415,6 @@ export default function Parties() {
         }
         handleClose();
         setReload(reload + 1);
-    }
-
-    const handleSubmit = () => {
-        try {
-            fetch(`http://localhost:8080/Gwm-war/webresources/users/${uId}/party`, {
-                crossDomain: true
-            })
-                .then((response) => {
-                    if (response.ok) {
-                        return response.json();
-                    } else {
-                        throw new Error('Something went wrong');
-                    }
-                })
-                .then((data) => {
-                    setParties(data);
-                });
-        } catch (e) {
-            console.log(e);
-        }
     }
 
     return (

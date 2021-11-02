@@ -150,18 +150,9 @@ export const Post = (post) => {
 export default function Posts() {
     const [query, setQuery] = React.useState("");
     const [posts, setPosts] = React.useState([]);
+    const [reload, setReload] = React.useState(0);
 
     useEffect(() => {
-        handleSubmit();
-    }, []);
-
-    const handleKeyDown = (event) => {
-        if (event.key === 'Enter') {
-            handleSubmit();
-        }
-    }
-
-    const handleSubmit = () => {
         console.log(query);
         try {
             fetch(`http://localhost:8080/Gwm-war/webresources/posts/query?query=${query}`, {
@@ -181,6 +172,16 @@ export default function Posts() {
         } catch (e) {
             console.log(e);
         }
+    }, [reload, query]);
+
+    const handleKeyDown = (event) => {
+        if (event.key === 'Enter') {
+            handleSubmit();
+        }
+    }
+
+    const handleSubmit = () => {
+        setReload(reload + 1);
     }
 
     return (
