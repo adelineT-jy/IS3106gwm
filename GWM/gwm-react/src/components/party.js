@@ -74,13 +74,7 @@ export const Party = (party) => {
     const handleOpen = () => {
         if (games.length === 0) {
             fetch(`http://localhost:8080/Gwm-war/webresources/party/games`)
-                .then((response) => {
-                    if (response.ok) {
-                        return response.json();
-                    } else {
-                        throw new Error('Something went wrong');
-                    }
-                })
+                .then(response => response.json())
                 .then((data) => {
                     setGames(data);
                     setGameId(data[0].gameId);
@@ -122,107 +116,38 @@ export const Party = (party) => {
             body: JSON.stringify(post),
         };
         fetch(`http://localhost:8080/Gwm-war/webresources/party/${party.partyId}${editString}/users/${uId}/games/${gameId}`, requestOptions)
-            .then((response) => {
-                if (response.ok) {
-                    return response.json();
-                } else {
-                    throw new Error('Request cannot be made');
-                }
-            })
-            .catch((error) => {
-                console.log(error)
-            });
-        window.location.reload(false);
+            .then(() => party.setReload(party.reload + 1))
+            .catch((error) => console.log(error));
     }
 
     const deletePost = () => {
-        const requestOptions = {
-            method: 'DELETE',
-        };
-        fetch(`http://localhost:8080/Gwm-war/webresources/party/${party.partyId}/post/${party.post.postId}/deleteBy/${uId}`, requestOptions)
-            .then((response) => {
-                if (response.ok) {
-                    return response.json();
-                } else {
-                    throw new Error('Request cannot be made');
-                }
-            })
-            .catch((error) => {
-                console.log(error)
-            });
-        window.location.reload(false);
+        fetch(`http://localhost:8080/Gwm-war/webresources/party/${party.partyId}/post/${party.post.postId}/deleteBy/${uId}`, { method: 'DELETE' })
+            .then(() => party.setReload(party.reload + 1))
+            .catch((error) => console.log(error));
     }
 
     const acceptRequest = (rId) => {
-        const requestOptions = {
-            method: 'PUT',
-        };
-        fetch(`http://localhost:8080/Gwm-war/webresources/party/${party.partyId}/user/${uId}/acceptRequest/${rId}`, requestOptions)
-            .then((response) => {
-                if (response.ok) {
-                    return response.json();
-                } else {
-                    throw new Error('Request cannot be made');
-                }
-            })
-            .catch((error) => {
-                console.log(error)
-            });
-        window.location.reload(false);
+        fetch(`http://localhost:8080/Gwm-war/webresources/party/${party.partyId}/user/${uId}/acceptRequest/${rId}`, { method: 'PUT' })
+            .then(() => party.setReload(party.reload + 1))
+            .catch((error) => console.log(error));
     }
 
     const rejectRequest = (rId) => {
-        const requestOptions = {
-            method: 'PUT',
-        };
-        fetch(`http://localhost:8080/Gwm-war/webresources/party/${party.partyId}/user/${uId}/rejectRequest/${rId}`, requestOptions)
-            .then((response) => {
-                if (response.ok) {
-                    return response.json();
-                } else {
-                    throw new Error('Request cannot be made');
-                }
-            })
-            .catch((error) => {
-                console.log(error)
-            });
-        window.location.reload(false);
+        fetch(`http://localhost:8080/Gwm-war/webresources/party/${party.partyId}/user/${uId}/rejectRequest/${rId}`, { method: 'PUT' })
+            .then(() => party.setReload(party.reload + 1))
+            .catch((error) => console.log(error));
     }
 
     const endParty = () => {
-        const requestOptions = {
-            method: 'PUT',
-        };
-        fetch(`http://localhost:8080/Gwm-war/webresources/party/${party.partyId}/user/${uId}/end`, requestOptions)
-            .then((response) => {
-                if (response.ok) {
-                    return response.json();
-                } else {
-                    throw new Error('Request cannot be made');
-                }
-            })
-            .catch((error) => {
-                console.log(error)
-            });
-        party.setReload(party.reload + 1);
+        fetch(`http://localhost:8080/Gwm-war/webresources/party/${party.partyId}/user/${uId}/end`, { method: 'PUT' })
+            .then(() => party.setReload(party.reload + 1))
+            .catch((error) => console.log(error));
     }
 
     const deleteParty = () => {
-        const requestOptions = {
-            method: 'DELETE',
-        };
-        fetch(`http://localhost:8080/Gwm-war/webresources/party/${party.partyId}/user/${uId}/delete`, requestOptions)
-            .then((response) => {
-                if (response.ok) {
-                    return response.json();
-                } else {
-                    throw new Error('Request cannot be made');
-                }
-            })
-            .catch((error) => {
-                console.log(error)
-            });
-        party.setReload(party.reload + 1);
+        fetch(`http://localhost:8080/Gwm-war/webresources/party/${party.partyId}/user/${uId}/delete`, { method: 'DELETE' })
+            .then(() => party.setReload(party.reload + 1))
+            .catch((error) => console.log(error));
     }
 
     return (
@@ -366,56 +291,31 @@ export default function Parties() {
 
     const [openModal, setOpenModal] = React.useState(false);
 
-    useEffect(() => {
-        try {
-            fetch(`http://localhost:8080/Gwm-war/webresources/users/${uId}/party`, {
-                crossDomain: true
-            })
-                .then((response) => {
-                    if (response.ok) {
-                        return response.json();
-                    } else {
-                        throw new Error('Something went wrong');
-                    }
-                })
-                .then((data) => {
-                    setParties(data);
-                });
-        } catch (e) {
-            console.log(e);
-        }
-    }, [reload, uId]);
+    const handleOpen = () => setOpenModal(true);
 
-    const handleOpen = () => {
-        setOpenModal(true);
-    }
-
-    const handleClose = () => {
-        setOpenModal(false);
-    };
+    const handleClose = () => setOpenModal(false);
 
     const createParty = () => {
-        const party = { inviteLink: inviteLink };
-        try {
-            fetch(`http://localhost:8080/Gwm-war/webresources/party/${uId}/create`, {
-                crossDomain: true,
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(party),
-            })
-                .then((response) => {
-                    if (response.ok) {
-                        return response.json();
-                    } else {
-                        throw new Error('Something went wrong');
-                    }
-                })
-        } catch (e) {
-            console.log(e);
+        const requestOptions = {
+            crossDomain: true,
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ inviteLink: inviteLink }),
         }
-        handleClose();
-        setReload(reload + 1);
+        fetch(`http://localhost:8080/Gwm-war/webresources/party/${uId}/create`, requestOptions)
+            .then(() => {
+                handleClose();
+                setReload(reload + 1);
+            })
+            .catch((error) => console.log(error));
     }
+
+    useEffect(() => {
+        console.log('load');
+        fetch(`http://localhost:8080/Gwm-war/webresources/users/${uId}/party`)
+            .then(response => setParties(response.json()))
+            .catch((error) => console.log(error));
+    }, [reload, uId]);
 
     return (
         <Box sx={{ bgcolor: '#e3f2fd', minHeight: '80vh', padding: 3 }}>

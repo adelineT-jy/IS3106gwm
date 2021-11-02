@@ -33,8 +33,8 @@ export function NavTabs() {
         <Box sx={{ width: '100%', alignItems: 'center', textAlign: 'right' }}>
             <Tabs value={currentTab} centered>
                 <Tab icon={<Description />} label="Posts" value="/posts" to="/posts" component={Link} sx={{ color: 'primary.main' }} />
-                <Tab icon={<PeopleAlt />} label="Ongoing Parties and Posts" value="/party" to="/party" component={Link} sx={{ color: 'primary.main' }} />
-                <Tab icon={<CleanHands />} label="Ongoing Requests" value="/requests" to="/requests" component={Link} sx={{ color: 'primary.main' }} />
+                <Tab icon={<PeopleAlt />} label="Parties" value="/party" to="/party" component={Link} sx={{ color: 'primary.main' }} />
+                <Tab icon={<CleanHands />} label="Requests" value="/requests" to="/requests" component={Link} sx={{ color: 'primary.main' }} />
             </Tabs>
         </Box>
     );
@@ -121,13 +121,13 @@ function UserMenu() {
                     <ListItemIcon>
                         <Description fontSize="small" />
                     </ListItemIcon>
-                    <Link to="/account#posts">  My Posts </Link>
+                    <Link to="/account#posts">  My Past Posts </Link>
                 </MenuItem>
                 <MenuItem>
                     <ListItemIcon>
                         <PeopleAlt fontSize="small" />
                     </ListItemIcon>
-                    <Link to="/account#parties">  My Parties </Link>
+                    <Link to="/account#parties">  My Past Parties </Link>
                 </MenuItem>
                 <MenuItem>
                     <ListItemIcon>
@@ -170,7 +170,7 @@ export function Header() {
 export function Footer() {
     return (
         <footer>
-            <Box sx={{ bgcolor: '#111', color: 'white', mt: 5, pt: 1, bottom: 0, left: 0, right: 0, position: 'absolute' }}>
+            <Box sx={{ bgcolor: '#111', color: 'white', pt: 1, bottom: 0, left: 0, right: 0 }}>
                 <p><strong>Copyright &copy; 2021</strong> Game With Me Production</p>
                 <p>All rights reserved.</p>
             </Box>
