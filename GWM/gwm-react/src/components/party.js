@@ -311,9 +311,9 @@ export default function Parties() {
     }
 
     useEffect(() => {
-        console.log('load');
         fetch(`http://localhost:8080/Gwm-war/webresources/users/${uId}/party`)
-            .then(response => setParties(response.json()))
+            .then(response => response.json())
+            .then(data => setParties(data))
             .catch((error) => console.log(error));
     }, [reload, uId]);
 
