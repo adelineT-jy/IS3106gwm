@@ -10,14 +10,16 @@ import entity.User;
 import enumeration.RequestStatus;
 import error.AuthenticationException;
 import error.InsufficientFundsException;
+import error.NoResultException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.xml.bind.annotation.XmlTransient;
@@ -33,6 +35,9 @@ public class PostSessionBean implements PostSessionBeanLocal {
 
     @EJB
     private UserSessionLocal userSessionLocal;
+
+    @EJB
+    private TransferSessionLocal transferSessionLocal;
 
     @Override
     public List<Post> searchPosts(String query) {
@@ -165,13 +170,14 @@ public class PostSessionBean implements PostSessionBeanLocal {
         User toAdd = r.getRequester();
         User owner = getUser(userId);
 
-        if (toAdd.getWallet().compareTo(price) > 0) {
-            toAdd.setWallet(toAdd.getWallet().subtract(price));
-            owner.setWallet(owner.getWallet().add(price));
+        try {
+            transferSessionLocal.transferFunds(toAdd.getUserId(), userId, price);
             r.setStatus(RequestStatus.ACCEPTED);
             joinParty(partyId, toAdd.getUserId());
-        } else {
+        } catch (InsufficientFundsException ex1) {
             throw new InsufficientFundsException("Requester does not have enough funds to join.");
+        } catch (NoResultException ex2) {
+            throw new NoResultException("Invalid user.");
         }
     }
 
@@ -186,7 +192,7 @@ public class PostSessionBean implements PostSessionBeanLocal {
     }
 
     @Override
-    public void deleteParty(Long partyId, Long userId) throws NoResultException, AuthenticationException {
+    public void deleteParty(Long partyId, Long userId) throws NoResultException, AuthenticationException, InsufficientFundsException {
         if (!checkPartyOwner(partyId, userId)) {
             throw new AuthenticationException("User not authenticated to delete party.");
         }
@@ -196,20 +202,22 @@ public class PostSessionBean implements PostSessionBeanLocal {
             throw new NoResultException("No such party. Unsuccessful deletion.");
         }
 
-        for (int i = 0; i < p.getUsers().size(); i++) {
-            p.getUsers().get(i).getParties().remove(p);
-        }
-        p.setUsers(new ArrayList<>());
+        // Return to requesters
+        try {
+            for (Request r: p.getPost().getRequest()) {
+                if (r.getStatus().equals(RequestStatus.ACCEPTED)) {
+                    transferSessionLocal.transferFundsUser(p.getPartyOwner(), r.getRequester(), r.getRequestPrice());
+                }
+            }
 
-        // Return gratitude to requesters
-        p.getPost().getRequest()
-                .stream()
-                .filter(x -> x.getStatus().equals(RequestStatus.ACCEPTED))
-                .forEach(x -> {
-                    x.getRequester().setWallet(x.getRequester().getWallet().add(x.getRequestPrice()));
-                    p.getPartyOwner().setWallet(p.getPartyOwner().getWallet().subtract(x.getRequestPrice()));
-                });
-        em.remove(p);
+            for (int i = 0; i < p.getUsers().size(); i++) {
+                p.getUsers().get(i).getParties().remove(p);
+            }
+            p.setUsers(new ArrayList<>());
+            em.remove(p);
+        } catch (InsufficientFundsException ex) {
+            throw new InsufficientFundsException("Invalid users.");
+        }
     }
 
     @Override
@@ -222,7 +230,7 @@ public class PostSessionBean implements PostSessionBeanLocal {
     }
 
     @Override
-    public void createPost(Post p, Long partyId, Long userId, Long gameId) {
+    public void createPost(Post p, Long partyId, Long userId, Long gameId) throws NoResultException {
         if (!checkPartyUser(partyId, userId)) {
             throw new NoResultException("You are not in this party.");
         }
@@ -286,7 +294,7 @@ public class PostSessionBean implements PostSessionBeanLocal {
     }
 
     @Override
-    public Boolean checkRequestCreated(Long pId, Long uId) {
+    public Boolean checkRequestCreated(Long pId, Long uId) throws NoResultException {
         Post p = getPost(pId);
         for (Request r : p.getRequest()) {
             if (r.getRequestId() == uId) {
