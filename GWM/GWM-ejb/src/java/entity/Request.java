@@ -7,6 +7,7 @@ package entity;
 
 import enumeration.RequestStatus;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.CascadeType;
@@ -45,6 +46,9 @@ public class Request implements Serializable {
 
     @Column(length = 512)
     private String text;
+    
+    @Column(scale = 2)
+    private BigDecimal requestPrice;
 
     @JsonbTransient
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
@@ -111,6 +115,14 @@ public class Request implements Serializable {
         int hash = 0;
         hash += (requestId != null ? requestId.hashCode() : 0);
         return hash;
+    }
+
+    public BigDecimal getRequestPrice() {
+        return requestPrice;
+    }
+
+    public void setRequestPrice(BigDecimal requestPrice) {
+        this.requestPrice = requestPrice;
     }
 
     @Override

@@ -9,6 +9,7 @@ import entity.Request;
 import entity.Review;
 import entity.User;
 import error.AuthenticationException;
+import error.InsufficientFundsException;
 import java.util.List;
 import javax.ejb.Local;
 import javax.persistence.NoResultException;
@@ -34,7 +35,7 @@ public interface PostSessionBeanLocal {
 
     public void joinParty(Long partyId, Long userId) throws NoResultException;
 
-    public void acceptToParty(Long rId, Long partyId, Long userId) throws NoResultException, AuthenticationException;
+    public void acceptToParty(Long rId, Long partyId, Long userId) throws NoResultException, AuthenticationException, InsufficientFundsException;
 
     public void rejectFromParty(Long rId, Long partyId, Long userId) throws NoResultException, AuthenticationException;
 

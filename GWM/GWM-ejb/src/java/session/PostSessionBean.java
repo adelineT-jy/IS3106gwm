@@ -9,6 +9,8 @@ import entity.Review;
 import entity.User;
 import enumeration.RequestStatus;
 import error.AuthenticationException;
+import error.InsufficientFundsException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -150,7 +152,7 @@ public class PostSessionBean implements PostSessionBeanLocal {
     }
 
     @Override
-    public void acceptToParty(Long rId, Long partyId, Long userId) throws NoResultException, AuthenticationException { // userId is the one accepting, has to be party owner.
+    public void acceptToParty(Long rId, Long partyId, Long userId) throws NoResultException, AuthenticationException, InsufficientFundsException { // userId is the one accepting, has to be party owner.
 
         if (!checkPartyOwner(partyId, userId)) {
             throw new AuthenticationException("User not authenticated to accept request.");
@@ -158,10 +160,19 @@ public class PostSessionBean implements PostSessionBeanLocal {
 
         System.out.println("SSS");
         Request r = getRequest(rId);
-        r.setStatus(RequestStatus.ACCEPTED);
 
+        BigDecimal price = r.getRequestPrice();
         User toAdd = r.getRequester();
-        joinParty(partyId, toAdd.getUserId());
+        User owner = getUser(userId);
+
+        if (toAdd.getWallet().compareTo(price) > 0) {
+            toAdd.setWallet(toAdd.getWallet().subtract(price));
+            owner.setWallet(owner.getWallet().add(price));
+            r.setStatus(RequestStatus.ACCEPTED);
+            joinParty(partyId, toAdd.getUserId());
+        } else {
+            throw new InsufficientFundsException("Requester does not have enough funds to join.");
+        }
     }
 
     @Override
@@ -189,8 +200,15 @@ public class PostSessionBean implements PostSessionBeanLocal {
             p.getUsers().get(i).getParties().remove(p);
         }
         p.setUsers(new ArrayList<>());
-        // Post po = getPostFromParty(partyId);
-        // getPost(po.getPostId()).setParty(null);
+
+        // Return gratitude to requesters
+        p.getPost().getRequest()
+                .stream()
+                .filter(x -> x.getStatus().equals(RequestStatus.ACCEPTED))
+                .forEach(x -> {
+                    x.getRequester().setWallet(x.getRequester().getWallet().add(x.getRequestPrice()));
+                    p.getPartyOwner().setWallet(p.getPartyOwner().getWallet().subtract(x.getRequestPrice()));
+                });
         em.remove(p);
     }
 
@@ -280,6 +298,7 @@ public class PostSessionBean implements PostSessionBeanLocal {
 
     @Override
     public void createRequest(Request r, Long pId, Long uId) throws NoResultException {
+        Post p = getPost(pId);
 
         r.setStatus(RequestStatus.PENDING);
         User u = getUser(uId);
@@ -287,8 +306,8 @@ public class PostSessionBean implements PostSessionBeanLocal {
         em.persist(r);
 
         u.getRequests().add(r);
-        Post p = getPost(pId);
         r.setPost(p);
+        r.setRequestPrice(p.getRequestPrice());
         p.getRequest().add(r);
         em.flush();
     }
