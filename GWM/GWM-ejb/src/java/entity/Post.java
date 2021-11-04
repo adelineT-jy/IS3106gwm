@@ -56,7 +56,6 @@ public class Post implements Serializable {
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Payment payment;
 
-    @JsonbTransient
     @OneToMany(mappedBy = "post")
     private List<Request> request;
 

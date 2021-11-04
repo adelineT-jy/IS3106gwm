@@ -3,6 +3,7 @@ package session;
 import entity.Admin;
 import entity.Game;
 import error.InvalidLoginException;
+import java.util.List;
 import javax.ejb.Local;
 import javax.persistence.NoResultException;
 
@@ -28,6 +29,8 @@ public interface AdminSessionLocal {
     public void createGame(Game game);
     
     public Game getGame(Long gameId) throws NoResultException;
+    
+    public List<Game> searchGame(String name) throws NoResultException;
     
     public void updateGame(Game game) throws NoResultException;
 }

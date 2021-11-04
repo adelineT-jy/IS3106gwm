@@ -43,7 +43,7 @@ public class UserSession implements UserSessionLocal {
                 throw new InvalidLoginException("Password Incorrect");
             }
         } catch (NoResultException ex) {
-            throw new InvalidLoginException("Invalid login details"); 
+            throw new InvalidLoginException("Username not found"); 
         }
     }
     

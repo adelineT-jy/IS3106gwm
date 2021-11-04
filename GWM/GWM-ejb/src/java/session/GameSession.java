@@ -6,10 +6,12 @@
 package session;
 
 import entity.Game;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 /**
  *
@@ -30,6 +32,12 @@ public class GameSession implements GameSessionLocal {
         } else {
             return game;
         }
+    }
+
+    @Override
+    public List<Game> getAllGames() {
+        Query q = em.createQuery("SELECT g FROM Game g");
+        return q.getResultList();
     }
 
 }

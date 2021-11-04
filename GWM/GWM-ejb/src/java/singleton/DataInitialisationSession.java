@@ -62,6 +62,7 @@ public class DataInitialisationSession {
             u.setEmail("first@gmail.com");
             u.setUsername("firstUser");
             u.setPassword("password");
+            u.setGender((byte) 0);
             u.setIsAvailable(true);
             userSessionLocal.createUser(u);
 
@@ -69,6 +70,7 @@ public class DataInitialisationSession {
             u2.setEmail("second@gmail.com");
             u2.setUsername("secondUser");
             u2.setPassword("password");
+            u.setGender((byte) 1);
             u2.setIsAvailable(true);
             userSessionLocal.createUser(u2);
 

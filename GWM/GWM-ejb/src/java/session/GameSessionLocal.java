@@ -6,6 +6,7 @@
 package session;
 
 import entity.Game;
+import java.util.List;
 import javax.ejb.Local;
 import javax.persistence.NoResultException;
 
@@ -17,5 +18,7 @@ import javax.persistence.NoResultException;
 public interface GameSessionLocal {
 
     public Game getGame(Long gameId) throws NoResultException;
+
+    public List<Game> getAllGames();
 
 }

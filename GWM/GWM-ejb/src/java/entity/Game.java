@@ -37,6 +37,12 @@ public class Game implements Serializable {
     public Game() {
     }
 
+    public Game(String gameName, String gameDescription, String gameDownloadLink) {
+        this.gameName = gameName;
+        this.gameDescription = gameDescription;
+        this.gameDownloadLink = gameDownloadLink;
+    }
+
     public Long getGameId() {
         return gameId;
     }

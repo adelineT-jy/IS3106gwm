@@ -9,9 +9,10 @@ import entity.Request;
 import entity.Review;
 import entity.User;
 import error.AuthenticationException;
+import error.InsufficientFundsException;
+import error.NoResultException;
 import java.util.List;
 import javax.ejb.Local;
-import javax.persistence.NoResultException;
 
 @Local
 public interface PostSessionBeanLocal {
@@ -34,24 +35,24 @@ public interface PostSessionBeanLocal {
 
     public void joinParty(Long partyId, Long userId) throws NoResultException;
 
-    public void acceptToParty(Long rId, Long partyId, Long userId) throws NoResultException, AuthenticationException;
+    public void acceptToParty(Long rId, Long partyId, Long userId) throws NoResultException, AuthenticationException, InsufficientFundsException;
 
     public void rejectFromParty(Long rId, Long partyId, Long userId) throws NoResultException, AuthenticationException;
 
-    public void deleteParty(Long partyId, Long userId) throws NoResultException, AuthenticationException;
+    public void deleteParty(Long partyId, Long userId) throws NoResultException, AuthenticationException, InsufficientFundsException;
 
     public void endParty(Long partyId, Long userId) throws NoResultException, AuthenticationException;
 
-    public void createPost(Post p, Long partyId, Long userId, Long gameId);
+    public void createPost(Post p, Long partyId, Long userId, Long gameId) throws NoResultException;
 
     //public void createPost(Post p, Long userId, Long gameId);
-    public void editPost(Post p, Long userId) throws NoResultException, AuthenticationException;
+    public void editPost(Post p, Long userId, Long gameId) throws NoResultException, AuthenticationException;
 
     public void deletePost(Long pId, Long userId) throws NoResultException, AuthenticationException;
 
     public void createRequest(Request r, Long pId, Long uId) throws NoResultException;
 
-    public Boolean checkRequestCreated(Long pId, Long uId);
+    public Boolean checkRequestCreated(Long pId, Long uId) throws NoResultException;
 
     public void deleteRequest(Long rId, Long userId) throws NoResultException, AuthenticationException;
 

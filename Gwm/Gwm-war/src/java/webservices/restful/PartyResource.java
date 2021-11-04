@@ -5,8 +5,10 @@
  */
 package webservices.restful;
 
+import entity.Game;
 import entity.Party;
 import entity.Post;
+import java.util.List;
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
 import javax.json.Json;
@@ -23,6 +25,8 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import session.GameSession;
+import session.GameSessionLocal;
 import session.PostSessionBeanLocal;
 import session.UserSessionLocal;
 
@@ -34,6 +38,8 @@ public class PartyResource {
     private UserSessionLocal userSessionLocal;
     @EJB
     private PostSessionBeanLocal postSessionBeanLocal;
+    @EJB
+    private GameSessionLocal gameSessionBeanLocal;
 
     @POST
     @Path("/{uid}/create")
@@ -118,16 +124,17 @@ public class PartyResource {
     }
 
     @PUT
-    @Path("/{partyId}/post/{postId}/editBy/{uId}")
+    @Path("/{partyId}/post/{postId}/users/{uId}/games/{gId}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response editPost(@PathParam("partyId") Long partyid,
-            @PathParam("postId") Long pId, @PathParam("uId") Long uId, Post p) {
+            @PathParam("postId") Long pId, @PathParam("uId") Long uId,
+            @PathParam("gId") Long gameId, Post p) {
 
         try {
             if (postSessionBeanLocal.getParty(partyid).getPost().getPostId().equals(pId)) {
                 p.setPostId(pId);
-                postSessionBeanLocal.editPost(p, uId);
+                postSessionBeanLocal.editPost(p, uId, gameId);
                 return Response.status(200).entity(p).type(MediaType.APPLICATION_JSON).build();
             } else {
                 throw new Exception();
@@ -156,6 +163,16 @@ public class PartyResource {
                     .build();
             return Response.status(404).entity(exception).build();
         }
+    }
+
+    @GET
+    @Path("/games")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getAllGames() {
+        List<Game> games = gameSessionBeanLocal.getAllGames();
+        GenericEntity<List<Game>> entity = new GenericEntity<List<Game>>(games) {
+        };
+        return Response.status(200).entity(entity).build();
     }
 
 }
