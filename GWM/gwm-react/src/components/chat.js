@@ -8,12 +8,11 @@ import PropTypes from 'prop-types';
 
 function ChatBox() {
 
-    return ( <
-        Box sx = {
-            { bgcolor: '#bde1ff', height: '70vh' } } >
-        <
-        h1 > Chatbox < /h1> <
-        /Box>
+    return (
+        <Box sx={
+            { bgcolor: '#bde1ff', height: '70vh' }} >
+            <h1> Chatbox </h1>
+        </Box>
     )
 }
 
@@ -33,7 +32,7 @@ function ChatBox() {
         </Box>
     )
 }*/
-
+/*
 propTypes = {
     chatList: PropTypes.array,
 };
@@ -66,130 +65,130 @@ export default function SelectedListItem(prop) {
         setSelectedIndex(index);
     };
 
-    return ( <
-        Box sx = {
-            { width: '100%', maxWidth: 360, bgcolor: 'background.paper', height: '70vh', display: 'flex' } } >
+    return (<
+        Box sx={
+            { width: '100%', maxWidth: 360, bgcolor: 'background.paper', height: '70vh', display: 'flex' }} >
         <
-        List component = "chatroom"
-        aria - label = "All Chats" >
+            List component="chatroom"
+            aria - label = "All Chats" >
         <
-        ListItemButton selected = { selectedIndex === 0 }
-        onClick = {
-            (event) => handleListItemClick(event, 0) } >
-        <
+        ListItemButton selected={selectedIndex === 0}
+            onClick={
+                (event) => handleListItemClick(event, 0)} >
+            <
         ListItemText > < /ListItemText> <
         /ListItemButton> <
-        ListItemButton selected = { selectedIndex === 1 }
-        onClick = {
-            (event) => handleListItemClick(event, 1) } >
-        <
+        ListItemButton selected={selectedIndex === 1}
+                    onClick={
+                        (event) => handleListItemClick(event, 1)} >
+                    <
         ListItemIcon >
-        <
-        DraftsIcon / >
-        <
+                        <
+                            DraftsIcon />
+                        <
         /ListItemIcon> <
-        ListItemText primary = "Drafts" / >
-        <
+                            ListItemText primary="Drafts" />
+                        <
         /ListItemButton> <
         /List> <
-        Divider / >
-        <
-        List component = "nav"
-        aria - label = "secondary mailbox folder" >
-        <
-        ListItemButton selected = { selectedIndex === 2 }
-        onClick = {
-            (event) => handleListItemClick(event, 2) } >
-        <
-        ListItemText primary = "Trash" / >
-        <
+                            Divider />
+                        <
+                            List component="nav"
+                            aria - label = "secondary mailbox folder" >
+                        <
+        ListItemButton selected={selectedIndex === 2}
+                            onClick={
+                                (event) => handleListItemClick(event, 2)} >
+                            <
+                                ListItemText primary="Trash" />
+                            <
         /ListItemButton> <
-        ListItemButton selected = { selectedIndex === 3 }
-        onClick = {
-            (event) => handleListItemClick(event, 3) } >
-        <
-        ListItemText primary = "Spam" / >
-        <
+        ListItemButton selected={selectedIndex === 3}
+                                onClick={
+                                    (event) => handleListItemClick(event, 3)} >
+                                <
+                                    ListItemText primary="Spam" />
+                                <
         /ListItemButton> <
         /List> <
         /Box>
-    );
+                                );
 
 
 }
 
-function Chats() {
+                                function Chats() {
     const [query, setQuery] = React.useState("");
-    const [chats, setChats] = React.useState([]);
+                                const [chats, setChats] = React.useState([]);
 
     useEffect(() => {
-        handleSubmit();
+                                    handleSubmit();
     }, []);
 
     const handleKeyDown = (event) => {
         if (event.key === 'Enter') {
-            handleSubmit();
+                                    handleSubmit();
         }
     }
 
     const handleSubmit = () => {
-        console.log(query);
-        try {
-            fetch(`http://localhost:8080/Gwm-war/webresources/chats/uid?uid=${query}`, {
-                    crossDomain: true
-                })
-                .then((response) => {
-                    if (response.ok) {
-                        return response.json();
-                    } else {
-                        throw new Error('Something went wrong');
-                    }
-                })
-                .then((data) => {
-                    setChats(data);
-                });
+                                    console.log(query);
+                                try {
+                                    fetch(`http://localhost:8080/Gwm-war/webresources/chats/uid?uid=${query}`, {
+                                        crossDomain: true
+                                    })
+                                        .then((response) => {
+                                            if (response.ok) {
+                                                return response.json();
+                                            } else {
+                                                throw new Error('Something went wrong');
+                                            }
+                                        })
+                                        .then((data) => {
+                                            setChats(data);
+                                        });
         } catch (e) {
-            console.log(e);
+                                    console.log(e);
         }
     }
 
-    return ( <
-        Box sx = {
-            { bgcolor: '#e3f2fd', minHeight: '70vh' } } >
+                                return ( <
+        Box sx={
+                                        { bgcolor: '#e3f2fd', minHeight: '70vh' }} >
 
-        <
-        Grid container spacing = { 2 }
-        sx = {
-            { padding: '1em', width: '100%' } } >
-        <
-        Grid item xs = { 12 }
-        sx = {
-            { display: 'flex', justifyContent: 'center' } } >
-        <
-        TextField id = "outlined-basic"
-        label = "Search for Posts"
-        variant = "filled"
-        value = { query }
-        onChange = {
-            (e) => setQuery(e.target.value) }
-        onKeyDown = { handleKeyDown }
-        sx = {
-            { minWidth: '60%' } }
-        /> <
-        IconButton color = "primary"
-        component = "span"
-        onClick = { handleSubmit }
-        sx = {
-            { height: '60px', width: '60px' } } >
-        <
-        Search / >
-        <
+                                    <
+        Grid container spacing={2}
+                                        sx={
+                                            { padding: '1em', width: '100%' }} >
+                                        <
+        Grid item xs={12}
+                                            sx={
+                                                { display: 'flex', justifyContent: 'center' }} >
+                                            <
+                                                TextField id="outlined-basic"
+                                                label="Search for Posts"
+                                                variant="filled"
+                                                value={query}
+                                                onChange={
+                                                    (e) => setQuery(e.target.value)}
+                                                onKeyDown={handleKeyDown}
+                                                sx={
+                                                    { minWidth: '60%' }}
+                                            /> <
+        IconButton color="primary"
+                                                component="span"
+                                                onClick={handleSubmit}
+                                                sx={
+                                                    { height: '60px', width: '60px' }} >
+                                                <
+                                                    Search />
+                                                <
         /IconButton> <
         /Grid> {
-            chats.map((post) => < Chat {...chats }
-                    />)
-                } <
+                                                    chats.map((post) => < Chat {...chats}
+                                                    />)
+                                                } <
                 /Grid> <
                 /Box>
-        )
-    }
+                                                )
+    }*/
