@@ -38,7 +38,7 @@ const modalStyle = {
 };
 
 export const Post = (post) => {
-    const uId = JSON.parse(window.localStorage.user).userId;
+    const uId = window.localStorage.user === undefined ? 0: JSON.parse(window.localStorage.user).userId;
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [gamePopover, setGamePopover] = React.useState(null);
 
@@ -155,9 +155,7 @@ export default function Posts(props) {
     useEffect(() => {
         console.log(query);
         try {
-            fetch(`http://localhost:8080/Gwm-war/webresources/posts/query?query=${query}`, {
-                crossDomain: true
-            })
+            fetch(`http://localhost:8080/Gwm-war/webresources/posts/query?query=${query}`)
                 .then((response) => {
                     if (response.ok) {
                         return response.json();
@@ -166,6 +164,7 @@ export default function Posts(props) {
                     }
                 })
                 .then((data) => {
+                    console.log(data);
                     setPosts(data);
                     // setPosts(dummyPosts);
                 });
