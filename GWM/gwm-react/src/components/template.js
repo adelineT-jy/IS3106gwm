@@ -97,7 +97,7 @@ function UserMenu() {
                 Game With Me
             </Typography>
             <NavTabs/>
-            <Box sx={{ display: 'flex', alignItems: 'right', textAlign: 'right', width: '100%' }}>
+            <Box sx={{ display: 'flex', alignItems: 'right', textAlign: 'right', width: '10%' }}>
                 <Tooltip title="Account settings">
                     <IconButton onClick={handleClick} size="small" sx={{ ml: 2 }}>
                         <Avatar sx={{ width: 32, height: 32 }} />
@@ -170,7 +170,7 @@ export function Header() {
 export function Footer() {
     return (
         <footer>
-            <Box sx={{ bgcolor: '#111', color: 'white', pt: 1, bottom: 0, left: 0, right: 0 }}>
+            <Box sx={{ bgcolor: '#111', color: 'white', pt: 1, minHeight:'11vh', position:'static', bottom: 0, left: 0, right: 0}}>
                 <p><strong>Copyright &copy; 2021</strong> Game With Me Production</p>
                 <p>All rights reserved.</p>
             </Box>
