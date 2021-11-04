@@ -1,18 +1,15 @@
 import React, { useEffect } from 'react';
 
-import { Box, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TextField } from '@mui/material';
+import { Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TextField } from '@mui/material';
 
 
 
 export function Users() {
     const [query, setQuery] = React.useState("");
     const [users, setUsers] = React.useState([]);
+    const [reload, setReload] = React.useState(0);
 
     useEffect(() => {
-        handleSubmit();
-    }, []);
-
-    const handleSubmit = () => {
         try {
             fetch(`http://localhost:8080/Gwm-war/webresources/users/query?name=${query}`, {
                 crossDomain: true
@@ -30,6 +27,10 @@ export function Users() {
         } catch (e) {
             console.log(e);
         }
+    }, [reload, query]);
+
+    const handleSubmit = () => {
+        setReload(reload + 1);
     }
 
     function BanUnban(props) {

@@ -1,6 +1,8 @@
 package entity;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -43,7 +45,7 @@ public class User implements Serializable {
     private boolean isAvailable;
 
     @Column(scale = 2, nullable = false)
-    private double wallet = 0.00;
+    private BigDecimal wallet = new BigDecimal(BigInteger.ZERO, 2);
 
 //    private ImageIcon profileImage;
 
@@ -152,11 +154,11 @@ public class User implements Serializable {
         this.isAvailable = isAvailable;
     }
 
-    public double getWallet() {
+    public BigDecimal getWallet() {
         return wallet;
     }
 
-    public void setWallet(double wallet) {
+    public void setWallet(BigDecimal wallet) {
         this.wallet = wallet;
     }
 

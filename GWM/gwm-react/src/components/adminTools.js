@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 
-import { Card, Box, Modal, Typography, Button, TextField, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Grid } from '@mui/material';
+import { Box, Modal, Typography, Button, TextField, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Grid } from '@mui/material';
 
 const modalStyle = {
     position: 'absolute',
@@ -29,19 +29,10 @@ function GameManager() {
     const [gameName, setGameName] = React.useState("");
     const [gameDesc, setGameDesc] = React.useState("");
     const [gameURL, setGameURL] = React.useState("");
+    const [reload, setReload] = React.useState(0);
 
     useEffect(() => {
-        searchGames();
-    }, [query]);
-
-    const handleClose = () => {
-        setCreateGameModal(false);
-        setEditGameModal(false);
-    };
-
-    const searchGames = () => {
         try {
-            console.log(query);
             fetch(`http://localhost:8080/Gwm-war/webresources/admin/game/query?name=${query}`, {
                 crossDomain: true
             })
@@ -58,7 +49,13 @@ function GameManager() {
         } catch (e) {
             console.log(e);
         }
-    }
+    }, [query]);
+
+    const handleClose = () => {
+        setCreateGameModal(false);
+        setEditGameModal(false);
+    };
+
 
     const openCreateGameModal = () => {
         setCreateGameModal(true);
@@ -85,7 +82,7 @@ function GameManager() {
                 }
             })
             .then(handleClose)
-            .then(searchGames)
+            .then(setReload(reload + 1))
     }
 
     function openEditGameModal(game) {

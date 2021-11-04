@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 import { Container, IconButton, ListItem, ListItemText, Stack, Typography } from "@mui/material";
 import { Check, Close } from "@mui/icons-material";
@@ -36,32 +36,11 @@ export const Request = (request) => {
 }
 
 export default function Requests() {
-    const [requests, setRequests] = React.useState([]);
+    const [requests, setRequests] = useState([]);
     const uId = JSON.parse(window.localStorage.user).userId;
+    const [reload, setReload] = useState(0);
 
     useEffect(() => {
-        handleSubmit();
-    }, []);
-
-    const deleteRequest = (rId) => {
-        const requestOptions = {
-            method: 'DELETE',
-        };
-        fetch(`http://localhost:8080/Gwm-war/webresources/request/${uId}/${rId}`, requestOptions)
-            .then((response) => {
-                if (response.ok) {
-                    return response.json();
-                } else {
-                    throw new Error('Request cannot be made');
-                }
-            })
-            .catch((error) => {
-                console.log(error)
-            });
-        window.location.reload(false);
-    }
-
-    const handleSubmit = () => {
         try {
             fetch(`http://localhost:8080/Gwm-war/webresources/request/${uId}`, {
                 crossDomain: true
@@ -79,6 +58,24 @@ export default function Requests() {
         } catch (e) {
             console.log(e);
         }
+    }, [reload, uId]);
+
+    const deleteRequest = (rId) => {
+        const requestOptions = {
+            method: 'DELETE',
+        };
+        fetch(`http://localhost:8080/Gwm-war/webresources/request/${uId}/${rId}`, requestOptions)
+            .then((response) => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error('Request cannot be made');
+                }
+            })
+            .catch((error) => {
+                console.log(error)
+            });
+        setReload(reload + 1);
     }
 
     return (

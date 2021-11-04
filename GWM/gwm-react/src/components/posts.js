@@ -147,21 +147,12 @@ export const Post = (post) => {
     )
 }
 
-export default function Posts() {
+export default function Posts(props) {
     const [query, setQuery] = React.useState("");
     const [posts, setPosts] = React.useState([]);
+    const [reload, setReload] = React.useState(0);
 
     useEffect(() => {
-        handleSubmit();
-    }, []);
-
-    const handleKeyDown = (event) => {
-        if (event.key === 'Enter') {
-            handleSubmit();
-        }
-    }
-
-    const handleSubmit = () => {
         console.log(query);
         try {
             fetch(`http://localhost:8080/Gwm-war/webresources/posts/query?query=${query}`, {
@@ -181,10 +172,20 @@ export default function Posts() {
         } catch (e) {
             console.log(e);
         }
+    }, [reload, query]);
+
+    const handleKeyDown = (event) => {
+        if (event.key === 'Enter') {
+            handleSubmit();
+        }
+    }
+
+    const handleSubmit = () => {
+        setReload(reload + 1);
     }
 
     return (
-        <Box sx={{ bgcolor: '#e3f2fd', minHeight: '80vh' }}>
+        <Box sx={{ bgcolor: '#e3f2fd', minHeight: '86vh' }}>
             <Container maxWidth="md">
                 <h1>Posts</h1>
                 <Grid container spacing={2} sx={{ padding: '1em', width: '100%' }}>
@@ -196,7 +197,7 @@ export default function Posts() {
                         </IconButton>
                     </Grid>
                     {
-                        posts.map((post) => <Post key={post.postId} {...post} request={true} />)
+                        posts.map((post) => <Post key={post.postId} {...post} request={props.request} />)
                     }
                 </Grid>
             </Container>

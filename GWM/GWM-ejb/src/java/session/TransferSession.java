@@ -4,6 +4,7 @@ import entity.Card;
 import entity.User;
 import error.InsufficientFundsException;
 import error.NoResultException;
+import java.math.BigDecimal;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -18,17 +19,21 @@ public class TransferSession implements TransferSessionLocal {
     private UserSessionLocal userSessionLocal;
 
     @Override
-    public void transferFunds(Long fromUserId, Long toUserId, double amount) throws NoResultException, InsufficientFundsException {
+    public void transferFunds(Long fromUserId, Long toUserId, BigDecimal amount) throws NoResultException, InsufficientFundsException {
         User fromUser = userSessionLocal.getUserById(fromUserId);
         User toUser = userSessionLocal.getUserById(toUserId);
+        transferFundsUser(fromUser, toUser, amount);
+    }
+    
+    @Override
+    public void transferFundsUser(User fromUser, User toUser, BigDecimal amount) throws InsufficientFundsException {
         
-        if (amount <= fromUser.getWallet()) {
-            fromUser.setWallet(fromUser.getWallet() - amount);
-            toUser.setWallet(toUser.getWallet() + amount);
+        if (amount.compareTo(fromUser.getWallet()) <= 0) {
+            fromUser.setWallet(fromUser.getWallet().subtract(amount));
+            toUser.setWallet(toUser.getWallet().add(amount));
         } else {
             throw new InsufficientFundsException("You do not have enough funds to perform the transfer!");
         }
-        
     }
 
     @Override
@@ -39,10 +44,10 @@ public class TransferSession implements TransferSessionLocal {
     }
 
     @Override
-    public void withdrawFunds(Long userId, double amount) throws NoResultException, InsufficientFundsException {
+    public void withdrawFunds(Long userId, BigDecimal amount) throws NoResultException, InsufficientFundsException {
         User user = userSessionLocal.getUserById(userId);
         
-        if (amount <= user.getWallet()) {
+        if (amount.compareTo(user.getWallet()) <= 0) {
             throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         } else {
             throw new InsufficientFundsException("You do not have enough funds to perform the withdrawal!");
