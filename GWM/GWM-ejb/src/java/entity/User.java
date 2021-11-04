@@ -2,6 +2,7 @@ package entity;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.Column;
@@ -12,7 +13,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
-import javax.swing.ImageIcon;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 @Entity
 public class User implements Serializable {
@@ -33,6 +35,9 @@ public class User implements Serializable {
     
     @Column(nullable=false)
     private byte gender;
+    
+    @Temporal(TemporalType.DATE)
+    private Date dob;
 
     @Column(nullable = false)
     private boolean isAvailable;

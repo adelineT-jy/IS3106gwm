@@ -11,7 +11,6 @@ import Link from '@mui/material/Link';
 import { Paper, Grid } from '@mui/material';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
-import FormHelperText from '@mui/material/FormHelperText';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 
@@ -31,13 +30,42 @@ export function Register() {
 
     const handleRegister = (event) => {
         event.preventDefault();
-        
+        const user = {email: email, 
+            username: username, 
+            password: password, 
+            gender: gender};
+        try {
+            fetch(`http://localhost:8080/Gwm-war/webresources/users`, {
+                method: 'POST',
+                headers:{'Content-Type': 'application/json'},
+                body: JSON.stringify(user),
+                crossDomain: true
+            })
+                .then((response) => {
+                    if (response.status === 200) {
+                        console.log("login success");
+                        return response.json();
+                    } else {
+                        response.json().then(function(e){
+                            alert(e.error);
+                            setError(e.error);
+                        })
+                    }
+                })
+                .then((data) => {
+                    console.log(data);
+                    window.localStorage.setItem("user", JSON.stringify(data));
+                    history.push("/posts");
+                })
+        } catch (e) {
+            console.log(e.message);
+        }
     
     }
     return (
         <Box component="form" onSubmit={handleRegister}
                 display="flex" alignItems="center" justifyContent="center" textAlign="center"
-                sx={{ height: '85vh'}}>
+                sx={{ height: '85vh', paddingRight: '11vh'}}>
             <Paper sx={{width: '60vh', height: '60vh'}}>
                 <Typography variant="h6" sx={{padding: "5vh", paddingBottom: "3vh"}}>Register</Typography>
                 <Grid container spacing={2} display="flex">
@@ -88,7 +116,7 @@ export function Register() {
 export function Login() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
-    // const [error, setError] = useState("");
+    const [error, setError] = useState("");
     let history = useHistory(); 
 
 
@@ -107,7 +135,7 @@ export function Login() {
                     } else {
                         response.json().then(function(e){
                             alert(e.error);
-                            //setError(e.error);
+                            setError(e.error);
                         })
                     }
                 })
