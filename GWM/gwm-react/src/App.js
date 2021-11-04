@@ -13,6 +13,7 @@ import { Users } from './components/users';
 // import AdminPosts from './components/admin';
 import { AdminTools } from './components/adminTools';
 // import {ThemeProvider} from '@mui/material/styles';
+import PageNotFound from './components/unauthorised';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
@@ -42,6 +43,7 @@ class App extends Component {
 
                         <Route exact path="/admin"><Posts request={false}/></Route>
                         <Route exact path="/admin/tools" component={AdminTools} />
+                        <Route component={PageNotFound} />
                     </Switch>
                     <Footer/>
             </React.Fragment>
