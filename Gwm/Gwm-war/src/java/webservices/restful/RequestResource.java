@@ -8,7 +8,10 @@ package webservices.restful;
 import entity.Party;
 import entity.Post;
 import entity.Request;
+import error.NoResultException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
 import javax.json.Json;
@@ -42,11 +45,18 @@ public class RequestResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response searchAllRequest(@PathParam("id") Long uId) {
         if (uId != null) {
-            List<Request> results = postSessionBeanLocal.searchRequestsByUser(uId);
-            GenericEntity<List<Request>> entity = new GenericEntity<List<Request>>(results) {
-            };
-            postSessionBeanLocal.searchRequestsResetUser(uId);
-            return Response.status(200).entity(entity).build();
+            try {
+                List<Request> results = postSessionBeanLocal.searchRequestsByUser(uId);
+                GenericEntity<List<Request>> entity = new GenericEntity<List<Request>>(results) {
+                };
+                postSessionBeanLocal.searchRequestsResetUser(uId);
+                return Response.status(200).entity(entity).build();
+            } catch (NoResultException ex) {
+                Logger.getLogger(RequestResource.class.getName()).log(Level.SEVERE, null, ex);
+                JsonObject exception = Json.createObjectBuilder()
+                    .add("error", "No query conditions").build();
+                return Response.status(400).entity(exception).build();
+            }
         } else {
             JsonObject exception = Json.createObjectBuilder()
                     .add("error", "No query conditions").build();

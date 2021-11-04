@@ -8,7 +8,10 @@ package webservices.restful;
 import entity.Party;
 import entity.Post;
 import entity.Request;
+import error.NoResultException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
 import javax.json.Json;
@@ -115,8 +118,13 @@ public class PostResources {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Post createRequest(@PathParam("uid") Long uid, @PathParam("postId") Long pId, Request r) {
-        postSessionBeanLocal.createRequest(r, pId, uid);
-        return postSessionBeanLocal.getPost(pId);
+        try {
+            postSessionBeanLocal.createRequest(r, pId, uid);
+            return postSessionBeanLocal.getPost(pId);
+        } catch (NoResultException ex) {
+            Logger.getLogger(PostResources.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
     }
 
 }

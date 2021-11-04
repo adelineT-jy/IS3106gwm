@@ -16,7 +16,7 @@ function ChatBox() {
     )
 }
 
-/*export default function Chat() {
+export default function Chat() {
 
     return (
         <Box sx={{ bgcolor: '#e3f2fd', height: '70vh', display: 'flex' }}>
@@ -31,7 +31,7 @@ function ChatBox() {
             </Grid>
         </Box>
     )
-}*/
+}
 /*
 propTypes = {
     chatList: PropTypes.array,

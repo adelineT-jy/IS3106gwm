@@ -27,6 +27,8 @@ export function Register() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [gender, setGender] = useState("");
+    const [error, setError] = useState("");
+    let history = useHistory(); 
 
     const handleRegister = (event) => {
         event.preventDefault();

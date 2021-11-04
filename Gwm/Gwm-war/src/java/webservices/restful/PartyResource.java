@@ -9,10 +9,13 @@ import entity.Game;
 import entity.Party;
 import entity.Post;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
 import javax.json.Json;
 import javax.json.JsonObject;
+import javax.persistence.NoResultException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -21,11 +24,9 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import session.GameSession;
 import session.GameSessionLocal;
 import session.PostSessionBeanLocal;
 import session.UserSessionLocal;
@@ -46,8 +47,12 @@ public class PartyResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Party createParty(@PathParam("uid") Long uid, Party p) {
-        postSessionBeanLocal.createParty(p, uid);
-        return p;
+        try {
+            postSessionBeanLocal.createParty(p, uid);
+            return p;
+        } catch (Exception ex) {
+            return null;
+        }
     }
 
     @PUT
@@ -119,8 +124,13 @@ public class PartyResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Post createPost(@PathParam("partyId") Long partyid, @PathParam("uId") Long uid,
             @PathParam("gId") Long gameId, Post p) {
-        postSessionBeanLocal.createPost(p, partyid, uid, gameId);
-        return p;
+        try {
+            postSessionBeanLocal.createPost(p, partyid, uid, gameId);
+            return p;
+        } catch (Exception ex) {
+            Logger.getLogger(PartyResource.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
     }
 
     @PUT

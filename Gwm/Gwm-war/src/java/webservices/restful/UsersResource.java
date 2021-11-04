@@ -11,7 +11,10 @@ import entity.ChatMessage;
 import entity.Party;
 import entity.Review;
 import entity.User;
+import error.NoResultException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ws.rs.Path;
 import javax.enterprise.context.RequestScoped;
@@ -226,10 +229,16 @@ public class UsersResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response searchParty(@PathParam("uId") Long uId) {
         if (uId != null) {
-            List<Party> results = postSessionBeanLocal.searchPartiesByUser(uId);
-            GenericEntity<List<Party>> entity = new GenericEntity<List<Party>>(results) {
-            };
-            return Response.status(200).entity(entity).build();
+            try {
+                List<Party> results = postSessionBeanLocal.searchPartiesByUser(uId);
+                GenericEntity<List<Party>> entity = new GenericEntity<List<Party>>(results) {
+                };
+                return Response.status(200).entity(entity).build();
+            } catch (NoResultException ex) {
+                Logger.getLogger(UsersResource.class.getName()).log(Level.SEVERE, null, ex);
+                JsonObject exception = Json.createObjectBuilder().add("error", "No query conditions").build();
+                return Response.status(400).entity(exception).build();
+            }
         } else {
             JsonObject exception = Json.createObjectBuilder().add("error", "No query conditions").build();
             return Response.status(400).entity(exception).build();
