@@ -9,10 +9,7 @@ import Chat from './components/chat';
 import Posts from './components/posts';
 import Requests from './components/requests';
 import Parties from './components/party';
-import { Users } from './components/users';
-// import AdminPosts from './components/admin';
-import { AdminTools } from './components/adminTools';
-// import {ThemeProvider} from '@mui/material/styles';
+import { PostManager, AdminTools, UserManager } from './components/admin';
 import PageNotFound from './components/unauthorised';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -39,10 +36,10 @@ class App extends Component {
                         <Route exact path="/party" component={Parties} />
                         <Route exact path="/requests" component={Requests} />
 
-                        <Route exact path="/admin/users" component={Users} />
-
-                        <Route exact path="/admin"><Posts request={false}/></Route>
+                        <Route exact path="/admin" component={PostManager} />
                         <Route exact path="/admin/tools" component={AdminTools} />
+                        <Route exact path="/admin/users" component={UserManager} />
+
                         <Route component={PageNotFound} />
                     </Switch>
                     <Footer/>
