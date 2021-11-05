@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Box, Button, IconButton, TextField, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TablePagination, TableSortLabel, Paper } from '@mui/material';
 import { visuallyHidden } from '@mui/utils';
@@ -9,27 +9,22 @@ export default function AdminPosts() {
     const [query, setQuery] = React.useState("");
     const [posts, setPosts] = React.useState([]);
     const [order, setOrder] = React.useState('asc');
-    const [orderBy, setOrderBy] = React.useState('userId');
+    const [orderBy, setOrderBy] = React.useState('postId');
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
     useEffect(() => {
-        console.log(query);
-        try {
-            fetch(`http://localhost:8080/Gwm-war/webresources/posts/query?query=${query}`)
-                .then((response) => {
-                    if (response.ok) {
-                        return response.json();
-                    } else {
-                        throw new Error('Something went wrong');
-                    }
-                })
-                .then((data) => {
-                    setPosts(data);
-                });
-        } catch (e) {
-            console.log(e);
-        }
+        fetch(`http://localhost:8080/Gwm-war/webresources/posts/query?query=${query}`, { crossDomain: true }) //Search for post using owner Username (To amend)
+        .then((response) => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                throw new Error('Something went wrong when creating Game');
+            }
+        })
+            .then((data) => {
+                setPosts(data);
+            });
     }, [reload]);
 
     const handleSubmit = () => {
@@ -74,6 +69,11 @@ export default function AdminPosts() {
             id: 'game',
             numeric: true,
             label: 'Game',
+        },
+        {
+            id: 'userId',
+            numeric: true,
+            label: 'Created By (User Id)',
         },
         {
             id: 'title',
@@ -178,28 +178,31 @@ export default function AdminPosts() {
 
         function hidePost(postId) {
             const requestOptions = {
+                crossDomain: true,
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ title: 'Hide Post' })
             };
-            fetch(`http://localhost:8080/Gwm-war/webresources/posts/hide/${postId}`, requestOptions)
+            fetch(`http://localhost:8080/Gwm-war/webresources/posts/hide/${postId}`, requestOptions) //To implement this function
                 .then(handleSubmit)
         }
 
         function unhidePost(postId) {
             const requestOptions = {
+                crossDomain: true,
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ title: 'Unhide Post' })
             };
-            fetch(`http://localhost:8080/Gwm-war/webresources/posts/unhide/${postId}`, requestOptions)
+            fetch(`http://localhost:8080/Gwm-war/webresources/posts/unhide/${postId}`, requestOptions) //To implement this function
                 .then(handleSubmit)
         }
 
         if (isAvailable) {
             return (
                 <Button
-                    variant="contained"
+                    variant="outlined"
+                    color="error"
                     onClick={() => {
                         const confirmBox = window.confirm(
                             "Are you sure you want to hide this post?"
@@ -214,7 +217,8 @@ export default function AdminPosts() {
         else {
             return (
                 <Button
-                    variant="contained"
+                    variant="outlined"
+                    color="success"
                     onClick={() => {
                         const confirmBox = window.confirm(
                             "Are you sure you want to unhide this post?"
@@ -234,7 +238,7 @@ export default function AdminPosts() {
                 <div style={{ display: 'flex', justifyContent: 'center' }}>
                     <h1>Post Manager</h1>
                 </div>
-                <TextField id="outlined-basic" placeholder="Search" variant="filled" value={query}
+                <TextField id="outlined-basic" placeholder="Search Username" variant="filled" value={query}
                     onChange={(e) => setQuery(e.target.value)} onKeyDown={handleKeyDown} sx={{ minWidth: '95%' }} />
                 <IconButton color='default' component="span" onClick={handleSubmit} sx={{ height: '60px', width: '60px' }}>
                     <Search />
@@ -264,6 +268,7 @@ export default function AdminPosts() {
                                                     {post.postId}
                                                 </TableCell>
                                                 <TableCell align="right">{post.game.gameName}</TableCell>
+                                                <TableCell align="right">{post.userId}</TableCell>
                                                 <TableCell align="right">{post.title}</TableCell>
                                                 <TableCell align="right">{post.description}</TableCell>
                                                 <TableCell align="right">{post.postDate.slice(0, 10)} {post.postDate.slice(11, 16)}H</TableCell>
@@ -279,7 +284,7 @@ export default function AdminPosts() {
                                             height: 53 * emptyRows,
                                         }}
                                     >
-                                        <TableCell colSpan={6} />
+                                        <TableCell colSpan={10} />
                                     </TableRow>
                                 )}
                             </TableBody>

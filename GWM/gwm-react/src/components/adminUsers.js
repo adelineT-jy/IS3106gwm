@@ -14,23 +14,17 @@ export default function AdminUsers() {
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
     useEffect(() => {
-        try {
-            fetch(`http://localhost:8080/Gwm-war/webresources/users/query?name=${query}`, {
-                crossDomain: true
+        fetch(`http://localhost:8080/Gwm-war/webresources/users/query?name=${query}`, { crossDomain: true })
+            .then((response) => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error('Something went wrong when creating Game');
+                }
             })
-                .then((response) => {
-                    if (response.ok) {
-                        return response.json();
-                    } else {
-                        throw new Error('Please enter username as search condition');
-                    }
-                })
-                .then((data) => {
-                    setUsers(data);
-                });
-        } catch (e) {
-            console.log(e);
-        }
+            .then((data) => {
+                setUsers(data);
+            });
     }, [reload]);
 
     const handleSubmit = () => {
@@ -42,6 +36,7 @@ export default function AdminUsers() {
 
         function banUser(userId) {
             const requestOptions = {
+                crossDomain: true,
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ title: 'Ban User' })
@@ -52,6 +47,7 @@ export default function AdminUsers() {
 
         function unbanUser(userId) {
             const requestOptions = {
+                crossDomain: true,
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ title: 'Unban User' })
@@ -63,7 +59,8 @@ export default function AdminUsers() {
         if (isAvailable) {
             return (
                 <Button
-                    variant="contained"
+                    variant="outlined"
+                    color="error"
                     onClick={() => {
                         const confirmBox = window.confirm(
                             "Are you sure you want to ban this user?"
@@ -78,7 +75,8 @@ export default function AdminUsers() {
         else {
             return (
                 <Button
-                    variant="contained"
+                    variant="outlined"
+                    color="success"
                     onClick={() => {
                         const confirmBox = window.confirm(
                             "Are you sure you want to unban this user?"
@@ -217,10 +215,10 @@ export default function AdminUsers() {
     return (
         <Box sx={{ minHeight: '80vh', width: '100%' }}>
             <div className="container">
-                <div style={{ display: 'flex', justifyContent: 'center'}}>
+                <div style={{ display: 'flex', justifyContent: 'center' }}>
                     <h1>User Manager</h1>
                 </div>
-                <TextField id="outlined-basic" placeholder="Search" variant="filled" value={query}
+                <TextField id="outlined-basic" placeholder="Search Username" variant="filled" value={query}
                     onChange={(e) => setQuery(e.target.value)} onKeyDown={handleKeyDown} sx={{ minWidth: '95%' }} />
                 <IconButton color='default' component="span" onClick={handleSubmit} sx={{ height: '60px', width: '60px' }}>
                     <Search />
