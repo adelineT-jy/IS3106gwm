@@ -170,7 +170,7 @@ export function Header() {
 export function Footer() {
     return (
         <footer>
-            <Box sx={{ bgcolor: '#111', color: 'white', pt: 1, minHeight:'11vh', position:'static', bottom: 0, left: 0, right: 0}}>
+            <Box sx={{ bgcolor: '#111', color: 'white', pt: 1, minHeight:'11vh', position:'static', bottom: 0, left: 0, right: 0, mt:5}}>
                 <p><strong>Copyright &copy; 2021</strong> Game With Me Production</p>
                 <p>All rights reserved.</p>
             </Box>

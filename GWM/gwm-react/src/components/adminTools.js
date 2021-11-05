@@ -14,17 +14,31 @@ const modalStyle = {
     borderRadius: '3px',
 };
 
-export function PostManager() {
-    return (
-        <Box sx={{ minHeight: '80vh' }}>
-            <div className="container">
-                <h1>Post Manager</h1>
-            </div>
-        </Box>
-    )
-}
-
 function PartyManager() {
+    const [reload, setReload] = React.useState(0);
+    const [query, setQuery] = React.useState("");
+
+    // useEffect(() => {
+    //     try {
+    //         fetch(`http://localhost:8080/Gwm-war/webresources/admin/game/query?name=${query}`, {
+    //             crossDomain: true
+    //         })
+    //             .then((response) => {
+    //                 if (response.ok) {
+    //                     return response.json();
+    //                 } else {
+    //                     throw new Error('Please enter Game Name as search condition');
+    //                 }
+    //             })
+    //             .then((data) => {
+    //                 setGames(data);
+    //             });
+    //     } catch (e) {
+    //         console.log(e);
+    //     }
+    // }, [reload, query]);
+
+
     return (
         <div className="container">
             <h1>Party Manager</h1>
@@ -33,6 +47,7 @@ function PartyManager() {
 }
 
 function GameManager() {
+    const [reload, setReload] = React.useState(0);
     const [query, setQuery] = React.useState("");
     const [games, setGames] = React.useState([]);
     const [createGameModal, setCreateGameModal] = React.useState(false);
@@ -41,7 +56,6 @@ function GameManager() {
     const [gameName, setGameName] = React.useState("");
     const [gameDesc, setGameDesc] = React.useState("");
     const [gameURL, setGameURL] = React.useState("");
-    const [reload, setReload] = React.useState(0);
 
     useEffect(() => {
         try {
@@ -64,6 +78,7 @@ function GameManager() {
     }, [reload, query]);
 
     const handleClose = () => {
+        setReload(reload + 1);
         setCreateGameModal(false);
         setEditGameModal(false);
     };
@@ -93,7 +108,6 @@ function GameManager() {
                     throw new Error('Something went wrong');
                 }
             })
-            .then(setReload(reload + 1))
             .then(handleClose())
     }
 
@@ -125,7 +139,6 @@ function GameManager() {
                     throw new Error('Something went wrong');
                 }
             })
-            .then(setReload(reload + 1))
             .then(handleClose())
     }
 
@@ -212,7 +225,7 @@ function GameManager() {
     )
 }
 
-export function AdminTools() {
+export default function AdminTools() {
     return (
         <Box sx={{ minHeight: '80vh' }}>
             <PartyManager />
@@ -221,126 +234,3 @@ export function AdminTools() {
     )
 }
 
-export function UserManager() {
-    const [query, setQuery] = React.useState("");
-    const [users, setUsers] = React.useState([]);
-    const [reload, setReload] = React.useState(0);
-
-    useEffect(() => {
-        try {
-            fetch(`http://localhost:8080/Gwm-war/webresources/users/query?name=${query}`, {
-                crossDomain: true
-            })
-                .then((response) => {
-                    if (response.ok) {
-                        return response.json();
-                    } else {
-                        throw new Error('Please enter username as search condition');
-                    }
-                })
-                .then((data) => {
-                    setUsers(data);
-                });
-        } catch (e) {
-            console.log(e);
-        }
-    }, [reload, query]);
-
-    const handleSubmit = () => {
-        setReload(reload + 1);
-    }
-
-    function BanUnban(props) {
-        const { userId, isAvailable } = props.user
-
-        function banUser(userId) {
-            const requestOptions = {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ title: 'Ban User' })
-            };
-            fetch(`http://localhost:8080/Gwm-war/webresources/admin/ban/${userId}`, requestOptions)
-                .then(handleSubmit)
-        }
-
-        function unbanUser(userId) {
-            const requestOptions = {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ title: 'Unban User' })
-            };
-            fetch(`http://localhost:8080/Gwm-war/webresources/admin/unban/${userId}`, requestOptions)
-                .then(handleSubmit)
-        }
-
-        if (isAvailable) {
-            return (
-                <Button
-                    variant="contained"
-                    onClick={() => {
-                        const confirmBox = window.confirm(
-                            "Are you sure you want to ban this user?"
-                        )
-                        if (confirmBox === true) {
-                            banUser(userId);
-                        }
-                    }}> Ban
-                </Button>
-            )
-        }
-        else {
-            return (
-                <Button
-                    variant="contained"
-                    onClick={() => {
-                        const confirmBox = window.confirm(
-                            "Are you sure you want to unban this user?"
-                        )
-                        if (confirmBox === true) {
-                            unbanUser(userId);
-                        }
-                    }}> Unban
-                </Button>
-            )
-        }
-    }
-
-    return (
-        <Box sx={{ minHeight: '80vh' }}>
-            <div className="container">
-                <h1>User Manager</h1>
-                <TextField id="outlined-basic" placeholder="Search" variant="filled" value={query}
-                    onChange={(e) => setQuery(e.target.value)} onKeyDown={handleSubmit} sx={{ minWidth: '100%' }} />
-                <TableContainer component={Paper}>
-                    <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>userId</TableCell>
-                                <TableCell align="right">Username</TableCell>
-                                <TableCell align="right">Email Address</TableCell>
-                                <TableCell align="right">Wallet Amount</TableCell>
-                                <TableCell align="right">Ban / Unban</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {users.map((user) => (
-                                <TableRow
-                                    key={user.name}
-                                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                                >
-                                    <TableCell component="th" scope="row">
-                                        {user.userId}
-                                    </TableCell>
-                                    <TableCell align="right">{user.username} (popover to display user profile)</TableCell>
-                                    <TableCell align="right">{user.email}</TableCell>
-                                    <TableCell align="right">{user.wallet}</TableCell>
-                                    <TableCell align="right"><BanUnban user={user} /></TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-            </div>
-        </Box >
-    )
-}

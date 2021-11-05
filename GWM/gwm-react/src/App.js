@@ -9,7 +9,9 @@ import Chat from './components/chat';
 import Posts from './components/posts';
 import Requests from './components/requests';
 import Parties from './components/party';
-import { PostManager, AdminTools, UserManager } from './components/admin';
+import AdminPosts from'./components/adminPosts';
+import AdminTools from './components/adminTools';
+import AdminUsers from './components/adminUsers';
 import PageNotFound from './components/unauthorised';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -36,9 +38,9 @@ class App extends Component {
                         <Route exact path="/party" component={Parties} />
                         <Route exact path="/requests" component={Requests} />
 
-                        <Route exact path="/admin" component={PostManager} />
+                        <Route exact path="/admin" component={AdminPosts} />
                         <Route exact path="/admin/tools" component={AdminTools} />
-                        <Route exact path="/admin/users" component={UserManager} />
+                        <Route exact path="/admin/users" component={AdminUsers} />
 
                         <Route component={PageNotFound} />
                     </Switch>
