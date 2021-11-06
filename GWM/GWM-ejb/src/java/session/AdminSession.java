@@ -100,6 +100,7 @@ public class AdminSession implements AdminSessionLocal {
 
     @Override
     public void createGame(Game game) {
+        game.setHidden(false);
         em.persist(game);
     }
 

@@ -33,6 +33,7 @@ public class Game implements Serializable {
     @Column(length=999, nullable=false)
     private String gameDownloadLink;
     
+    private boolean hidden;    
     
     public Game() {
     }
@@ -73,6 +74,14 @@ public class Game implements Serializable {
 
     public void setGameDownloadLink(String gameDownloadLink) {
         this.gameDownloadLink = gameDownloadLink;
+    }
+
+    public boolean isHidden() {
+        return hidden;
+    }
+
+    public void setHidden(boolean hidden) {
+        this.hidden = hidden;
     }
 
     @Override

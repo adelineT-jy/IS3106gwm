@@ -44,6 +44,8 @@ public class Post implements Serializable {
     private BigDecimal requestPrice;
 
     private boolean isAvailable;
+    
+    private boolean hidden;
 
     @Column(scale = 2)
     private BigDecimal gratitude;
@@ -176,6 +178,14 @@ public class Post implements Serializable {
         int hash = 0;
         hash += (postId != null ? postId.hashCode() : 0);
         return hash;
+    }
+
+    public boolean isHidden() {
+        return hidden;
+    }
+
+    public void setHidden(boolean hidden) {
+        this.hidden = hidden;
     }
 
     @Override

@@ -114,6 +114,7 @@ public class PostSessionBean implements PostSessionBeanLocal {
         party.setUsers(users);
         party.setReviews(new ArrayList<>());
         party.setPartyStartTime(new Date());
+        party.setHidden(false);
 
         em.persist(party);
         u.getParties().add(party);
@@ -204,20 +205,21 @@ public class PostSessionBean implements PostSessionBeanLocal {
 
         // Return to requesters
         try {
-            for (Request r: p.getPost().getRequest()) {
+            List<Request> requests = p.getPost() == null ? new ArrayList<>() : p.getPost().getRequest();
+            for (Request r : requests) {
                 if (r.getStatus().equals(RequestStatus.ACCEPTED)) {
                     transferSessionLocal.transferFundsUser(p.getPartyOwner(), r.getRequester(), r.getRequestPrice());
                 }
             }
-
-            for (int i = 0; i < p.getUsers().size(); i++) {
-                p.getUsers().get(i).getParties().remove(p);
-            }
-            p.setUsers(new ArrayList<>());
-            em.remove(p);
         } catch (InsufficientFundsException ex) {
             throw new InsufficientFundsException("Invalid users.");
         }
+
+        for (int i = 0; i < p.getUsers().size(); i++) {
+            p.getUsers().get(i).getParties().remove(p);
+        }
+        p.setUsers(new ArrayList<>());
+        em.remove(p);
     }
 
     @Override
@@ -241,6 +243,7 @@ public class PostSessionBean implements PostSessionBeanLocal {
         p.setIsAvailable(true);
         p.setPostDate(new Date());
         p.setUserId(user.getUserId());
+        p.setHidden(false);
 
         em.persist(p);
         em.flush();

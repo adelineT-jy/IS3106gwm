@@ -44,6 +44,8 @@ public class Party implements Serializable {
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date partyEndTime;
+    
+    private boolean hidden;
 
     @ManyToOne(optional = false, fetch = FetchType.EAGER)
     @JoinColumn(nullable = false)
@@ -134,6 +136,14 @@ public class Party implements Serializable {
 
     public void setPost(Post post) {
         this.post = post;
+    }
+
+    public boolean isHidden() {
+        return hidden;
+    }
+
+    public void setHidden(boolean Hidden) {
+        this.hidden = Hidden;
     }
 
     @Override
