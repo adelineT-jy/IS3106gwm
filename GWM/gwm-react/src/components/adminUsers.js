@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Box, Button, IconButton, TextField, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TablePagination, TableSortLabel, Paper } from '@mui/material';
 import { visuallyHidden } from '@mui/utils';
@@ -25,7 +25,7 @@ export default function AdminUsers() {
             .then((data) => {
                 setUsers(data);
             });
-    }, [reload]);
+    }, [reload, query]);
 
     const handleSubmit = () => {
         setReload(reload + 1);
@@ -147,7 +147,7 @@ export default function AdminUsers() {
     ]
 
     function EnhancedTableHead(props) {
-        const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } = props;
+        const { order, orderBy, onRequestSort } = props;
         const createSortHandler = (property) => (event) => {
             onRequestSort(event, property);
         };
@@ -181,12 +181,9 @@ export default function AdminUsers() {
     }
 
     EnhancedTableHead.propTypes = {
-        numSelected: PropTypes.number.isRequired,
         onRequestSort: PropTypes.func.isRequired,
-        onSelectAllClick: PropTypes.func.isRequired,
         order: PropTypes.oneOf(['asc', 'desc']).isRequired,
         orderBy: PropTypes.string.isRequired,
-        rowCount: PropTypes.number.isRequired,
     };
 
     const handleKeyDown = (event) => {
@@ -237,16 +234,8 @@ export default function AdminUsers() {
                                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                     .map((user) => {
                                         return (
-                                            <TableRow
-                                                hover
-                                                key={user.userId}
-                                            >
-                                                <TableCell
-                                                    component="th"
-                                                    scope="row"
-                                                >
-                                                    {user.userId}
-                                                </TableCell>
+                                            <TableRow hover key={user.userId}>
+                                                <TableCell component="th" scope="row">{user.userId}</TableCell>
                                                 <TableCell align="right">{user.username}</TableCell>
                                                 <TableCell align="right">{user.email}</TableCell>
                                                 <TableCell align="right">{user.wallet}</TableCell>
@@ -255,11 +244,7 @@ export default function AdminUsers() {
                                         );
                                     })}
                                 {emptyRows > 0 && (
-                                    <TableRow
-                                        style={{
-                                            height: 53 * emptyRows,
-                                        }}
-                                    >
+                                    <TableRow style={{ height: 53 * emptyRows }}>
                                         <TableCell colSpan={6} />
                                     </TableRow>
                                 )}

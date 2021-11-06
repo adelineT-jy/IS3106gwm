@@ -25,7 +25,7 @@ export default function AdminPosts() {
             .then((data) => {
                 setPosts(data);
             });
-    }, [reload]);
+    }, [reload, query]);
 
     const handleSubmit = () => {
         setReload(reload + 1);
@@ -108,7 +108,7 @@ export default function AdminPosts() {
     ]
 
     function EnhancedTableHead(props) {
-        const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } = props;
+        const { order, orderBy, onRequestSort } = props;
         const createSortHandler = (property) => (event) => {
             onRequestSort(event, property);
         };
@@ -142,12 +142,9 @@ export default function AdminPosts() {
     }
 
     EnhancedTableHead.propTypes = {
-        numSelected: PropTypes.number.isRequired,
         onRequestSort: PropTypes.func.isRequired,
-        onSelectAllClick: PropTypes.func.isRequired,
         order: PropTypes.oneOf(['asc', 'desc']).isRequired,
         orderBy: PropTypes.string.isRequired,
-        rowCount: PropTypes.number.isRequired,
     };
 
     const handleKeyDown = (event) => {

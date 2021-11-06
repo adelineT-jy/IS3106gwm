@@ -11,7 +11,7 @@ const modalStyle = {
     transform: 'translate(-50%, -50%)',
     minWidth: 400,
     boxShadow: 24,
-    bgcolor: '#ffacbb',
+    bgcolor: '#C0C0C0',
     padding: 4,
     borderRadius: '3px',
 };
@@ -21,6 +21,7 @@ const dummyParty = {
     partyOwner: { username: "dummyUser" },
     partyStartTime: "2021-10-22T12:00:00",
     partyEndTime: "2021-10-22T12:00:00",
+    users: [ {userId: 1, username: "hello", email: "email.com", wallet: 12}, {userId: 2, username: "hellto", email: "email.tcom", wallet: 1222}],
     post: { postId: 1 },
     isAvailable: true
 }
@@ -31,6 +32,8 @@ function PartyManager() {
     const [reload, setReload] = React.useState(0);
     const [query, setQuery] = React.useState("");
     const [parties, setParties] = React.useState([]);
+    const [viewUsersModal, setViewUsersModal] = React.useState(false);
+    const [users, setUsers] = React.useState([]);
     const [order, setOrder] = React.useState('asc');
     const [orderBy, setOrderBy] = React.useState('partyId');
     const [page, setPage] = React.useState(0);
@@ -42,11 +45,23 @@ function PartyManager() {
             .then((data) => {
                 setParties(data);
             });
-    }, [reload]);
+    }, [reload, query]);
 
     const handleSubmit = () => {
         setReload(reload + 1);
     }
+
+    const openViewUsersModal = (user) => {
+        setUsers(user);
+        setViewUsersModal(true);
+        console.log(users);
+    }
+
+    const handleClose = () => {
+        setReload(reload + 1);
+        setViewUsersModal(false);
+    };
+
     function descendingComparator(a, b, orderBy) {
         if (b[orderBy] < a[orderBy]) {
             return -1;
@@ -114,7 +129,7 @@ function PartyManager() {
     ]
 
     function EnhancedTableHead(props) {
-        const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } = props;
+        const { order, orderBy, onRequestSort } = props;
         const createSortHandler = (property) => (event) => {
             onRequestSort(event, property);
         };
@@ -148,12 +163,9 @@ function PartyManager() {
     }
 
     EnhancedTableHead.propTypes = {
-        numSelected: PropTypes.number.isRequired,
         onRequestSort: PropTypes.func.isRequired,
-        onSelectAllClick: PropTypes.func.isRequired,
         order: PropTypes.oneOf(['asc', 'desc']).isRequired,
         orderBy: PropTypes.string.isRequired,
-        rowCount: PropTypes.number.isRequired,
     };
 
     const handleKeyDown = (event) => {
@@ -240,6 +252,37 @@ function PartyManager() {
 
     return (
         <div className="container">
+            <Modal open={viewUsersModal} onClose={handleClose}>
+                <Box sx={modalStyle} centered>
+                    <Typography variant="h6">Users in the party</Typography>
+                    <TableContainer component={Paper}>
+                        <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell>User Id</TableCell>
+                                    <TableCell align="right">Username</TableCell>
+                                    <TableCell align="right">Email Address</TableCell>
+                                    <TableCell align="right">Wallet Amount ($)</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {users.map((user) => (
+                                    <TableRow
+                                        key={user.userId}
+                                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                    >
+                                        <TableCell component="th" scope="row">{user.userId}</TableCell>
+                                        <TableCell align="right">{user.username}</TableCell>
+                                        <TableCell align="right">{user.email}</TableCell>
+                                        <TableCell align="right">{user.wallet}</TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                </Box>
+            </Modal>
+
             <div style={{ display: 'flex', justifyContent: 'center' }}>
                 <h1>Party Manager</h1>
             </div>
@@ -276,7 +319,11 @@ function PartyManager() {
                                             <TableCell align="right">{party.partyStartTime.slice(0, 10)} {party.partyStartTime.slice(11, 16)}H</TableCell>
                                             <TableCell align="right">{party.partyEndTime.slice(0, 10)} {party.partyEndTime.slice(11, 16)}H</TableCell>
                                             <TableCell align="right">{party.post.postId}</TableCell>
-                                            <TableCell align="right">to implement modal to display all users</TableCell>
+                                            <TableCell align="right">
+                                                <Button onClick={() => openViewUsersModal(party.users)} color="secondary" variant="outlined">
+                                                    All Users
+                                                </Button>
+                                            </TableCell>
                                             <TableCell align="right"><HideUnhide party={party} /></TableCell>
                                         </TableRow>
                                     );
