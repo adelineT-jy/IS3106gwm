@@ -15,14 +15,11 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import javax.xml.bind.annotation.XmlTransient;
 
 @Stateless
 public class PostSessionBean implements PostSessionBeanLocal {
@@ -85,7 +82,19 @@ public class PostSessionBean implements PostSessionBeanLocal {
     @Override
     public List<Party> searchPartiesByUser(Long userId) throws NoResultException {
         System.out.println(getUser(userId));
-        return getUser(userId).getParties();
+        return getUser(userId).getParties(); 
+    }
+    
+    @Override
+    public List<Party> searchPartiesByUsername(String username) {
+        Query q;
+        if (username != null) {
+            q = em.createQuery("SELECT p FROM Party p WHERE LOWER(p.partyOwner.username) LIKE :username");
+            q.setParameter("username", "%" + username.toLowerCase() + "%");
+        } else {
+            q = em.createQuery("SELECT p FROM Party p");
+        }
+        return q.getResultList();
     }
 
     @Override
@@ -482,4 +491,43 @@ public class PostSessionBean implements PostSessionBeanLocal {
         return review;
     }
 
+    @Override
+    public void hidePost(Long postId) throws NoResultException {
+        Post post = getPost(postId);
+        if (!post.isHidden()) {
+            post.setHidden(true);
+        } else {
+            throw new NoResultException("Post is already hidden.");
+        }
+    }
+
+    @Override
+    public void unhidePost(Long postId) throws NoResultException {
+        Post post = getPost(postId);
+        if (post.isHidden()) {
+            post.setHidden(false);
+        } else {
+            throw new NoResultException("Post is not hidden.");
+        }
+    }
+
+    @Override
+    public void hideParty(Long partyId) throws NoResultException {
+        Party party = getParty(partyId);
+        if (!party.isHidden()) {
+            party.setHidden(true);
+        } else {
+            throw new NoResultException("Party is already hidden.");
+        }
+    }
+
+    @Override
+    public void unhideParty(Long partyId) throws NoResultException {
+        Party party = getParty(partyId);
+        if (party.isHidden()) {
+            party.setHidden(false);
+        } else {
+            throw new NoResultException("Party is not hidden.");
+        }
+    }
 }

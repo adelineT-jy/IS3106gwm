@@ -158,4 +158,32 @@ public class AdminResource {
             return Response.status(404).entity(exception).type(MediaType.APPLICATION_JSON).build();
         }
     }
+    
+    @PUT
+    @Path("/hideGame/{gameId}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response hideGame(@PathParam("gameId") Long gameId) {
+        try {
+            adminSessionLocal.hideGame(gameId);
+            return Response.status(204).build();
+        } catch (Exception ex) {
+            JsonObject exception = Json.createObjectBuilder().add("error", ex.getMessage()).build();
+            return Response.status(404).entity(exception).type(MediaType.APPLICATION_JSON).build();
+        }
+    }
+    
+    @PUT
+    @Path("/unhideGame/{gameId}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response unhideGame(@PathParam("gameId") Long gameId) {
+        try {
+            adminSessionLocal.unhideGame(gameId);
+            return Response.status(204).build();
+        } catch (Exception ex) {
+            JsonObject exception = Json.createObjectBuilder().add("error", ex.getMessage()).build();
+            return Response.status(404).entity(exception).type(MediaType.APPLICATION_JSON).build();
+        }
+    }
 }

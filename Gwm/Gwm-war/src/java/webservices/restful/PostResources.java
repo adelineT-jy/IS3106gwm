@@ -5,7 +5,6 @@
  */
 package webservices.restful;
 
-import entity.Party;
 import entity.Post;
 import entity.Request;
 import error.NoResultException;
@@ -127,4 +126,31 @@ public class PostResources {
         }
     }
 
+    @PUT
+    @Path("/hide/{postId}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response hidePost(@PathParam("postId") Long postId) {
+        try {
+            postSessionBeanLocal.hidePost(postId);
+            return Response.status(204).build();
+        } catch (Exception ex) {
+            JsonObject exception = Json.createObjectBuilder().add("error", ex.getMessage()).build();
+            return Response.status(404).entity(exception).type(MediaType.APPLICATION_JSON).build();
+        }
+    }
+
+    @PUT
+    @Path("/unhide/{postId}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response unhidePost(@PathParam("postId") Long postId) {
+        try {
+            postSessionBeanLocal.unhidePost(postId);
+            return Response.status(204).build();
+        } catch (Exception ex) {
+            JsonObject exception = Json.createObjectBuilder().add("error", ex.getMessage()).build();
+            return Response.status(404).entity(exception).type(MediaType.APPLICATION_JSON).build();
+        }
+    }
 }

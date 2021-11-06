@@ -1,7 +1,5 @@
 package session;
 
-import entity.Chat;
-import entity.ChatMessage;
 import entity.Party;
 import entity.Payment;
 import entity.Post;
@@ -26,6 +24,8 @@ public interface PostSessionBeanLocal {
     public void searchRequestsResetUser(Long userId) throws NoResultException;
 
     public List<Party> searchPartiesByUser(Long userId) throws NoResultException;
+    
+    public List<Party> searchPartiesByUsername(String username);
 
     public List<Review> searchReviewsByUser(Long userId) throws NoResultException;
 
@@ -81,4 +81,11 @@ public interface PostSessionBeanLocal {
 
     public Review getReview(Long revId) throws NoResultException;
 
+    public void hidePost(Long postId) throws NoResultException;
+
+    public void unhidePost(Long postId) throws NoResultException;
+
+    public void hideParty(Long partyId) throws NoResultException;
+
+    public void unhideParty(Long partyId) throws NoResultException;
 }

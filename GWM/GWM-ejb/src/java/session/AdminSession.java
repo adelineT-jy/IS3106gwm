@@ -4,8 +4,6 @@ import entity.Admin;
 import entity.Game;
 import entity.User;
 import error.InvalidLoginException;
-import java.math.BigInteger;
-import java.security.MessageDigest;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -137,5 +135,25 @@ public class AdminSession implements AdminSessionLocal {
         oldGame.setGameName(game.getGameName());
 
         em.merge(oldGame);
+    }
+    
+    @Override
+    public void hideGame(Long gameId) throws NoResultException {
+        Game game = getGame(gameId);
+        if (!game.isHidden()) {
+            game.setHidden(true);
+        } else {
+            throw new NoResultException("Game is already hidden.");
+        }
+    }
+    
+    @Override
+    public void unhideGame(Long gameId) throws NoResultException {
+        Game game = getGame(gameId);
+        if (game.isHidden()) {
+            game.setHidden(false);
+        } else {
+            throw new NoResultException("Game is not hidden.");
+        }
     }
 }

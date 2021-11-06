@@ -33,6 +33,10 @@ public interface AdminSessionLocal {
     public List<Game> searchGame(String name) throws NoResultException;
     
     public void updateGame(Game game) throws NoResultException;
+    
+    public void hideGame(Long gameId) throws NoResultException;
+    
+    public void unhideGame(Long gameId) throws NoResultException;
 }
 
     

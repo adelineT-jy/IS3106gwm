@@ -15,7 +15,6 @@ import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
 import javax.json.Json;
 import javax.json.JsonObject;
-import javax.persistence.NoResultException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -24,6 +23,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -185,4 +185,46 @@ public class PartyResource {
         return Response.status(200).entity(entity).build();
     }
 
+    @GET
+    @Path("/query")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response searchPartiesByUsername(@QueryParam("username") String username) {
+        if (username != null) {
+            List<Party> results = postSessionBeanLocal.searchPartiesByUsername(username);
+            GenericEntity<List<Party>> entity = new GenericEntity<List<Party>>(results) {
+            };
+            return Response.status(200).entity(entity).build();
+        } else {
+            JsonObject exception = Json.createObjectBuilder().add("error", "No query conditions").build();
+            return Response.status(400).entity(exception).build();
+        }
+    }
+
+    @PUT
+    @Path("/hide/{partyId}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response hideParty(@PathParam("partyId") Long partyId) {
+        try {
+            postSessionBeanLocal.hideParty(partyId);
+            return Response.status(204).build();
+        } catch (Exception ex) {
+            JsonObject exception = Json.createObjectBuilder().add("error", ex.getMessage()).build();
+            return Response.status(404).entity(exception).type(MediaType.APPLICATION_JSON).build();
+        }
+    }
+
+    @PUT
+    @Path("/unhide/{partyId}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response unhideParty(@PathParam("partyId") Long partyId) {
+        try {
+            postSessionBeanLocal.unhideParty(partyId);
+            return Response.status(204).build();
+        } catch (Exception ex) {
+            JsonObject exception = Json.createObjectBuilder().add("error", ex.getMessage()).build();
+            return Response.status(404).entity(exception).type(MediaType.APPLICATION_JSON).build();
+        }
+    }
 }
