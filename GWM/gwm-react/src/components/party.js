@@ -76,8 +76,9 @@ export const Party = (party) => {
             fetch(`http://localhost:8080/Gwm-war/webresources/party/games`)
                 .then(response => response.json())
                 .then((data) => {
-                    setGames(data);
-                    setGameId(data[0].gameId);
+                    const availableGames = data.filter(game => !game.hidden);
+                    setGames(availableGames);
+                    setGameId(availableGames.length === 0 ? null : availableGames[0].gameId);
                 });
         }
         if (party.post !== undefined) {
@@ -92,6 +93,12 @@ export const Party = (party) => {
     }
 
     const handleClose = () => {
+        setTitle("");
+        setDescription("");
+        setGameId(1);
+        setRequestQty(0);
+        setRequestPrice(0);
+        setRequestSign(0);
         setOpenModal(false);
     };
 
@@ -116,38 +123,44 @@ export const Party = (party) => {
             body: JSON.stringify(post),
         };
         fetch(`http://localhost:8080/Gwm-war/webresources/party/${party.partyId}${editString}/users/${uId}/games/${gameId}`, requestOptions)
-            .then(() => party.setReload(party.reload + 1))
-            .catch((error) => console.log(error));
+            .then(() => {
+                handleClose();
+                party.setReload(party.reload + 1);
+            })
+            .catch((error) => alert(error));
     }
 
     const deletePost = () => {
         fetch(`http://localhost:8080/Gwm-war/webresources/party/${party.partyId}/post/${party.post.postId}/deleteBy/${uId}`, { method: 'DELETE' })
-            .then(() => party.setReload(party.reload + 1))
-            .catch((error) => console.log(error));
+            .then(() => {
+                handleClose();
+                party.setReload(party.reload + 1);
+            })
+            .catch((error) => alert(error));
     }
 
     const acceptRequest = (rId) => {
         fetch(`http://localhost:8080/Gwm-war/webresources/party/${party.partyId}/user/${uId}/acceptRequest/${rId}`, { method: 'PUT' })
             .then(() => party.setReload(party.reload + 1))
-            .catch((error) => console.log(error));
+            .catch((error) => alert(error));
     }
 
     const rejectRequest = (rId) => {
         fetch(`http://localhost:8080/Gwm-war/webresources/party/${party.partyId}/user/${uId}/rejectRequest/${rId}`, { method: 'PUT' })
             .then(() => party.setReload(party.reload + 1))
-            .catch((error) => console.log(error));
+            .catch((error) => alert(error));
     }
 
     const endParty = () => {
         fetch(`http://localhost:8080/Gwm-war/webresources/party/${party.partyId}/user/${uId}/end`, { method: 'PUT' })
             .then(() => party.setReload(party.reload + 1))
-            .catch((error) => console.log(error));
+            .catch((error) => alert(error));
     }
 
     const deleteParty = () => {
         fetch(`http://localhost:8080/Gwm-war/webresources/party/${party.partyId}/user/${uId}/delete`, { method: 'DELETE' })
             .then(() => party.setReload(party.reload + 1))
-            .catch((error) => console.log(error));
+            .catch((error) => alert(error));
     }
 
     return (
@@ -178,7 +191,7 @@ export const Party = (party) => {
                             Make it free
                         </Button>
                         <Button sx={{ width: '33%' }} onClick={() => setRequestSign(-1)} color="success" variant="contained">
-                            Offer to join
+                            Be paid to join
                         </Button>
                     </Stack>
                     <TextField disabled={requestSign === 0} sx={{ width: '100%', mt: 1, mb: 2 }} type="number" variant="outlined" placeholder="Requested Price"
@@ -284,7 +297,7 @@ export const Party = (party) => {
 
 export default function Parties() {
     const [parties, setParties] = React.useState([]);
-    const uId = JSON.parse(window.localStorage.user).userId;
+    const uId = window.localStorage.user === undefined ? 0 : JSON.parse(window.localStorage.user).userId;
     const [reload, setReload] = React.useState(0);
 
     const [inviteLink, setInviteLink] = React.useState("");
@@ -311,10 +324,12 @@ export default function Parties() {
     }
 
     useEffect(() => {
-        fetch(`http://localhost:8080/Gwm-war/webresources/users/${uId}/party`)
-            .then(response => response.json())
-            .then(data => setParties(data))
-            .catch((error) => console.log(error));
+        if (uId > 0) {
+            fetch(`http://localhost:8080/Gwm-war/webresources/users/${uId}/party`)
+                .then(response => response.json())
+                .then(data => setParties(data.filter(party => !party.hidden)))
+                .catch((error) => console.log(error));
+        }
     }, [reload, uId]);
 
     return (

@@ -1,29 +1,9 @@
 import React, { useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
 
 import Box from '@mui/material/Box';
 import { Button, Card, CardActions, CardContent, Chip, Container, Grid, IconButton, Modal, Popover, Stack, TextField, Typography } from '@mui/material';
 import { Check, Close, Search } from '@mui/icons-material';
-
-
-// const dummyPost = {
-//     postId: 1,
-//     title: "test",
-//     userId: 1,
-//     postDate: "2021-10-22T12:00:00",
-//     description: "test",
-//     game: {
-//         gameName: "LOL",
-//         gameDescription: "Battle of Wits",
-//         gameDownloadLink: "https://lol.com",
-//         gameId: 1
-//     },
-//     requestPrice: 1,
-//     requestQty: 1,
-//     isAvailable: true,
-// }
-
-// const dummyPosts = [dummyPost, dummyPost, dummyPost, dummyPost, dummyPost, dummyPost, dummyPost]
-
 
 const modalStyle = {
     position: 'absolute',
@@ -38,14 +18,15 @@ const modalStyle = {
 };
 
 export const Post = (post) => {
-    const uId = window.localStorage.user === undefined ? 0: JSON.parse(window.localStorage.user).userId;
+    const uId = window.localStorage.user === undefined ? 0 : JSON.parse(window.localStorage.user).userId;
     const [anchorEl, setAnchorEl] = React.useState(null);
+    const open = Boolean(anchorEl);
     const [gamePopover, setGamePopover] = React.useState(null);
 
     const [openModal, setOpenModal] = React.useState(false);
     const [text, setText] = React.useState("");
 
-    const open = Boolean(anchorEl);
+    let history = useHistory();
 
     const handleClose = () => {
         setAnchorEl(null);
@@ -84,10 +65,13 @@ export const Post = (post) => {
                     throw new Error('Request cannot be made');
                 }
             })
+            .then(() => {
+                handleClose();
+                history.push('./requests');
+            })
             .catch((error) => {
                 console.log(error)
             });
-        handleClose();
     }
 
     return (
@@ -134,14 +118,14 @@ export const Post = (post) => {
                     <Chip sx={{ margin: '2px' }} label={post.isAvailable ? "Available" : "Busy"}
                         color={post.isAvailable ? "success" : "error"}
                         icon={post.isAvailable ? <Check /> : <Close />} />
-                    <Chip sx={{ margin: '2px' }} label={post.requestPrice === 0 ? "Free" 
+                    <Chip sx={{ margin: '2px' }} label={post.requestPrice === 0 ? "Free"
                         : (post.requestPrice > 0 ? `Costs G${post.requestPrice}` : `Pays  G${-post.requestPrice}`)}
                         color={post.requestPrice === 0 ? "info" : "warning"} />
                 </CardContent>
-                { post.request && post.userId !== uId && post.isAvailable ?
-                        <CardActions sx={{ justifyContent: 'center' }}>
-                            <Button variant="filled" onClick={setOpenModal}>Create a Request</Button>
-                        </CardActions> : null}
+                {post.request && post.userId !== uId && post.isAvailable ?
+                    <CardActions sx={{ justifyContent: 'center' }}>
+                        <Button variant="filled" onClick={setOpenModal}>Create a Request</Button>
+                    </CardActions> : null}
             </Card>
         </Grid>
     )
@@ -164,9 +148,7 @@ export default function Posts(props) {
                     }
                 })
                 .then((data) => {
-                    console.log(data);
-                    setPosts(data);
-                    // setPosts(dummyPosts);
+                    setPosts(data.filter(post => !post.hidden));
                 });
         } catch (e) {
             console.log(e);
@@ -185,7 +167,7 @@ export default function Posts(props) {
 
     return (
         <Box sx={{ bgcolor: '#e3f2fd', minHeight: '86vh' }}>
-            <Container maxWidth="md">
+            <Container maxWidth="lg">
                 <h1>Posts</h1>
                 <Grid container spacing={2} sx={{ padding: '1em', width: '100%' }}>
                     <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'center' }}>
