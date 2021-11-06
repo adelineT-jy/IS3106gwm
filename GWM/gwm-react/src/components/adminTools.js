@@ -16,18 +16,6 @@ const modalStyle = {
     borderRadius: '3px',
 };
 
-const dummyParty = {
-    partyId: 1,
-    partyOwner: { username: "dummyUser" },
-    partyStartTime: "2021-10-22T12:00:00",
-    partyEndTime: "2021-10-22T12:00:00",
-    users: [ {userId: 1, username: "hello", email: "email.com", wallet: 12}, {userId: 2, username: "hellto", email: "email.tcom", wallet: 1222}],
-    post: { postId: 1 },
-    isAvailable: true
-}
-
-const dummyParties = [dummyParty, dummyParty, dummyParty, dummyParty, dummyParty]
-
 function PartyManager() {
     const [reload, setReload] = React.useState(0);
     const [query, setQuery] = React.useState("");
@@ -40,8 +28,14 @@ function PartyManager() {
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
     useEffect(() => {
-        fetch(`http://localhost:8080/Gwm-war/webresources/party/query?name=${query}`, { crossDomain: true }) //Search for Party using owner Username (To amend)
-            .then((response) => { response.json() })
+        fetch(`http://localhost:8080/Gwm-war/webresources/party/query?username=${query}`, { crossDomain: true }) //Search for Party using owner Username (To amend)
+            .then((response) => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error('Something went wrong when creating Game');
+                }
+            })
             .then((data) => {
                 setParties(data);
             });
@@ -192,7 +186,7 @@ function PartyManager() {
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - parties.length) : 0;
 
     function HideUnhide(props) {
-        const { partyId, isAvailable } = props.party
+        const { partyId, hidden } = props.party
 
         function hideParty(partyId) {
             const requestOptions = {
@@ -201,7 +195,7 @@ function PartyManager() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ title: 'Hide Party' })
             };
-            fetch(`http://localhost:8080/Gwm-war/webresources/party/hide/${partyId}`, requestOptions) //To implement this function
+            fetch(`http://localhost:8080/Gwm-war/webresources/party/hide/${partyId}`, requestOptions)
                 .then(handleSubmit)
         }
 
@@ -212,11 +206,11 @@ function PartyManager() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ title: 'Unhide Party' })
             };
-            fetch(`http://localhost:8080/Gwm-war/webresources/party/unhide/${partyId}`, requestOptions) //To implement this function
+            fetch(`http://localhost:8080/Gwm-war/webresources/party/unhide/${partyId}`, requestOptions)
                 .then(handleSubmit)
         }
 
-        if (isAvailable) {
+        if (!hidden) {
             return (
                 <Button
                     variant="outlined"
@@ -298,10 +292,10 @@ function PartyManager() {
                             order={order}
                             orderBy={orderBy}
                             onRequestSort={handleRequestSort}
-                            rowCount={dummyParties.length}
+                            rowCount={parties.length}
                         />
                         <TableBody>
-                            {stableSort(dummyParties, getComparator(order, orderBy))
+                            {stableSort(parties, getComparator(order, orderBy))
                                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                 .map((party) => {
                                     return (
@@ -316,8 +310,10 @@ function PartyManager() {
                                                 {party.partyId}
                                             </TableCell>
                                             <TableCell align="right">{party.partyOwner.username}</TableCell>
-                                            <TableCell align="right">{party.partyStartTime.slice(0, 10)} {party.partyStartTime.slice(11, 16)}H</TableCell>
-                                            <TableCell align="right">{party.partyEndTime.slice(0, 10)} {party.partyEndTime.slice(11, 16)}H</TableCell>
+                                            <TableCell align="right">{party.partyStartTime.slice(0, 10)} {party.partyStartTime.slice(11, 16)}</TableCell>
+                                            <TableCell align="right">
+                                                {party.partyEndTime !== undefined && party.partyEndTime.slice(0, 10)}
+                                                {party.partyEndTime !== undefined && party.partyEndTime.slice(11, 17)}</TableCell>
                                             <TableCell align="right">{party.post.postId}</TableCell>
                                             <TableCell align="right">
                                                 <Button onClick={() => openViewUsersModal(party.users)} color="secondary" variant="outlined">
@@ -343,7 +339,7 @@ function PartyManager() {
                 <TablePagination
                     rowsPerPageOptions={[10, 25, 50]}
                     component="div"
-                    count={dummyParties.length}
+                    count={parties.length}
                     rowsPerPage={rowsPerPage}
                     page={page}
                     onPageChange={handleChangePage}

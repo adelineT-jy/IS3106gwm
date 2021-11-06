@@ -171,7 +171,7 @@ export default function AdminPosts() {
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - posts.length) : 0;
 
     function HideUnhide(props) {
-        const { postId, isAvailable } = props.post
+        const { postId, hidden } = props.post
 
         function hidePost(postId) {
             const requestOptions = {
@@ -180,7 +180,7 @@ export default function AdminPosts() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ title: 'Hide Post' })
             };
-            fetch(`http://localhost:8080/Gwm-war/webresources/posts/hide/${postId}`, requestOptions) //To implement this function
+            fetch(`http://localhost:8080/Gwm-war/webresources/posts/hide/${postId}`, requestOptions)
                 .then(handleSubmit)
         }
 
@@ -191,11 +191,11 @@ export default function AdminPosts() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ title: 'Unhide Post' })
             };
-            fetch(`http://localhost:8080/Gwm-war/webresources/posts/unhide/${postId}`, requestOptions) //To implement this function
+            fetch(`http://localhost:8080/Gwm-war/webresources/posts/unhide/${postId}`, requestOptions)
                 .then(handleSubmit)
         }
 
-        if (isAvailable) {
+        if (!hidden) {
             return (
                 <Button
                     variant="outlined"
@@ -268,7 +268,7 @@ export default function AdminPosts() {
                                                 <TableCell align="right">{post.userId}</TableCell>
                                                 <TableCell align="right">{post.title}</TableCell>
                                                 <TableCell align="right">{post.description}</TableCell>
-                                                <TableCell align="right">{post.postDate.slice(0, 10)} {post.postDate.slice(11, 16)}H</TableCell>
+                                                <TableCell align="right">{post.postDate.slice(0, 10)} {post.postDate.slice(11, 16)}</TableCell>
                                                 <TableCell align="right">{post.requestQty}</TableCell>
                                                 <TableCell align="right">{post.requestPrice}</TableCell>
                                                 <TableCell align="right"><HideUnhide post={post} /></TableCell>
