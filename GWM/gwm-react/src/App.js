@@ -9,10 +9,10 @@ import Chat from './components/chat';
 import Posts from './components/posts';
 import Requests from './components/requests';
 import Parties from './components/party';
-import AdminPosts from'./components/adminPosts';
+import AdminPosts from './components/adminPosts';
 import AdminTools from './components/adminTools';
 import AdminUsers from './components/adminUsers';
-import PageNotFound from './components/unauthorised';
+import { PageNotFound, Unauthorised } from './components/unauthorised';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
@@ -20,31 +20,44 @@ import './App.css';
 
 class App extends Component {
     render() {
+        const RedirectUnauthorised = ({ component: Component, ...props }) => (
+            <Route
+                {...props}
+                render={(props) =>
+                    window.localStorage.getItem('user') ? (
+                            <Component {...props} />
+                    ) : (
+                        <Route component={Unauthorised} />
+                    )}
+            />
+        );
+
         return (
             <React.Fragment>
                 <CssBaseline />
-                    <Header />
-                    <Switch>
-                        <Route exact path="/"><Posts request={false}/></Route>
-                        
-                        <Route exact path="/login" component={Login} />
-                        <Route exact path="/register" component={Register} />
-                        <Route exact path="/logout" component={Logout} />
+                <Header />
+                <Switch>
+                    <Route exact path="/"><Posts request={false} /></Route>
 
-                        <Route exact path="/account" component={Account} />
-                        <Route exact path="/account/chats" component={Chat} />
+                    <Route exact path="/login" component={Login} />
+                    <Route exact path="/register" component={Register} />
+                    <Route exact path="/logout" component={Logout} />
 
-                        <Route exact path="/posts"><Posts request={true}/></Route>
-                        <Route exact path="/party" component={Parties} />
-                        <Route exact path="/requests" component={Requests} />
 
-                        <Route exact path="/admin" component={AdminPosts} />
-                        <Route exact path="/admin/tools" component={AdminTools} />
-                        <Route exact path="/admin/users" component={AdminUsers} />
+                    <RedirectUnauthorised exact path={`/account`} component={Account} />
+                    <RedirectUnauthorised exact path={`/account/chats`} component={Chat} />
 
-                        <Route component={PageNotFound} />
-                    </Switch>
-                    <Footer/>
+                    <Route exact path="/posts"><Posts request={true} /></Route> {/*Need to set request default as true before implementing redirect*/}
+                    <RedirectUnauthorised exact path={`/party`} component={Parties} />
+                    <RedirectUnauthorised exact path={`/requests`} component={Requests} />
+
+                    <Route exact path="/admin" component={AdminPosts} /> {/*Need to set localStorage admin=true before redirect*/}
+                    <Route exact path="/admin/tools" component={AdminTools} />
+                    <Route exact path="/admin/users" component={AdminUsers} />
+
+                    <Route component={PageNotFound} />
+                </Switch>
+                <Footer />
             </React.Fragment>
         )
     }

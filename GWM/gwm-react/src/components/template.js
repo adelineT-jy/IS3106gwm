@@ -146,20 +146,32 @@ function UserMenu() {
     );
 }
 
+const CheckUnauthorised = ({ ...props }) => (
+    <Route
+        {...props}
+        render={(props) =>
+            window.localStorage.getItem('user') ? (
+                    <UserMenu />
+            ) : (
+                <GuestMenu />
+            )}
+    />
+);
+
 export function Header() {
     return (
         <header>
             <Box sx={{ bgcolor: 'black', flexGrow: 1 }}>
                 <AppBar sx={{ bgcolor: 'black' }} position="static">
                    <Switch>
-                        <Route exact path="/" component={GuestMenu} />
-                        <Route exact path="/login" component={GuestMenu} />
-                        <Route exact path="/register" component={GuestMenu} />
-                        <Route exact path="/logout" component={GuestMenu} />
+                        <CheckUnauthorised exact path="/posts"/>
+                        <CheckUnauthorised exact path="/party"/>
+                        <CheckUnauthorised exact path="/requests"/>
+                        <CheckUnauthorised path="/account"/>
 
-                        <Route path="/admin" component={AdminMenu} />
+                        <Route path="/admin" component={AdminMenu} /> {/*Need localStorage admin=true before implementing*/}
 
-                        <Route path="/" component={UserMenu} />
+                        <Route component={GuestMenu} />
                     </Switch>
                 </AppBar>
             </Box>
