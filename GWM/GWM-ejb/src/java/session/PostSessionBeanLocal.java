@@ -18,6 +18,8 @@ public interface PostSessionBeanLocal {
     public List<Post> searchPosts(String query);
 
     public List<Post> searchPostsByUser(Long userId) throws NoResultException;
+    
+    public List<Post> searchPostsByUsername(String username);
 
     public List<Request> searchRequestsByUser(Long userId) throws NoResultException;
 

@@ -64,6 +64,21 @@ public class PostResources {
             return Response.status(400).entity(exception).build();
         }
     }
+    
+    @GET
+    @Path("/searchPost")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response searchPostsByUsername(@QueryParam("username") String username) {
+        if (username != null) {
+            List<Post> results = postSessionBeanLocal.searchPostsByUsername(username);
+            GenericEntity<List<Post>> entity = new GenericEntity<List<Post>>(results) {
+            };
+            return Response.status(200).entity(entity).build();
+        } else {
+            JsonObject exception = Json.createObjectBuilder().add("error", "No query conditions").build();
+            return Response.status(400).entity(exception).build();
+        }
+    }
 //
 //    @PUT
 //    @Path("/{postId}/by/{uId}")

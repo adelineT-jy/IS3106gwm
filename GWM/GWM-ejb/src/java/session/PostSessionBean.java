@@ -60,6 +60,19 @@ public class PostSessionBean implements PostSessionBeanLocal {
     }
 
     @Override
+    public List<Post> searchPostsByUsername(String username) {
+        Query q;
+        
+        if (username != null) {
+            q = em.createQuery("SELECT p FROM Post p INNER JOIN User u ON p.userId = u.userId WHERE LOWER(u.username) LIKE :username");
+            q.setParameter("username", "%" + username.toLowerCase() + "%");
+        } else {
+            q = em.createQuery("SELECT p FROM Post p");
+        }
+        return q.getResultList();
+    }
+
+    @Override
     public List<Request> searchRequestsByUser(Long userId) throws NoResultException {
         //return getUser(userId).getRequests();
         List<Request> r = getUser(userId).getRequests();
@@ -82,9 +95,9 @@ public class PostSessionBean implements PostSessionBeanLocal {
     @Override
     public List<Party> searchPartiesByUser(Long userId) throws NoResultException {
         System.out.println(getUser(userId));
-        return getUser(userId).getParties(); 
+        return getUser(userId).getParties();
     }
-    
+
     @Override
     public List<Party> searchPartiesByUsername(String username) {
         Query q;
