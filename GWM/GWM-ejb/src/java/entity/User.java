@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.json.bind.annotation.JsonbTransient;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -34,10 +35,10 @@ public class User implements Serializable {
 
     @Column(length = 32, nullable = false)
     private String password;
-    
-    @Column(nullable=false)
+
+    @Column(nullable = false)
     private byte gender;
-    
+
     @Temporal(TemporalType.DATE)
     private Date dob;
 
@@ -48,14 +49,14 @@ public class User implements Serializable {
     private BigDecimal wallet = new BigDecimal(BigInteger.ZERO, 2);
 
 //    private ImageIcon profileImage;
-
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
     private List<Notification> notify;
 
+    @JsonbTransient
     @OneToMany
     private List<User> following;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private List<Experience> experiences;
 
     @OneToMany
@@ -89,7 +90,7 @@ public class User implements Serializable {
         posts = new ArrayList<>();
         reviews = new ArrayList<>();
     }
-    
+
     public User(String email, String username, String password, byte gender) {
         this.email = email;
         this.username = username;
@@ -97,14 +98,12 @@ public class User implements Serializable {
         this.gender = gender;
     }
 
-
 //    public User(String email, String username, String password, ImageIcon profileImage) {
 //        this.email = email;
 //        this.username = username;
 //        this.password = password;
 //        this.profileImage = profileImage;
 //    }
-
     //Required constructors to be added here
     public Long getUserId() {
         return userId;
@@ -169,7 +168,6 @@ public class User implements Serializable {
 //    public void setProfileImage(ImageIcon profileImage) {
 //        this.profileImage = profileImage;
 //    }
-
     public List<Notification> getNotify() {
         return notify;
     }

@@ -24,9 +24,10 @@ import { AppBar, Typography } from '@mui/material';
 import Toolbar from '@mui/material/Toolbar';
 
 import logo from "../images/gwm.jpg"
+import { AccountCircle } from '@mui/icons-material';
 
 export function NavTabs() {
-    const routeMatch = useRouteMatch(['/posts', '/party', '/requests']);
+    const routeMatch = useRouteMatch(['/posts', '/party', '/requests', '/account', '/']);
     const currentTab = routeMatch?.path;
 
     return (
@@ -35,6 +36,7 @@ export function NavTabs() {
                 <Tab icon={<Description />} label="Posts" value="/posts" to="/posts" component={Link} sx={{ color: 'primary.main' }} />
                 <Tab icon={<PeopleAlt />} label="Parties" value="/party" to="/party" component={Link} sx={{ color: 'primary.main' }} />
                 <Tab icon={<CleanHands />} label="Requests" value="/requests" to="/requests" component={Link} sx={{ color: 'primary.main' }} />
+                <Tab icon={<AccountCircle />} label="Account" value="/account" to="/account" component={Link} sx={{ color: 'primary.main' }} />
             </Tabs>
         </Box>
     );
