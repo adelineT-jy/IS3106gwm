@@ -172,12 +172,17 @@ public class PostSessionBean implements PostSessionBeanLocal {
 
         party.getUsers().add(u);
         u.getParties().add(party);
+        
+        try {
         Post p = party.getPost();
         p.setRequestQty(p.getRequestQty() - 1);
         if (p.getRequestQty() == 0) {
             p.setIsAvailable(false);
         }
+        } catch (NullPointerException ex) {
+        }
     }
+        
 
     @Override
     public void acceptToParty(Long rId, Long partyId, Long userId) throws NoResultException, AuthenticationException, InsufficientFundsException { // userId is the one accepting, has to be party owner.
