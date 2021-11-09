@@ -52,6 +52,7 @@ public class User implements Serializable {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
     private List<Notification> notify;
 
+    @JsonbTransient
     @OneToMany
     private List<User> following;
 

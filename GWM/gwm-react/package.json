@@ -2,6 +2,7 @@
   "name": "gwm-react",
   "version": "0.1.0",
   "private": true,
+  "homepage": "http://localhost:8080/Gwm-war/",
   "dependencies": {
     "@babel/core": "^7.15.8",
     "@emotion/react": "^11.4.1",
