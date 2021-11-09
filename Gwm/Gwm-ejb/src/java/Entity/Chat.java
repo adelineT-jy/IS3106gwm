@@ -32,6 +32,9 @@ public class Chat implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long chatId;
 
+    //if true
+    private String name;
+
     //if true is a party
     private Boolean party;
 
@@ -76,6 +79,14 @@ public class Chat implements Serializable {
 
     public void setChatMessage(List<ChatMessage> chatMessage) {
         this.chatMessage = chatMessage;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Override
