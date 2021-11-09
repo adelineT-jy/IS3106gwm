@@ -17,6 +17,7 @@ import AdminPosts from './components/adminPosts';
 import AdminTools from './components/adminTools';
 import AdminUsers from './components/adminUsers';
 import { PageNotFound, Unauthorised } from './components/unauthorised';
+import Settings from './components/userSettings';
 
 
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -48,15 +49,18 @@ class App extends Component {
                         <Route exact path="/login" component={Login} />
                         <Route exact path="/register" component={Register} />
                         <Route exact path="/logout" component={Logout} />
-
-
-                        <RedirectUnauthorised exact path={`/account`} component={Account} />
+                        
+                        {/* users */}
+                        <RedirectUnauthorised exact path={`/account/settings`} component={Settings} />
                         <RedirectUnauthorised exact path={`/account/chats`} component={Chat} />
+                        <RedirectUnauthorised exact path={`/account`} component={Account} />
+                     
 
                         <Route exact path="/posts"><Posts request={true} /></Route> {/*Need to set request default as true before implementing redirect*/}
                         <RedirectUnauthorised exact path={`/party`} component={Parties} />
                         <RedirectUnauthorised exact path={`/requests`} component={Requests} />
 
+                        {/* admin */}
                         <Route exact path="/admin" component={AdminPosts} /> {/*Need to set localStorage admin=true before redirect*/}
                         <Route exact path="/admin/tools" component={AdminTools} />
                         <Route exact path="/admin/users" component={AdminUsers} />

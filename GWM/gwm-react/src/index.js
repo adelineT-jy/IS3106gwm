@@ -29,7 +29,7 @@ const theme = createTheme({
                     color: '#5f615f',
                     textTransform: 'uppercase',
                     fontSize: "0.7rem",
-                    fontFamily: "Roboto",
+                    // fontFamily: "Roboto",
                     fontWeight: "bold",
                     // backgroundColor: "white"
                 }

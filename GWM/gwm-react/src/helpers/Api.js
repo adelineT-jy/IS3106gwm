@@ -9,6 +9,17 @@ const Api = {
     },
     getUserFollowings(uId) {
         return fetch(`${SERVER_PREFIX}/users/${uId}/following`);
+    },
+
+    updateUserProfile(uId, data) {
+        return fetch(`${SERVER_PREFIX}/users/${uId}`, {
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+            },
+            method: "PUT",
+            body: JSON.stringify(data),
+        });
     }
     
 }

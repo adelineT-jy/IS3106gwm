@@ -82,6 +82,7 @@ public class DataInitialisationSession {
             u.setUsername("firstUser");
             u.setPassword("password");
             u.setGender((byte) 0);
+            u.setDob(new Date());
             userSessionLocal.createUser(u);
 
             User u2 = new User();

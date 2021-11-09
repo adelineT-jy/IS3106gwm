@@ -2,6 +2,7 @@ import React, { useEffect, useState} from 'react';
 import { useHistory } from "react-router-dom";
 import { Box, Typography, Paper, Grid, Avatar, Button} from '@mui/material';
 import SettingsIcon from '@mui/icons-material/Settings';
+import StarIcon from '@mui/icons-material/Star';
 import Api from "../helpers/Api.js";
 
 import logo from "../images/gwm.jpg"
@@ -145,17 +146,22 @@ export function Account() {
                                 sx={{width: "18vh", height: "18vh"}}/>
                     </Grid>
                     <Grid item xs={10} md={10}>
-                        <Button variant="contained" endIcon={<SettingsIcon/>} color="secondary" sx={{float: "right"}}>
+                        <Button variant="contained" endIcon={<SettingsIcon/>} color="secondary" sx={{float: "right"}}  onClick={()=> {history.push("/account/settings")}}>
                             Settings
                         </Button>
                         <Typography variant="h5" sx={{fontWeight: "500"}}>
                            {user.username}
                         </Typography>
                         <Typography variant="body1" sx={{ paddingTop: "2vh"}}>
+                            Gender: <b>{user.gender === 0 ? "F" : "M"}</b>
+                        </Typography>
+
+                        <Typography variant="body1" sx={{ paddingTop: "2vh"}}>
                             Followers: <b>{followers.length}</b> &nbsp; Following: <b>{following.length}</b>
                         </Typography>
                         <Typography variant="body1" sx={{ paddingTop: "2vh"}}>
-                            Ratings: <b>5 to be completed</b> 
+                            Ratings: <b>5 to be completed</b>
+                            <StarIcon sx={{color: "#f2bd0c", paddingBottom:"0.5vh"}} />
                         </Typography>
                     </Grid>
                     </Grid>
@@ -164,7 +170,7 @@ export function Account() {
             <Grid item xs={12}>
                 <Paper sx={{height: "40vh"}}>
                     <Typography variant="h6" sx={{ padding: "4vh", paddingBottom: "3vh" }}>
-                        Reviews
+                        Experiences (TBC)
                     </Typography>
                 </Paper>
             </Grid>

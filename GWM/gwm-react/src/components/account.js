@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
-import moment from "moment";
 import {DatePicker} from "@mui/lab";
 
 import {
@@ -125,7 +124,6 @@ export function Register() {
               >
                 <MenuItem value={0}>Female</MenuItem>
                 <MenuItem value={1}>Male</MenuItem>
-                <MenuItem value={2}>Rather Not Say</MenuItem>
               </Select>
             </FormControl>
           </Grid>

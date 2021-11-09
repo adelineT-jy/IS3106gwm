@@ -35,6 +35,9 @@ public class User implements Serializable {
 
     @Column(length = 32, nullable = false)
     private String password;
+    
+    @Column(length = 80, nullable = true)
+    private String about;
 
     @Column(nullable = false)
     private byte gender;
@@ -302,6 +305,22 @@ public class User implements Serializable {
 
     public void setReviews(List<Review> reviews) {
         this.reviews = reviews;
+    }
+
+    public String getAbout() {
+        return about;
+    }
+
+    public void setAbout(String about) {
+        this.about = about;
+    }
+
+    public Date getDob() {
+        return dob;
+    }
+
+    public void setDob(Date dob) {
+        this.dob = dob;
     }
 
 }

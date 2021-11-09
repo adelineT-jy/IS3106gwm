@@ -99,10 +99,18 @@ public class UserSession implements UserSessionLocal {
     @Override
     public void updateUserProfile(User u) throws NoResultException {
         User oldU = getUserById(u.getUserId());
-
-        oldU.setEmail(u.getEmail());
-        oldU.setPassword(u.getPassword());
-        oldU.setUsername(u.getUsername());
+        if (u.getEmail() == null || u.getEmail().equals("")){
+            throw new NoResultException("Email is required");
+        } else {
+            oldU.setEmail(u.getEmail());
+        }
+        if (u.getUsername() == null || u.getUsername().equals("")){
+            throw new NoResultException("Username is required"); 
+        } else {
+            oldU.setUsername(u.getUsername());           
+        }
+        oldU.setGender(u.getGender());
+        oldU.setDob(u.getDob());
     }
 
     @Override
