@@ -55,7 +55,7 @@ public class User implements Serializable {
     @JsonbTransient
     @OneToMany
     private List<User> following;
-
+    
     @OneToMany(cascade = CascadeType.ALL)
     private List<Experience> experiences;
 

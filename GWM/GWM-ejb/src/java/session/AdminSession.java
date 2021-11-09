@@ -8,7 +8,7 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
+import error.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 

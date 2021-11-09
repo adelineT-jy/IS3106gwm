@@ -16,7 +16,7 @@ import error.InvalidLoginException;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
+import error.NoResultException;
 import javax.persistence.NonUniqueResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
@@ -71,10 +71,14 @@ public class UserSession implements UserSessionLocal {
 
     @Override
     public User getUserById(Long userId) throws NoResultException {
-        User u = em.find(User.class, userId);
-        if (u != null) {
-            return u;
-        } else {
+        try {    
+            User u = em.find(User.class, userId);
+            if (u != null) {
+                return u;
+            } else {
+                throw new NoResultException("Not found");
+            }
+        } catch (Exception ex) {
             throw new NoResultException("Not found");
         }
     }
@@ -162,6 +166,13 @@ public class UserSession implements UserSessionLocal {
         } else {
             throw new NoResultException("Experience cannot be deleted");
         }
+    }
+    
+    @Override
+    public List<User> getUserFollowers(Long userId) throws NoResultException {
+        Query q = em.createQuery("SELECT DISTINCT u FROM User u, u.following f WHERE f.userId = :userId");
+        q.setParameter("userId", userId);
+        return (List<User>) q.getResultList();
     }
 
     @Override

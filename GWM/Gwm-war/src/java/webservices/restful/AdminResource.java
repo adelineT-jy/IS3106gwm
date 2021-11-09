@@ -7,7 +7,7 @@ import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
 import javax.json.Json;
 import javax.json.JsonObject;
-import javax.persistence.NoResultException;
+import error.NoResultException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -134,10 +134,15 @@ public class AdminResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response searchUsers(@QueryParam("name") String name) {
         if (name != null) {
-            List<Game> results = adminSessionLocal.searchGame(name);
-            GenericEntity<List<Game>> entity = new GenericEntity<List<Game>>(results) {
-            };
-            return Response.status(200).entity(entity).build();
+            try {
+                List<Game> results = adminSessionLocal.searchGame(name);
+                GenericEntity<List<Game>> entity = new GenericEntity<List<Game>>(results) {
+                };
+                return Response.status(200).entity(entity).build();
+            } catch (NoResultException ex) {
+                JsonObject exception = Json.createObjectBuilder().add("error", "Users cannot be found").build();
+                return Response.status(400).entity(exception).build();
+            }
         } else {
             JsonObject exception = Json.createObjectBuilder().add("error", "No query conditions").build();
             return Response.status(400).entity(exception).build();

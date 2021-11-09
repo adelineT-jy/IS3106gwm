@@ -14,7 +14,7 @@ import error.ExperienceExistException;
 import error.InvalidLoginException;
 import java.util.List;
 import javax.ejb.Local;
-import javax.persistence.NoResultException;
+import error.NoResultException;
 
 /**
  *
@@ -43,6 +43,8 @@ public interface UserSessionLocal {
     public void updateExperience(Experience exp, Long gameId) throws NoResultException;
     
     public void deleteExperience(Long userId,  Long expId) throws NoResultException;
+    
+    public List<User> getUserFollowers(Long userId) throws NoResultException;
     
     public List<User> getUserFollowing(Long userId) throws NoResultException;
     

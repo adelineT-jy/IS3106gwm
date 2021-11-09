@@ -5,7 +5,7 @@ import entity.Game;
 import error.InvalidLoginException;
 import java.util.List;
 import javax.ejb.Local;
-import javax.persistence.NoResultException;
+import error.NoResultException;
 
 @Local
 public interface AdminSessionLocal {

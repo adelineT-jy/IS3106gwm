@@ -6,7 +6,8 @@ import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import DateAdapter from '@mui/lab/AdapterMoment';
 
 
-import { Account, Register, Login, Logout } from './components/account';
+import { Register, Login, Logout } from './components/account';
+import { Account } from './components/users';
 import { Header, Footer } from './components/template';
 import Chat from './components/chat';
 import Posts from './components/posts';

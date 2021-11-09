@@ -57,7 +57,12 @@ public class UsersResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public List<User> getAllUsers() {
-        return userSessionLocal.searchUser(null);
+        try {
+            return userSessionLocal.searchUser(null);
+        } catch (NoResultException ex) {
+            Logger.getLogger(UsersResource.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
     }
 
     @GET
@@ -65,10 +70,15 @@ public class UsersResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response searchUsers(@QueryParam("name") String name) {
         if (name != null) {
-            List<User> results = userSessionLocal.searchUser(name);
-            GenericEntity<List<User>> entity = new GenericEntity<List<User>>(results) {
-            };
-            return Response.status(200).entity(entity).build();
+            try {
+                List<User> results = userSessionLocal.searchUser(name);
+                GenericEntity<List<User>> entity = new GenericEntity<List<User>>(results) {
+                };
+                return Response.status(200).entity(entity).build();
+            } catch (NoResultException ex) {
+                JsonObject exception = Json.createObjectBuilder().add("error", "No Users found").build();
+                return Response.status(400).entity(exception).build();
+            }
         } else {
             JsonObject exception = Json.createObjectBuilder().add("error", "No query conditions").build();
             return Response.status(400).entity(exception).build();
@@ -161,6 +171,21 @@ public class UsersResource {
         } catch (Exception ex) {
             System.out.println("Add card error");
             return null;
+        }
+    }
+    
+    @GET
+    @Path("{id}/followers")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getUserFollowers(@PathParam("id") Long uId) {
+        try {
+            List<User> results = userSessionLocal.getUserFollowers(uId);
+            GenericEntity<List<User>> entity = new GenericEntity<List<User>>(results) {
+            };
+            return Response.status(200).entity(entity).build();
+        } catch (Exception ex) {
+            JsonObject exception = Json.createObjectBuilder().add("error", "Not found").build();
+            return Response.status(404).entity(exception).type(MediaType.APPLICATION_JSON).build();
         }
     }
 
