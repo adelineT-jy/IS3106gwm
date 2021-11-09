@@ -54,6 +54,20 @@ public class ChatResources {
         }
     }
 
+    @GET
+    @Path("/{user_id}/other/{chat_id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getIndividualUser(@PathParam("user_id") Long uId, @PathParam("chat_id") Long cId) {
+        try {
+            User u = chatSessionLocal.getUserIndividual(cId, uId);
+            System.out.println(u.getUsername());
+            return Response.status(200).entity(u).build();
+        } catch (Exception ex) {
+            JsonObject exception = Json.createObjectBuilder().add("error", "Not found").build();
+            return Response.status(404).entity(exception).type(MediaType.APPLICATION_JSON).build();
+        }
+    }
+
     @POST
     @Path("/{user_id}")
     @Consumes(MediaType.APPLICATION_JSON)

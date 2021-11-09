@@ -6,6 +6,7 @@
 package singleton;
 
 import entity.Admin;
+import entity.Chat;
 import entity.Experience;
 import entity.Game;
 import entity.Party;
@@ -25,6 +26,7 @@ import javax.ejb.Startup;
 import session.AdminSessionLocal;
 import session.PostSessionBeanLocal;
 import session.UserSessionLocal;
+import session.ChatSessionLocal;
 
 /**
  *
@@ -43,6 +45,9 @@ public class DataInitialisationSession {
 
     @EJB
     private PostSessionBeanLocal postSessionBeanLocal;
+
+    @EJB
+    private ChatSessionLocal chatSessionBeanLocal;
 
     public DataInitialisationSession() {
     }
@@ -292,6 +297,13 @@ public class DataInitialisationSession {
             u30.setGender((byte) 1);
             userSessionLocal.createUser(u30);
 
+            User u31 = new User();
+            u31.setEmail("31@gmail.com");
+            u31.setUsername("31User");
+            u31.setPassword("password");
+            u31.setGender((byte) 1);
+            userSessionLocal.createUser(u31);
+
             Party p = new Party();
             p.setInviteLink("xxxLOLshhaicnru.djannic.lol");
             p.setPartyStartTime(new Date());
@@ -420,7 +432,6 @@ public class DataInitialisationSession {
             o1.setGame(g1);
             postSessionBeanLocal.createPost(o1, 8L, 15L, 1L);
 
-            
             Post o2 = new Post();
             o2.setTitle("finding friends");
             o2.setDescription("I am lonely");
@@ -460,6 +471,35 @@ public class DataInitialisationSession {
             o6.setRequestPrice(BigDecimal.valueOf(50));
             o6.setGame(g2);
             postSessionBeanLocal.createPost(o6, 4L, 7L, 2L);
+
+            Chat c1 = new Chat();
+            c1.setName("party p1");
+            c1.setParty(Boolean.TRUE);
+            c1.getUsers().add(u);
+            c1.getUsers().add(u3);
+            c1.getUsers().add(u4);
+            c1.getUsers().add(u6);
+            chatSessionBeanLocal.addGroupChat(c1, new Long(1));
+
+            Chat c2 = new Chat();
+            c2.setName("party p2");
+            c2.setParty(Boolean.TRUE);
+            c2.getUsers().add(u15);
+            c2.getUsers().add(u3);
+            c2.getUsers().add(u14);
+            c2.getUsers().add(u16);
+            chatSessionBeanLocal.addGroupChat(c2, new Long(2));
+
+            Chat c3 = new Chat();
+            c3.getUsers().add(u2);
+            c3.getUsers().add(u);
+            chatSessionBeanLocal.addChat(c3, new Long(2));
+
+            Chat c4 = new Chat();
+            c4.getUsers().add(u10);
+            c4.getUsers().add(u);
+            chatSessionBeanLocal.addChat(c4, new Long(10));
+
         } catch (Exception ex) {
             Logger.getLogger(DataInitialisationSession.class.getName()).log(Level.SEVERE, null, ex);
         }

@@ -15,17 +15,17 @@ export default function AdminPosts() {
 
     useEffect(() => {
         fetch(`http://localhost:8080/Gwm-war/webresources/posts/query?query=${query}`, { crossDomain: true }) //Search for post using owner Username (To amend)
-        .then((response) => {
-            if (response.ok) {
-                return response.json();
-            } else {
-                throw new Error('Something went wrong when creating Game');
-            }
-        })
+            .then((response) => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error('Something went wrong when creating Game');
+                }
+            })
             .then((data) => {
                 setPosts(data);
             });
-    }, [reload, query]);
+    }, [reload]);
 
     const handleSubmit = () => {
         setReload(reload + 1);
@@ -148,7 +148,7 @@ export default function AdminPosts() {
     };
 
     const handleKeyDown = (event) => {
-        if (event.key === 'Enter') {
+        if (event.key === 'Enter' || query.length === 0) {
             handleSubmit();
         }
     }
@@ -276,11 +276,7 @@ export default function AdminPosts() {
                                         );
                                     })}
                                 {emptyRows > 0 && (
-                                    <TableRow
-                                        style={{
-                                            height: 53 * emptyRows,
-                                        }}
-                                    >
+                                    <TableRow style={{ height: 53 * emptyRows, }}>
                                         <TableCell colSpan={10} />
                                     </TableRow>
                                 )}

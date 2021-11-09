@@ -25,7 +25,7 @@ export default function AdminUsers() {
             .then((data) => {
                 setUsers(data);
             });
-    }, [reload, query]);
+    }, [reload]);
 
     const handleSubmit = () => {
         setReload(reload + 1);
@@ -135,6 +135,11 @@ export default function AdminUsers() {
             label: 'Email Address',
         },
         {
+            id: 'gender',
+            numeric: true,
+            label: 'Gender',
+        },
+        {
             id: 'wallet',
             numeric: true,
             label: 'Wallet Amount ($)',
@@ -187,7 +192,7 @@ export default function AdminUsers() {
     };
 
     const handleKeyDown = (event) => {
-        if (event.key === 'Enter') {
+        if (event.key === 'Enter' || query.length === 0) {
             handleSubmit();
         }
     }
@@ -206,8 +211,6 @@ export default function AdminUsers() {
         setRowsPerPage(parseInt(event.target.value, 10));
         setPage(0);
     };
-
-    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - users.length) : 0;
 
     return (
         <Box sx={{ minHeight: '80vh', width: '100%' }}>
@@ -238,16 +241,12 @@ export default function AdminUsers() {
                                                 <TableCell component="th" scope="row">{user.userId}</TableCell>
                                                 <TableCell align="right">{user.username}</TableCell>
                                                 <TableCell align="right">{user.email}</TableCell>
+                                                <TableCell align="right">{user.gender === 0 ? 'Female' : 'Male'}</TableCell>
                                                 <TableCell align="right">{user.wallet}</TableCell>
                                                 <TableCell align="right"><BanUnban user={user} /></TableCell>
                                             </TableRow>
                                         );
                                     })}
-                                {emptyRows > 0 && (
-                                    <TableRow style={{ height: 53 * emptyRows }}>
-                                        <TableCell colSpan={6} />
-                                    </TableRow>
-                                )}
                             </TableBody>
                         </Table>
                     </TableContainer>
