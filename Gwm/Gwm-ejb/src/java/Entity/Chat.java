@@ -6,6 +6,7 @@
 package entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.CascadeType;
@@ -47,6 +48,7 @@ public class Chat implements Serializable {
 
     public Chat() {
         this.party = false;
+        users = new ArrayList<>();
     }
 
     public Long getChatId() {

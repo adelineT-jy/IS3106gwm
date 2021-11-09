@@ -24,7 +24,7 @@ public interface ChatSessionLocal {
 
     public List<ChatMessage> getAllMessage(Long chatId);
 
-    public void addGroupChat(Chat chat, Long uid);
+    public void addGroupChat(Chat chat, Long pid);
 
     public void addChat(Chat chat, Long uid);
 
@@ -33,6 +33,8 @@ public interface ChatSessionLocal {
     public void addUserToGroupChat(Long cid, List<User> uids);
 
     public void addMessage(ChatMessage message, Long uid, Long cid);
+
+    public User getUserIndividual(Long chat_Id, Long user_id) throws Exception;
 
     //helper method
     public Chat getChat(Long cid);

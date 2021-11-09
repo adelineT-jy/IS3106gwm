@@ -44,23 +44,31 @@ public class ChatSession implements ChatSessionLocal {
         if (chat != null) {
             chat.setParty(Boolean.FALSE);
             em.persist(chat);
+            em.flush();
 
-            User u = getUser(uid);
-            u.getChats().add(chat);
+            for (User u : chat.getUsers()) {
+                User uu = getUser(u.getUserId());
+                uu.getChats().add(chat);
+            }
         }
     }
 
     @Override
-    public void addGroupChat(Chat chat, Long uid) {
+    public void addGroupChat(Chat chat, Long pid) {
 
         if (chat != null) {
             chat.setParty(Boolean.TRUE);
             em.persist(chat);
+            em.flush();
 
-            Party p = getParty(uid);
+            Party p = getParty(pid);
             p.setChat(chat);
-            User u = getUser(uid);
-            u.getChats().add(chat);
+
+            for (User u : chat.getUsers()) {
+                User uu = getUser(u.getUserId());
+                uu.getChats().add(chat);
+            }
+
         }
 
     }
@@ -134,6 +142,17 @@ public class ChatSession implements ChatSessionLocal {
         }
 
         return user;
+    }
+
+    @Override
+    public User getUserIndividual(Long chat_Id, Long user_Id) throws Exception {
+        Chat c = getChat(chat_Id);
+        for (User u : c.getUsers()) {
+            if (u.getUserId().equals(user_Id)) {
+                return u;
+            }
+        }
+        throw new Exception();
     }
 
 }
