@@ -133,6 +133,7 @@ public class AdminSession implements AdminSessionLocal {
         oldGame.setGameDescription(game.getGameDescription());
         oldGame.setGameDownloadLink(game.getGameDownloadLink());
         oldGame.setGameName(game.getGameName());
+        oldGame.setHidden(game.isHidden());
 
         em.merge(oldGame);
     }
