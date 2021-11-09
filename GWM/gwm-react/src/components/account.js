@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
+import moment from "moment";
+import {DatePicker} from "@mui/lab";
 
 import {
   Box,
@@ -17,6 +19,7 @@ import {
   Stack,
 } from "@mui/material";
 
+//Profile Page
 export function Account() {
   const uId =
     window.localStorage.user === undefined
@@ -98,17 +101,19 @@ export function Account() {
   };
 
   return (
-    <Box sx={{ height: "70vh" }}>
+    <Box sx={{ height: "80vh" }}>
       <h1>Account</h1>
     </Box>
   );
 }
+
 
 export function Register() {
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [gender, setGender] = useState("");
+  const [dob, setDob] = useState("");
   const [error, setError] = useState("");
   let history = useHistory();
 
@@ -119,6 +124,7 @@ export function Register() {
       username: username,
       password: password,
       gender: gender,
+      dob: dob,
     };
     try {
       fetch(`http://localhost:8080/Gwm-war/webresources/users`, {
@@ -157,7 +163,7 @@ export function Register() {
       textAlign="center"
       sx={{ height: "85vh", paddingRight: "11vh" }}
     >
-      <Paper sx={{ width: "60vh", height: "60vh" }}>
+      <Paper sx={{ width: "60vh", height: "75vh" }}>
         <Typography variant="h6" sx={{ padding: "5vh", paddingBottom: "3vh" }}>
           Register
         </Typography>
@@ -210,8 +216,18 @@ export function Register() {
               </Select>
             </FormControl>
           </Grid>
-          {/* <Grid item xs={6} md={8}>
-                    </Grid> */}
+
+          <Grid item xs={12}>
+              <DatePicker
+                label="Date of Birth"
+                value={dob}
+                onChange={(newDob) => {
+                    setDob(newDob);
+                }}
+                renderInput={(params) => <TextField {...params}/>}
+                />
+          </Grid>
+
           <Grid item xs={12}>
             <Button color="secondary" variant="contained" type="submit">
               Register
