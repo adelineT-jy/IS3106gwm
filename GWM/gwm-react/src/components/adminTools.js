@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { Box, Modal, IconButton, Typography, Button, TextField, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TablePagination, TableSortLabel, Paper, Grid } from '@mui/material';
+import { Box, Modal, IconButton, Typography, Button, FormControlLabel, TextField, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TablePagination, TableSortLabel, Paper, Grid, Switch } from '@mui/material';
 import { visuallyHidden } from '@mui/utils';
 import { Search } from '@mui/icons-material';
 
@@ -28,7 +28,7 @@ function PartyManager() {
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
     useEffect(() => {
-        fetch(`http://localhost:8080/Gwm-war/webresources/party/query?username=${query}`, { crossDomain: true }) //Search for Party using owner Username (To amend)
+        fetch(`http://localhost:8080/Gwm-war/webresources/party/query?username=${query}`, { crossDomain: true })
             .then((response) => {
                 if (response.ok) {
                     return response.json();
@@ -39,7 +39,7 @@ function PartyManager() {
             .then((data) => {
                 setParties(data);
             });
-    }, [reload, query]);
+    }, [reload]);
 
     const handleSubmit = () => {
         setReload(reload + 1);
@@ -163,7 +163,7 @@ function PartyManager() {
     };
 
     const handleKeyDown = (event) => {
-        if (event.key === 'Enter') {
+        if (event.key === 'Enter' || query.length === 0) {
             handleSubmit();
         }
     }
@@ -256,6 +256,8 @@ function PartyManager() {
                                     <TableCell>User Id</TableCell>
                                     <TableCell align="right">Username</TableCell>
                                     <TableCell align="right">Email Address</TableCell>
+                                    <TableCell align="right">Gender</TableCell>
+                                    <TableCell align="right">DOB</TableCell>
                                     <TableCell align="right">Wallet Amount ($)</TableCell>
                                 </TableRow>
                             </TableHead>
@@ -268,6 +270,8 @@ function PartyManager() {
                                         <TableCell component="th" scope="row">{user.userId}</TableCell>
                                         <TableCell align="right">{user.username}</TableCell>
                                         <TableCell align="right">{user.email}</TableCell>
+                                        <TableCell align="right">{user.gender === 0 ? 'Female' : 'Male'}</TableCell>
+                                        <TableCell align="right">yet to implement</TableCell>
                                         <TableCell align="right">{user.wallet}</TableCell>
                                     </TableRow>
                                 ))}
@@ -312,9 +316,10 @@ function PartyManager() {
                                             <TableCell align="right">{party.partyOwner.username}</TableCell>
                                             <TableCell align="right">{party.partyStartTime.slice(0, 10)} {party.partyStartTime.slice(11, 16)}</TableCell>
                                             <TableCell align="right">
-                                                {party.partyEndTime !== undefined && party.partyEndTime.slice(0, 10)}
+                                                {party.partyEndTime !== undefined ? party.partyEndTime.slice(0, 10) : 'nil'}
                                                 {party.partyEndTime !== undefined && party.partyEndTime.slice(11, 17)}</TableCell>
-                                            <TableCell align="right">{party.post.postId}</TableCell>
+                                            <TableCell align="right">
+                                                {party.post !== undefined ? party.post.postId : 'nil'}</TableCell>
                                             <TableCell align="right">
                                                 <Button onClick={() => openViewUsersModal(party.users)} color="secondary" variant="outlined">
                                                     All Users
@@ -362,6 +367,7 @@ function GameManager() {
     const [gameName, setGameName] = React.useState("");
     const [gameDesc, setGameDesc] = React.useState("");
     const [gameURL, setGameURL] = React.useState("");
+    const [hidden, setHidden] = React.useState(false);
 
     useEffect(() => {
         fetch(`http://localhost:8080/Gwm-war/webresources/admin/game/query?name=${query}`, { crossDomain: true })
@@ -417,6 +423,7 @@ function GameManager() {
         setGameName(game.gameName);
         setGameDesc(game.gameDescription);
         setGameURL(game.gameDownloadLink);
+        setHidden(game.hidden);
         setEditGameModal(true);
     }
 
@@ -430,7 +437,8 @@ function GameManager() {
             body: JSON.stringify({
                 gameName: gameName,
                 gameDescription: gameDesc,
-                gameDownloadLink: gameURL
+                gameDownloadLink: gameURL,
+                hidden: hidden
             })
         };
         fetch(`http://localhost:8080/Gwm-war/webresources/admin/game/${gameId}`, requestOptions)
@@ -467,12 +475,14 @@ function GameManager() {
             <Modal open={editGameModal} onClose={handleClose}>
                 <Box sx={modalStyle} centered>
                     <Typography variant="h6">Edit Game</Typography>
-                    <TextField sx={{ width: '100%', mt: 1, mb: 1 }} variant="outlined" placeholder="Title"
+                    <TextField sx={{ width: '100%', mt: 1, mb: 1 }} variant="outlined" placeholder="Title" multiline
                         value={gameName} onChange={(e) => setGameName(e.target.value)} />
-                    <TextField sx={{ width: '100%', mt: 1, mb: 1 }} variant="outlined" placeholder="Description"
+                    <TextField sx={{ width: '100%', mt: 1, mb: 1 }} variant="outlined" placeholder="Description" multiline
                         value={gameDesc} onChange={(e) => setGameDesc(e.target.value)} />
-                    <TextField sx={{ width: '100%', mt: 1, mb: 1 }} variant="outlined" placeholder="Game Download Link"
+                    <TextField sx={{ width: '100%', mt: 1, mb: 1 }} variant="outlined" placeholder="Game Download Link" multiline
                         value={gameURL} onChange={(e) => setGameURL(e.target.value)} />
+                    <FormControlLabel control={<Switch checked={hidden} onChange={() => setHidden(!hidden)}/>} label="Hide Game"/>
+                    <br/>
                     <Button sx={{ width: '50%' }} onClick={handleClose} color="error" variant="contained">
                         Cancel
                     </Button>
@@ -505,7 +515,7 @@ function GameManager() {
                                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                             >
                                 <TableCell component="th" scope="row">
-                                    {game.gameId}
+                                    {game.gameId} {game.hidden && '(hidden)'}
                                 </TableCell>
                                 <TableCell align="right">{game.gameName}</TableCell>
                                 <TableCell align="right">{game.gameDescription}</TableCell>
