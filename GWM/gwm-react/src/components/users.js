@@ -60,7 +60,7 @@ export function Account() {
     const [expId, setExpId] = useState("");
     const [ranking, setRanking] = useState("");
     const [profileLink, setProfileLink] = useState("");
-
+    const [reloadExp, setReloadExp] = useState(0);
 
     const [reload, setReload] = useState(0);
     let history = useHistory();
@@ -77,7 +77,7 @@ export function Account() {
     // const [expiryDate, setExpiryDate] = useState(null);
     // const [cardNumber, setCardNumber] = useState(null);
   
-  
+    //load profile
     useEffect(() => {
         Api.getUser(uId)
         .then((response) => response.json())
@@ -101,14 +101,17 @@ export function Account() {
             setFollowing(tempUsers);
             console.log(followers);
         });
+      }, [reload]);
 
+      //load experience
+      useEffect(() => {
         Api.getUserExperiences(uId)
         .then((response) => response.json())
         .then((tempExp) => {
             console.log(tempExp);
             setExp(tempExp);
         })
-      }, [reload]);
+      }, [reloadExp]);
 
     function handleEditExp(exp) {
         setExpId(exp.experienceId);
@@ -128,9 +131,25 @@ export function Account() {
         .then((response) => response.json())
         .then((tempExp) => {
             setOpenModal(false);
+            setReloadExp(reloadExp + 1);
+        });
+    }
+
+    const submitDeleteExp = (event) => {
+        event.preventDefault();
+        console.log("delete" + expId);
+        Api.deleteUserExperience(uId, expId)
+        .then((response) => {
+            if (response.ok) {
+                return response.json;
+            } else {
+                alert("Delete failed");
+            }
+        })
+        .then((response) => {
+            setOpenModal(false);
             setReload(reload + 1);
         });
-
     }
 
     return (
@@ -169,7 +188,7 @@ export function Account() {
                             />
                     </Grid>
                     <Grid item xs={4} md={4}>
-                        <IconButton onClick={submitEditexp}>
+                        <IconButton onClick={submitDeleteExp}>
                             <DeleteIcon/>
                         </IconButton>
                     </Grid>
@@ -187,7 +206,7 @@ export function Account() {
 
         <Grid container spacing={2}>
             <Grid item xs={12}>
-                <Typography variant="h6" sx={{ paddingLeft: "1vh", paddingBottom: "2vh" }}>
+                <Typography variant="h5" sx={{fontWeight: "500", paddingLeft: "1vh", paddingBottom: "2vh" }}>
                         My Profile
                 </Typography>
             </Grid>
@@ -214,7 +233,7 @@ export function Account() {
                             Followers: <b>{followers.length}</b> &nbsp; Following: <b>{following.length}</b>
                         </Typography>
                         <Typography variant="body1" sx={{ paddingTop: "2vh"}}>
-                            Ratings: <b>5 to be completed</b>
+                            Ratings: <b>5 coming soon</b>
                             <StarIcon sx={{color: "#f2bd0c", paddingBottom:"0.5vh"}} />
                         </Typography>
                     </Grid>
@@ -222,8 +241,8 @@ export function Account() {
                 </Paper>
             </Grid>
             <Grid item xs={12}>
-                <Paper sx={{height: "75vh", padding: "6vh"}}>
-                    <Typography variant="h5" sx={{ fontWeight:"500", paddingBottom: "3vh", paddingLeft: "1vh"}}>
+                <Paper sx={{height: "75vh", padding: "5vh"}}>
+                    <Typography variant="h5" sx={{ fontWeight:"500", paddingBottom: "4vh", paddingLeft: "1vh"}}>
                         Experiences
                     </Typography>
                     <Grid container spacing={1} sx={{paddingLeft: "9vh"}}>

@@ -35,6 +35,12 @@ const Api = {
             method: "PUT",
             body: JSON.stringify(data),
         });
+    },
+
+    deleteUserExperience(uId, expId) {
+        return fetch(`${SERVER_PREFIX}/users/${uId}/exp/${expId}`, {
+            method: "DELETE",
+        });
     }
     // const addCard = () => {
     //   const card = {

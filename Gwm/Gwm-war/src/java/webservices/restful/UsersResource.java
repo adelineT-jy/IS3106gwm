@@ -201,6 +201,22 @@ public class UsersResource {
         }
     }
     
+    @DELETE
+    @Path("/{id}/exp/{expId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response deleteExperience(@PathParam("id") Long uId,@PathParam("expId") Long expId) {
+        try {
+            System.out.println("deleting");
+            userSessionLocal.deleteExperience(uId, expId);
+            JsonObject success = Json.createObjectBuilder().add("success", "Deleted successfully").build();
+            return Response.status(200).entity(success).type(MediaType.APPLICATION_JSON).build();
+        } catch (Exception ex) {
+            JsonObject exception = Json.createObjectBuilder().add("error", "Not found ha").build();
+            return Response.status(404).entity(exception).type(MediaType.APPLICATION_JSON).build();
+        }
+    }
+    
+    
     
     @GET
     @Path("{id}/followers")
