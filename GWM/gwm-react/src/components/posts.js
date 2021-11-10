@@ -43,7 +43,7 @@ export const Post = (post) => {
                     <Button color="primary" variant="filled" onClick={() => {
                         var otherWindow = window.open();
                         otherWindow.opener = null;
-                        otherWindow.location = `https://${game.gameDownloadLink}`;
+                        otherWindow.location = `${game.gameDownloadLink}`;
                     }}>Download Link</Button>
                 </Stack>
             </Card>
