@@ -31,7 +31,8 @@ export function AdminLogin() {
                 .then((data) => {
                     window.localStorage.setItem("admin", JSON.stringify(data));
                     history.push("/admin/posts");
-                });
+                })
+                .catch((error) => alert(error));
         } catch (Error) {
             alert('Login details are invalid');
         }

@@ -1,8 +1,7 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { Box, Modal, IconButton, Typography, Button, FormControlLabel, TextField, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TablePagination, TableSortLabel, Paper, Grid, Switch } from '@mui/material';
+import { Box, Modal, Typography, Button, FormControlLabel, TextField, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TablePagination, TableSortLabel, Paper, Grid, Switch } from '@mui/material';
 import { visuallyHidden } from '@mui/utils';
-import { Search } from '@mui/icons-material';
 
 const modalStyle = {
     position: 'absolute',
@@ -39,7 +38,7 @@ function PartyManager() {
             .then((data) => {
                 setParties(data);
             });
-    }, [reload]);
+    }, [reload, query]);
 
     const handleSubmit = () => {
         setReload(reload + 1);
@@ -162,12 +161,6 @@ function PartyManager() {
         orderBy: PropTypes.string.isRequired,
     };
 
-    const handleKeyDown = (event) => {
-        if (event.key === 'Enter' || query.length === 0) {
-            handleSubmit();
-        }
-    }
-
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
         setOrder(isAsc ? 'desc' : 'asc');
@@ -285,10 +278,7 @@ function PartyManager() {
                 <h1>Party Manager</h1>
             </div>
             <TextField id="outlined-basic" placeholder="Search Username" variant="filled" value={query}
-                onChange={(e) => setQuery(e.target.value)} onKeyDown={handleKeyDown} sx={{ minWidth: '95%' }} />
-            <IconButton color='default' component="span" onClick={handleSubmit} sx={{ height: '60px', width: '60px' }}>
-                <Search />
-            </IconButton>
+                onChange={(e) => setQuery(e.target.value)} sx={{ minWidth: '100%' }} margin='normal' autoFocus />
             <Paper sx={{ width: '100%', mb: 2 }}>
                 <TableContainer>
                     <Table sx={{ minWidth: 650 }} size="small">
@@ -496,7 +486,7 @@ function GameManager() {
                 <h1>Game Manager</h1>
             </div>
             <TextField id="outlined-basic" placeholder="Search Game Name" variant="filled" value={query}
-                onChange={(e) => setQuery(e.target.value)} sx={{ minWidth: '100%' }} />
+                onChange={(e) => setQuery(e.target.value)} sx={{ minWidth: '100%' }} margin='normal' />
             <TableContainer component={Paper}>
                 <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
                     <TableHead>
