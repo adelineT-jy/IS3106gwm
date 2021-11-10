@@ -7,6 +7,7 @@ package session;
 
 import entity.Card;
 import entity.Experience;
+import entity.Game;
 import entity.Review;
 import entity.User;
 import error.CreateUserException;
@@ -56,7 +57,8 @@ public interface UserSessionLocal {
     
     public List<Review> viewMyReviews(Long userId) throws NoResultException;
     
-    
+        public List<Game> getAllGames() throws NoResultException;
+
     
     
 

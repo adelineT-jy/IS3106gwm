@@ -162,6 +162,21 @@ public class AdminResource {
             return Response.status(400).entity(exception).build();
         }
     }
+    
+    @GET
+    @Path("/game")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getAllGames() {
+        try {
+            List<Game> results = adminSessionLocal.searchGame(null);
+            GenericEntity<List<Game>> entity = new GenericEntity<List<Game>>(results) {
+            };
+            return Response.status(200).entity(entity).build();
+        } catch (NoResultException ex) {
+            JsonObject exception = Json.createObjectBuilder().add("error", "Users cannot be found").build();
+            return Response.status(400).entity(exception).build();
+        }
+    }
 
     @PUT
     @Path("/game/{gameId}")

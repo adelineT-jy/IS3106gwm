@@ -1,3 +1,5 @@
+import { SystemSecurityUpdate } from "@mui/icons-material";
+
 const SERVER_PREFIX = "http://localhost:8080/Gwm-war/webresources";
 
 const Api = {
@@ -41,6 +43,25 @@ const Api = {
         return fetch(`${SERVER_PREFIX}/users/${uId}/exp/${expId}`, {
             method: "DELETE",
         });
+    },
+
+    addUserExperience(uId, gId, data) {
+        console.log("API: " + gId);
+        console.log(data);
+        console.log(`${SERVER_PREFIX}/users/${uId}/games/${gId}/exp`);
+        return fetch(`${SERVER_PREFIX}/users/${uId}/games/${gId}/exp`, {
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+            },
+            method: "POST",
+            body: JSON.stringify(data),
+        });
+    },
+
+    //GAMES
+    getAllGames() {
+        return fetch(`${SERVER_PREFIX}/admin/game`);
     }
     // const addCard = () => {
     //   const card = {

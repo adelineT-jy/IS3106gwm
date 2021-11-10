@@ -1,6 +1,6 @@
 import React, { useEffect, useState} from 'react';
 import { useHistory } from "react-router-dom";
-import { Box, Container, Typography, Paper, Grid, Avatar, Button, IconButton, Card, CardMedia, CardContent, CardActions, Modal, TextField} from '@mui/material';
+import { Box, FormControl, InputLabel, Select, MenuItem, Typography, Paper, Grid, Avatar, Button, IconButton, Card, CardMedia, CardContent, CardActions, Modal, TextField} from '@mui/material';
 import SettingsIcon from '@mui/icons-material/Settings';
 import StarIcon from '@mui/icons-material/Star';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -35,7 +35,7 @@ const style = {
     left: '50%',
     transform: 'translate(-50%, -50%)',
     width: 400,
-    height: 300,
+    height: 350,
     bgcolor: 'background.paper',
     border: '1px solid #000',
     boxShadow: 24,
@@ -62,21 +62,24 @@ export function Account() {
     const [profileLink, setProfileLink] = useState("");
     const [reloadExp, setReloadExp] = useState(0);
 
+    //add exp
+    const [openAddExpModal, setOpenAddExpModal] = useState(false); 
+    const [selectedGameId, setSelectedGameId] = useState("");
+    const [selectedGame, setSelectedGame] = useState("");
+    const [games, setGames] = useState([]);
+
     const [reload, setReload] = useState(0);
     let history = useHistory();
     
     const handleClose = () => {
         setOpenModal(false);
+        setOpenAddExpModal(false);
+        setRanking("");
+        setProfileLink("");
+        setSelectedGame("");
+        
     };
 
-    // const [cId, setCId] = useState(null);
-    // const [parties, setParties] = useState([]);
-  
-    // const [name, setName] = useState("");
-    // const [cvv, setCvv] = useState("");
-    // const [expiryDate, setExpiryDate] = useState(null);
-    // const [cardNumber, setCardNumber] = useState(null);
-  
     //load profile
     useEffect(() => {
         Api.getUser(uId)
@@ -113,6 +116,27 @@ export function Account() {
         })
       }, [reloadExp]);
 
+      //load games
+      useEffect(() => {
+          Api.getAllGames()
+          .then((response) => {
+              if (response.ok) {
+                  return response.json();
+              } else {
+                  alert("Retrieve games failed");
+              }
+          }).then((tempGames) => {
+                setGames(tempGames);
+                console.log(games);
+          }) 
+      }, [openAddExpModal])
+      
+      //handle selectedGame
+      useEffect(() => {
+         setSelectedGame(games.filter((game => game.gameId === selectedGameId)));
+      }, [selectedGameId])
+
+
     function handleEditExp(exp) {
         setExpId(exp.experienceId);
         setRanking(exp.ranking);
@@ -130,7 +154,7 @@ export function Account() {
         Api.editUserExperiences(uId, newExp)
         .then((response) => response.json())
         .then((tempExp) => {
-            setOpenModal(false);
+            handleClose();
             setReloadExp(reloadExp + 1);
         });
     }
@@ -147,8 +171,28 @@ export function Account() {
             }
         })
         .then((response) => {
-            setOpenModal(false);
-            setReload(reload + 1);
+            handleClose();
+            setReloadExp(reloadExp + 1);
+        });
+    }
+
+    const submitAddExp = (event) => {
+        event.preventDefault();
+        console.log("adding to game" + selectedGameId);
+        const addExp = {
+            ranking: ranking,
+            profileLink: profileLink
+        }
+        Api.addUserExperience(uId, selectedGameId, addExp)
+        .then((response) => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                alert("Adding Experience failed, experience for this game exists!");
+            }
+        }).then((data) => {
+            handleClose();
+            setReloadExp(reloadExp + 1);
         });
     }
 
@@ -201,8 +245,70 @@ export function Account() {
             </Box>
         </Modal>
 
-
-
+        <Modal open={openAddExpModal} onClose={handleClose}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description">
+            <Box sx={style} display="flex">
+                <Grid container spacing={1}>
+                    <Grid item xs={12} md={12}>
+                        <IconButton onClick={handleClose} sx={{float:"right"}}>
+                            <CloseRoundedIcon/>
+                        </IconButton>
+                        <Typography variant="h6">Add Experience</Typography>
+                    </Grid>
+                    <Grid item xs={12} md={12}>
+                        <FormControl size="small" sx={{ minWidth: "52vh"}}>
+                            <InputLabel id="demo-simple-select-helper-label">
+                                Game
+                            </InputLabel>
+                            <Select
+                                labelId="demo-simple-select-helper-label"
+                                id="demo-simple-select-helper"
+                                value={selectedGame.gameName}
+                                label="Game"
+                                onChange={(event) => {
+                                    console.log("chosengame:" + event.target.value);
+                                    setSelectedGameId(event.target.value);
+                                }}
+                            >
+                                {console.log(games)}
+                                {games.map((game) => (
+                                     <MenuItem key={game.gameName} value={game.gameId}>{game.gameName}</MenuItem>
+                                ))}
+                            </Select>
+                            </FormControl>
+                    </Grid>
+                    <Grid item xs={12} md={12}>
+                        <TextField
+                            id="outlined-basic"
+                            label="Ranking"
+                            value={ranking}
+                            size="small"
+                            fullWidth
+                            required
+                            onChange={(event) => setRanking(event.target.value)}
+                            />
+                    </Grid>
+                    <Grid item xs={12} md={12}>
+                        <TextField
+                            id="outlined-basic"
+                            label="Profile Link"
+                            size="small"
+                            fullWidth
+                            value={profileLink}
+                            onChange={(event) => setProfileLink(event.target.value)}
+                            />
+                    </Grid>
+                    <Grid item xs={4} md={4}>
+                    </Grid>
+                    <Grid item xs={8} md={8}>
+                        <Button onClick={submitAddExp} color="secondary" variant="contained" sx={{float:"right"}}>
+                            Confirm
+                        </Button>
+                    </Grid>
+                </Grid>
+            </Box>
+        </Modal>
 
         <Grid container spacing={2}>
             <Grid item xs={12}>
@@ -228,7 +334,6 @@ export function Account() {
                         <Typography variant="body1" sx={{ paddingTop: "2vh"}}>
                             Gender: <b>{user.gender === 0 ? "F" : "M"}</b>
                         </Typography>
-
                         <Typography variant="body1" sx={{ paddingTop: "2vh"}}>
                             Followers: <b>{followers.length}</b> &nbsp; Following: <b>{following.length}</b>
                         </Typography>
@@ -242,13 +347,22 @@ export function Account() {
             </Grid>
             <Grid item xs={12}>
                 <Paper sx={{height: "75vh", padding: "5vh"}}>
-                    <Typography variant="h5" sx={{ fontWeight:"500", paddingBottom: "4vh", paddingLeft: "1vh"}}>
-                        Experiences
-                    </Typography>
+                    <Grid container spacing={1}>
+                        <Grid item xs={8} md={8}>
+                            <Typography variant="h5" sx={{ fontWeight:"500", paddingBottom: "4vh", paddingLeft: "1vh"}}>
+                                Experiences
+                            </Typography>
+                        </Grid>
+                        <Grid item xs={4} md={4}>
+                            <Button variant="contained" color="secondary" sx={{float: "right"}} size="small" onClick={() => setOpenAddExpModal(true)}>
+                                Add Experience
+                            </Button>
+                        </Grid>
+                    </Grid>
                     <Grid container spacing={1} sx={{paddingLeft: "9vh"}}>
                             {exp.map((eachExp) => (
                                 <>
-                                <Grid item xs={4} md={4} >
+                                <Grid item xs={4} md={4} key={eachExp.experienceId}>
                                     <Card sx={{maxWidth: "53vh"}}>
                                     <CardMedia
                                         component="img"

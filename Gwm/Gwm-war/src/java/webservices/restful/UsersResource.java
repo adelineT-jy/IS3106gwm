@@ -7,6 +7,7 @@ package webservices.restful;
 
 import entity.Card;
 import entity.Experience;
+import entity.Game;
 import entity.Party;
 import entity.Review;
 import entity.User;
@@ -216,7 +217,22 @@ public class UsersResource {
         }
     }
     
-    
+    @POST
+    @Path("/{id}/games/{gId}/exp")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response addExperience(@PathParam("id") Long uId, @PathParam("gId") Long gId, Experience exp) {
+        try {
+            System.out.println("Resource: adding exp" + gId);
+            userSessionLocal.addExperience(uId, exp, gId);
+            JsonObject success = Json.createObjectBuilder().add("success", "Added successfully").build();
+            return Response.status(200).entity(success).type(MediaType.APPLICATION_JSON).build();
+        } catch (Exception ex) {
+JsonObject exception = Json.createObjectBuilder().add("error", "Failed").build();
+            return Response.status(404).entity(exception).type(MediaType.APPLICATION_JSON).build();
+        }
+    }
+
     
     @GET
     @Path("{id}/followers")
@@ -313,4 +329,21 @@ public class UsersResource {
             return Response.status(400).entity(exception).build();
         }
     }
+    
+    
+    @GET
+    @Path("/game")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getAllGames() {
+        try {
+            List<Game> results = userSessionLocal.getAllGames();
+            GenericEntity<List<Game>> entity = new GenericEntity<List<Game>>(results) {
+            };
+            return Response.status(200).entity(entity).build();
+        } catch (NoResultException ex) {
+            JsonObject exception = Json.createObjectBuilder().add("error", "Users cannot be found").build();
+            return Response.status(400).entity(exception).build();
+        }
+    }
+
 }
