@@ -33,13 +33,12 @@ public class Chat implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long chatId;
 
-    //if true
+    //if true == party name
     private String name;
 
     //if true is a party
     private Boolean party;
 
-    @JsonbTransient
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "chats")
     private List<User> users;
 
