@@ -1,7 +1,8 @@
 import React, {useState, useEffect} from "react"; 
-import {Box, Grid, Paper, Typography, TextField, FormControl, InputLabel, Select, MenuItem, Button, Tabs, Tab} from "@mui/material";
+import {Box, Card, Grid, Paper, Typography, TextField, FormControl, InputLabel, Select, MenuItem, Button, Tabs, Tab, CardContent, CardHeader} from "@mui/material";
 import {Switch, Route, useRouteMatch, Link} from "react-router-dom";
 import {DatePicker} from "@mui/lab";
+import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import moment from "moment";
 
 import Api from "../helpers/Api.js";
@@ -27,10 +28,9 @@ export default function Settings() {
                                 <Typography variant="h6" sx={{paddingLeft: "1vh", paddingBottom: "2vh" }}>
                                     Settings
                                 </Typography>
-
                                 <Tabs orientation="vertical" value={value} onChange={handleChange} variant='fullWidth' sx={{float: "left"}}>
                                     <Tab label="Profile" value={path} to={path} component={Link} sx={{fontWeight:"600", color: 'black', "&.Mui-selected": {color:"red"}, "&.hover": {color: "red", opacity: 1} }} />
-                                    <Tab label="Cards" value={`${path}/cards`} to={`${path}/cards`} component={Link}  sx={{fontWeight:"600", color: "black", "&.Mui-selected": {color:"red"}}} />
+                                    <Tab label="Finance" value={`${path}/cards`} to={`${path}/cards`} component={Link}  sx={{fontWeight:"600", color: "black", "&.Mui-selected": {color:"red"}}} />
                                 </Tabs>
                             </Paper>
                         </Grid>
@@ -50,11 +50,103 @@ export default function Settings() {
 }
 
 export function CardSettings() {
+    const [user, setUser] = useState([]);
+    const [balance, setBalance] = useState("");
+
+    const uId =
+      window.localStorage.user === undefined
+        ? 0 : JSON.parse(window.localStorage.user).userId;
+    
+    Api.getUser(uId)
+    .then((response) => {
+        if (response.ok) {
+            return response.json();
+        } else {
+            alert("Retrieving wallet failed");
+        }
+        }).then((tempUser) => {
+        setBalance(tempUser.wallet)
+        
+    });
+
+
+
     return (
-        <Paper sx={{height: "80vh", padding: "4vh"}}>
+        <Paper sx={{height: "80vh", padding: "5vh"}}>
             <Typography variant="h6" sx={{ paddingLeft: "1vh", paddingBottom: "2vh" }}>
-                Cards
+                Finance
             </Typography>
+            
+            <Grid container spacing={2}>
+               
+                <Grid item xs={12}>
+                    <Card sx={{width: "40vh", height: "30vh", padding: "3vh", paddingTop:"2vh"}}>
+                        <CardContent variant="outlined">
+                            <Grid container spacing={2}>
+                                <Grid item xs={8} md={8}>
+                                    <Typography variant="body1" sx={{fontWeight: "550", color: "secondary.main"}}>
+                                        Wallet
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={4} md={4}>
+                                    <AccountBalanceWalletIcon sx={{float: "right", color:"grey"}}/>
+                                </Grid>
+                                <Grid item xs={12} md={12}>
+                                    <Typography variant="body1" sx={{fontWeight: "400", color: "#4c524d"}}>
+                                        Balance Amount
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={12} md={12}>
+                                    <Typography variant="h4">
+                                        ${balance} 
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={8} md={8}>
+                                </Grid>
+                                <Grid item xs={4} md={4}>
+                                    <Typography variant="body1" sx={{float: "right"}}>
+                                        Top up (TBC)
+                                    </Typography>
+                                </Grid>
+                            </Grid>
+                        </CardContent>
+                    </Card>
+                </Grid>
+
+                <Grid item xs={12}>
+                    <Card sx={{width: "40vh", height: "30vh", padding: "3vh", paddingTop:"2vh"}}>
+                        <CardContent variant="outlined">
+                            <Grid container spacing={2}>
+                                <Grid item xs={8} md={8}>
+                                    <Typography variant="body1" sx={{fontWeight: "550", color: "secondary.main"}}>
+                                        Wallet
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={4} md={4}>
+                                    <AccountBalanceWalletIcon sx={{float: "right", color:"grey"}}/>
+                                </Grid>
+                                <Grid item xs={12} md={12}>
+                                    <Typography variant="body1" sx={{fontWeight: "400", color: "#4c524d"}}>
+                                        Balance Amount
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={12} md={12}>
+                                    <Typography variant="h4">
+                                        ${balance} 
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={8} md={8}>
+                                </Grid>
+                                <Grid item xs={4} md={4}>
+                                    <Typography variant="body1" sx={{float: "right"}}>
+                                        Top up (TBC)
+                                    </Typography>
+                                </Grid>
+                            </Grid>
+                        </CardContent>
+                    </Card>
+                </Grid>
+            </Grid>
 
              
         </Paper>

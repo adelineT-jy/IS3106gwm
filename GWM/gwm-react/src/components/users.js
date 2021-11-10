@@ -257,7 +257,7 @@ export function Account() {
                         <Typography variant="h6">Add Experience</Typography>
                     </Grid>
                     <Grid item xs={12} md={12}>
-                        <FormControl size="small" sx={{ minWidth: "52vh"}}>
+                        <FormControl size="small" sx={{ width: "35vh"}}>
                             <InputLabel id="demo-simple-select-helper-label">
                                 Game
                             </InputLabel>
@@ -346,7 +346,7 @@ export function Account() {
                 </Paper>
             </Grid>
             <Grid item xs={12}>
-                <Paper sx={{height: "75vh", padding: "5vh"}}>
+                <Paper sx={{height: "78vh", padding: "5vh"}}>
                     <Grid container spacing={1}>
                         <Grid item xs={8} md={8}>
                             <Typography variant="h5" sx={{ fontWeight:"500", paddingBottom: "4vh", paddingLeft: "1vh"}}>
