@@ -29,27 +29,6 @@ public class AdminResource {
     @EJB
     private AdminSessionLocal adminSessionLocal;
 
-    @POST
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Admin createAdmin(Admin admin) {
-        adminSessionLocal.createAdmin(admin);
-        return admin;
-    }
-
-    @GET
-    @Path("/{adminId}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response GetAdmin(@PathParam("adminId") Long adminId) {
-        try {
-            Admin admin = adminSessionLocal.getAdmin(adminId);
-            return Response.status(200).entity(admin).type(MediaType.APPLICATION_JSON).build();
-        } catch (Exception ex) {
-            JsonObject exception = Json.createObjectBuilder().add("error", ex.getMessage()).build();
-            return Response.status(404).entity(exception).type(MediaType.APPLICATION_JSON).build();
-        }
-    }
-
     @GET
     @Path("/login/{email}/{password}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -61,35 +40,6 @@ public class AdminResource {
         } catch (Exception ex) {
             JsonObject exception = Json.createObjectBuilder().add("error", ex.getMessage()).build();
             return Response.status(404).entity(exception).type(MediaType.APPLICATION_JSON).build();
-        }
-    }
-    
-    @PUT
-    @Path("/{adminId}")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response editAdmin(@PathParam("adminId") Long adminId, Admin admin) {
-        admin.setUserId(adminId);
-
-        try {
-            adminSessionLocal.updateAdmin(admin);
-            return Response.status(204).build();
-        } catch (NoResultException ex) {
-            JsonObject exception = Json.createObjectBuilder().add("error", ex.getMessage()).build();
-            return Response.status(404).entity(exception).type(MediaType.APPLICATION_JSON).build();
-        }
-    }
-
-    @DELETE
-    @Path("/{adminId}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response deleteAdmin(@PathParam("adminId") Long adminId) {
-        try {
-            adminSessionLocal.deleteAdmin(adminId);
-            return Response.status(204).build();
-        } catch (Exception ex) {
-            JsonObject exception = Json.createObjectBuilder().add("error", ex.getMessage()).build();
-            return Response.status(404).entity(exception).build();
         }
     }
 
