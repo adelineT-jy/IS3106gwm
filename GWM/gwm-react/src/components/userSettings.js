@@ -1,15 +1,21 @@
-import {useState, useEffect} from "react"; 
-import {Box, Grid, Paper, Typography, TextField, FormControl, InputLabel, Select, MenuItem, Button} from "@mui/material";
-import {Switch, Route} from "react-router-dom";
+import React, {useState, useEffect} from "react"; 
+import {Box, Grid, Paper, Typography, TextField, FormControl, InputLabel, Select, MenuItem, Button, Tabs, Tab} from "@mui/material";
+import {Switch, Route, useRouteMatch, Link} from "react-router-dom";
 import {DatePicker} from "@mui/lab";
 import moment from "moment";
 
 import Api from "../helpers/Api.js";
 
 
+
 export default function Settings() {
 
+    let { path, url } = useRouteMatch(); 
+    const [value, setValue] = useState(`${path}`);
 
+    const handleChange = (event, newValue) => {
+      setValue(newValue);
+    };
 
     return (
         <Box display="flex" justifyContent="center" sx={{ height: "85vh", padding: "5vh" }}>
@@ -21,19 +27,34 @@ export default function Settings() {
                                 <Typography variant="h6" sx={{paddingLeft: "1vh", paddingBottom: "2vh" }}>
                                     Settings
                                 </Typography>
+
+                                <Tabs orientation="vertical" value={value} onChange={handleChange} variant='fullWidth' sx={{float: "left"}}>
+                                    <Tab label="Profile" value={path} to={path} component={Link} sx={{fontWeight:"600", color: 'black', "&.Mui-selected": {color:"red"}, "&.hover": {color: "red", opacity: 1} }} />
+                                    <Tab label="Cards" value={`${path}/cards`} to={`${path}/cards`} component={Link}  sx={{fontWeight:"600", color: "black", "&.Mui-selected": {color:"red"}}} />
+                                </Tabs>
                             </Paper>
                         </Grid>
 
                         <Grid item xs={9} md={9}>
                             <Switch>
-                                <Route exact path="/account/settings" component={ProfileSettings}/>
+                                <Route exact path={`${path}/cards`} component={CardSettings}/>
+                                <Route exact path={path} component={ProfileSettings}/>
                             </Switch>
-                           
+           
                         </Grid>
                     </Grid>
                 </Grid>
             </Grid> 
         </Box>
+    );
+}
+
+export function CardSettings() {
+    return (
+        <Paper sx={{height: "80vh", padding: "4vh"}}>
+            giao
+            <Typography>What is going on</Typography>
+        </Paper>
     );
 }
 

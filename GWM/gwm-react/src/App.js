@@ -51,7 +51,8 @@ class App extends Component {
                         <Route exact path="/logout" component={Logout} />
                         
                         {/* users */}
-                        <RedirectUnauthorised exact path={`/account/settings`} component={Settings} />
+                        <RedirectUnauthorised path={`/account/settings`} component={Settings} />
+                        {/* <RedirectUnauthorised exact path={`/account/settings/cards`} component={Settings} /> */}
                         <RedirectUnauthorised exact path={`/account/chats`} component={Chat} />
                         <RedirectUnauthorised exact path={`/account`} component={Account} />
                      
