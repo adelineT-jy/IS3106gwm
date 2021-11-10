@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
-import {DatePicker} from "@mui/lab";
+import { DatePicker } from "@mui/lab";
 
 import {
   Box,
@@ -129,14 +129,14 @@ export function Register() {
           </Grid>
 
           <Grid item xs={12}>
-              <DatePicker
-                label="Date of Birth"
-                value={dob}
-                onChange={(newDob) => {
-                    setDob(newDob);
-                }}
-                renderInput={(params) => <TextField {...params}/>}
-                />
+            <DatePicker
+              label="Date of Birth"
+              value={dob}
+              onChange={(newDob) => {
+                setDob(newDob);
+              }}
+              renderInput={(params) => <TextField {...params} />}
+            />
           </Grid>
 
           <Grid item xs={12}>
@@ -240,7 +240,7 @@ export function Login() {
 
 export function Logout() {
   const history = useHistory();
-  window.localStorage.removeItem("user");
+  window.localStorage.clear();
 
   useEffect(() => {
     setTimeout(function () {

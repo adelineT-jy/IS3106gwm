@@ -14,7 +14,7 @@ public interface AdminSessionLocal {
 
     public Admin getAdminByEmail(String email) throws NoResultException;
     
-    public Long loginAdmin(String email, String password) throws InvalidLoginException;
+    public Admin loginAdmin(String email, String password) throws InvalidLoginException;
     
     public void createAdmin(Admin admin);
     
