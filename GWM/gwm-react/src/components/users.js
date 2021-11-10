@@ -1,8 +1,10 @@
 import React, { useEffect, useState} from 'react';
 import { useHistory } from "react-router-dom";
-import { Box, Container, Typography, Paper, Grid, Avatar, Button, Card, CardMedia, CardContent, CardActions, Modal} from '@mui/material';
+import { Box, Container, Typography, Paper, Grid, Avatar, Button, IconButton, Card, CardMedia, CardContent, CardActions, Modal, TextField} from '@mui/material';
 import SettingsIcon from '@mui/icons-material/Settings';
 import StarIcon from '@mui/icons-material/Star';
+import DeleteIcon from '@mui/icons-material/Delete';
+import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import Api from "../helpers/Api.js";
 
 import lol from "../images/lol.jpeg"
@@ -33,6 +35,7 @@ const style = {
     left: '50%',
     transform: 'translate(-50%, -50%)',
     width: 400,
+    height: 300,
     bgcolor: 'background.paper',
     border: '1px solid #000',
     boxShadow: 24,
@@ -121,26 +124,61 @@ export function Account() {
             ranking: ranking,
             profileLink: profileLink
         }
+        Api.editUserExperiences(uId, newExp)
+        .then((response) => response.json())
+        .then((tempExp) => {
+            setOpenModal(false);
+            setReload(reload + 1);
+        });
 
     }
 
-
-  
     return (
       <Box justifyContent="center" sx={{ height: "130vh", padding: "5vh" }}>
 
         <Modal open={openModal} onClose={handleClose}
             aria-labelledby="modal-modal-title"
             aria-describedby="modal-modal-description">
-            <Box sx={{style}}>
-                <Typography variant="h6">Please append any additional information to your request</Typography>
-
-                <Button onClick={handleClose} color="grey" variant="contained">
-                    Cancel
-                </Button>
-                <Button onClick={submitEditexp} color="secondary" variant="contained">
-                    Confirm
-                </Button>
+            <Box sx={style} display="flex">
+                <Grid container spacing={1}>
+                    <Grid item xs={12} md={12}>
+                        <IconButton onClick={handleClose} sx={{float:"right"}}>
+                            <CloseRoundedIcon/>
+                        </IconButton>
+                        <Typography variant="h6">Edit Experience</Typography>
+                    </Grid>
+                    <Grid item xs={12} md={12}>
+                        <TextField
+                            id="outlined-basic"
+                            label="Ranking"
+                            value={ranking}
+                            size="small"
+                            fullWidth
+                            required
+                            onChange={(event) => setRanking(event.target.value)}
+                            />
+                    </Grid>
+                    <Grid item xs={12} md={12}>
+                        <TextField
+                            id="outlined-basic"
+                            label="Profile Link"
+                            size="small"
+                            fullWidth
+                            value={profileLink}
+                            onChange={(event) => setProfileLink(event.target.value)}
+                            />
+                    </Grid>
+                    <Grid item xs={4} md={4}>
+                        <IconButton onClick={submitEditexp}>
+                            <DeleteIcon/>
+                        </IconButton>
+                    </Grid>
+                    <Grid item xs={8} md={8}>
+                        <Button onClick={submitEditexp} color="secondary" variant="contained" sx={{float:"right"}}>
+                            Confirm
+                        </Button>
+                    </Grid>
+                </Grid>
             </Box>
         </Modal>
 
@@ -184,8 +222,8 @@ export function Account() {
                 </Paper>
             </Grid>
             <Grid item xs={12}>
-                <Paper sx={{height: "70vh", padding: "6vh"}}>
-                    <Typography variant="h5" sx={{ fontWeight:"500", paddingBottom: "2vh"}}>
+                <Paper sx={{height: "75vh", padding: "6vh"}}>
+                    <Typography variant="h5" sx={{ fontWeight:"500", paddingBottom: "3vh", paddingLeft: "1vh"}}>
                         Experiences
                     </Typography>
                     <Grid container spacing={1} sx={{paddingLeft: "9vh"}}>
