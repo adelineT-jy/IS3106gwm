@@ -16,7 +16,7 @@ export function PageNotFound() {
 export function Unauthorised() {
     return (
         <Box sx={{bgcolor: '#e3f2fd', minHeight: '80vh' }}>
-            <h1>Please login to access this page!</h1>
+            <h1>You have no access to this page!</h1>
             <Link to="/login">
                 Login
             </Link>

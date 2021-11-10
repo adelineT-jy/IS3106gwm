@@ -42,13 +42,13 @@ export function NavTabs() {
     );
 }
 export function AdminTabs() {
-    const routeMatch = useRouteMatch(['/admin/tools', '/admin/users', '/admin']);
+    const routeMatch = useRouteMatch(['/admin/tools', '/admin/users', '/admin/posts']);
     const currentTab = routeMatch?.path;
 
     return (
-        <Box sx={{ width: '100%', alignItems: 'center', textAlign: 'right' }}>
+        <Box sx={{ width: '50%', alignItems: 'center', textAlign: 'right' }}>
             <Tabs value={currentTab} centered>
-                <Tab icon={<Home />} label="Home" value="/admin" to="/admin" component={Link} sx={{ color: 'primary.main' }} />
+                <Tab icon={<Home />} label="Home" value="/admin/posts" to="/admin/posts" component={Link} sx={{ color: 'primary.main' }} />
                 <Tab icon={<AdminPanelSettings />} label="Tools" value="/admin/tools" to="/admin/tools" component={Link} sx={{ color: 'primary.main' }} />
                 <Tab icon={<PermIdentity />} label="Users" value="/admin/users" to="/admin/users" component={Link} sx={{ color: 'primary.main' }} />
             </Tabs>
@@ -77,7 +77,13 @@ function AdminMenu() {
             <Typography id="title" sx={{ flexGrow: 1 }}>
                 Game With Me
             </Typography>
-            <AdminTabs/>
+            <AdminTabs />
+            <Typography variant="h6" sx={{ flexGrow: 1, color: 'white' }} align="center">
+                {window.localStorage.admin !== undefined && JSON.parse(window.localStorage.admin).email}
+                &nbsp;
+                ({window.localStorage.admin !== undefined && JSON.parse(window.localStorage.admin).userId})
+                &nbsp;
+            </Typography>
             <Button variant="text" href="/logout">Sign out</Button>
         </Toolbar>
     )
@@ -98,7 +104,7 @@ function UserMenu() {
             <Typography id="title" sx={{ flexGrow: 1 }}>
                 Game With Me
             </Typography>
-            <NavTabs/>
+            <NavTabs />
             <Box sx={{ display: 'flex', alignItems: 'right', textAlign: 'right', width: '10%' }}>
                 <Tooltip title="Account settings">
                     <IconButton onClick={handleClick} size="small" sx={{ ml: 2 }}>
@@ -153,7 +159,19 @@ const CheckUnauthorised = ({ ...props }) => (
         {...props}
         render={(props) =>
             window.localStorage.getItem('user') ? (
-                    <UserMenu />
+                <UserMenu />
+            ) : (
+                <GuestMenu />
+            )}
+    />
+);
+
+const CheckUnauthorisedAdmin = ({ ...props }) => (
+    <Route
+        {...props}
+        render={(props) =>
+            window.localStorage.getItem('admin') ? (
+                <AdminMenu />
             ) : (
                 <GuestMenu />
             )}
@@ -165,13 +183,17 @@ export function Header() {
         <header>
             <Box sx={{ bgcolor: 'black', flexGrow: 1 }}>
                 <AppBar sx={{ bgcolor: 'black' }} position="static">
-                   <Switch>
-                        <CheckUnauthorised exact path="/posts"/>
-                        <CheckUnauthorised exact path="/party"/>
-                        <CheckUnauthorised exact path="/requests"/>
-                        <CheckUnauthorised path="/account"/>
+                    <Switch>
+                        <CheckUnauthorised exact path="/posts" />
+                        <CheckUnauthorised exact path="/party" />
+                        <CheckUnauthorised exact path="/requests" />
+                        <CheckUnauthorised path="/account" />
 
-                        <Route path="/admin" component={AdminMenu} /> {/*Need localStorage admin=true before implementing*/}
+                        <CheckUnauthorisedAdmin expact path="/admin/posts" />
+                        <CheckUnauthorisedAdmin expact path="/admin/tools" />
+                        <CheckUnauthorisedAdmin expact path="/admin/users" />
+
+                        <Route exact path="/admin" />
 
                         <Route component={GuestMenu} />
                     </Switch>
@@ -184,7 +206,7 @@ export function Header() {
 export function Footer() {
     return (
         <footer>
-            <Box sx={{ bgcolor: '#111', color: 'white', pt: 1, minHeight:'11vh', position:'static', bottom: 0, left: 0, right: 0, mt:0}}>
+            <Box sx={{ bgcolor: '#111', color: 'white', pt: 1, minHeight: '11vh', position: 'static', bottom: 0, left: 0, right: 0, mt: 1 }}>
                 <p><strong>Copyright &copy; 2021</strong> Game With Me Production</p>
                 <p>All rights reserved.</p>
             </Box>

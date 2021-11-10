@@ -30,7 +30,8 @@ public class ChatSession implements ChatSessionLocal {
     @Override
     public List<Chat> getAllChats(Long userId) {
         User u = getUser(userId);
-        return u.getChats();
+        List<Chat> cc = u.getChats();
+        return cc;
     }
 
     @Override

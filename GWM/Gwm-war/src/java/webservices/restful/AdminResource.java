@@ -50,6 +50,20 @@ public class AdminResource {
         }
     }
 
+    @GET
+    @Path("/login/{email}/{password}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response login(@PathParam("email") String email, 
+            @PathParam("password") String password) {
+        try {
+            Admin admin = adminSessionLocal.loginAdmin(email, password);
+            return Response.status(200).entity(admin).type(MediaType.APPLICATION_JSON).build();
+        } catch (Exception ex) {
+            JsonObject exception = Json.createObjectBuilder().add("error", ex.getMessage()).build();
+            return Response.status(404).entity(exception).type(MediaType.APPLICATION_JSON).build();
+        }
+    }
+    
     @PUT
     @Path("/{adminId}")
     @Consumes(MediaType.APPLICATION_JSON)

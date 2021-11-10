@@ -13,6 +13,7 @@ import Chat from './components/chat';
 import Posts from './components/posts';
 import Requests from './components/requests';
 import Parties from './components/party';
+import { AdminLogin } from './components/admin';
 import AdminPosts from './components/adminPosts';
 import AdminTools from './components/adminTools';
 import AdminUsers from './components/adminUsers';
@@ -31,7 +32,19 @@ class App extends Component {
                 {...props}
                 render={(props) =>
                     window.localStorage.getItem('user') ? (
-                            <Component {...props} />
+                        <Component {...props} />
+                    ) : (
+                        <Route component={Unauthorised} />
+                    )}
+            />
+        );
+
+        const RedirectUnauthorisedAdmin = ({ component: Component, ...props }) => (
+            <Route
+                {...props}
+                render={(props) =>
+                    window.localStorage.getItem('admin') ? (
+                        <Component {...props} />
                     ) : (
                         <Route component={Unauthorised} />
                     )}
@@ -49,22 +62,23 @@ class App extends Component {
                         <Route exact path="/login" component={Login} />
                         <Route exact path="/register" component={Register} />
                         <Route exact path="/logout" component={Logout} />
-                        
+
                         {/* users */}
                         <RedirectUnauthorised path={`/account/settings`} component={Settings} />
                         {/* <RedirectUnauthorised exact path={`/account/settings/cards`} component={Settings} /> */}
                         <RedirectUnauthorised exact path={`/account/chats`} component={Chat} />
                         <RedirectUnauthorised exact path={`/account`} component={Account} />
-                     
+
 
                         <Route exact path="/posts"><Posts request={true} /></Route> {/*Need to set request default as true before implementing redirect*/}
                         <RedirectUnauthorised exact path={`/party`} component={Parties} />
                         <RedirectUnauthorised exact path={`/requests`} component={Requests} />
 
                         {/* admin */}
-                        <Route exact path="/admin" component={AdminPosts} /> {/*Need to set localStorage admin=true before redirect*/}
-                        <Route exact path="/admin/tools" component={AdminTools} />
-                        <Route exact path="/admin/users" component={AdminUsers} />
+                        <Route exact path="/admin" component={AdminLogin} />
+                        <RedirectUnauthorisedAdmin exact path="/admin/posts" component={AdminPosts} />
+                        <RedirectUnauthorisedAdmin exact path="/admin/tools" component={AdminTools} />
+                        <RedirectUnauthorisedAdmin exact path="/admin/users" component={AdminUsers} />
 
                         <Route component={PageNotFound} />
                     </Switch>

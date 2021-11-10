@@ -481,8 +481,8 @@ function GameManager() {
                         value={gameDesc} onChange={(e) => setGameDesc(e.target.value)} />
                     <TextField sx={{ width: '100%', mt: 1, mb: 1 }} variant="outlined" placeholder="Game Download Link" multiline
                         value={gameURL} onChange={(e) => setGameURL(e.target.value)} />
-                    <FormControlLabel control={<Switch checked={hidden} onChange={() => setHidden(!hidden)}/>} label="Hide Game"/>
-                    <br/>
+                    <FormControlLabel control={<Switch checked={hidden} onChange={() => setHidden(!hidden)} />} label="Hide Game" />
+                    <br />
                     <Button sx={{ width: '50%' }} onClick={handleClose} color="error" variant="contained">
                         Cancel
                     </Button>
@@ -541,10 +541,9 @@ function GameManager() {
 
 export default function AdminTools() {
     return (
-        <Box sx={{ minHeight: '80vh' }}>
+        <Box sx={{ minHeight: '81vh' }}>
             <PartyManager />
             <GameManager />
         </Box>
     )
 }
-

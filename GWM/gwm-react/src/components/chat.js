@@ -1,10 +1,10 @@
 import React, { useEffect } from "react";
-import { palette } from "@mui/system";
+import { palette, styled } from "@mui/system";
 import {
   List,
   Grid,
   Box,
-  ListSubheader,
+  ListItemButton,
   ListItem,
   ListItemText,
 } from "@mui/material";
@@ -31,17 +31,10 @@ export default function Chat() {
     }
   }, [reload, uId]);
 
-
-  function ChatUser(chat) {
-    useEffect(() => {
-      if (uId > 0) {
-        fetch(`http://localhost:8080/Gwm-war/webresources/chats/${uId}/other/${chat.chatId}`)
-          .then((response) => response.json())
-          .then((data) => setName(data))
-          .catch((error) => console.log(error));
-      }
-    }, [reload, chat.chatId]);
-
+  function filterUser(chatUsers){
+    var person = chatUsers.filter(u => u.userId !== uId);
+    console.log(person[0].username);
+    return person[0].username;
   }
 
   return (
@@ -60,22 +53,23 @@ export default function Chat() {
               "& ul": { padding: 0 },
             }}
           >
-            <li key="chatBar" reload={reload} setReload={setReload}>
+            <List key="chatBar" reload={reload} setReload={setReload}>
               <ul>
-                {dataChat.map((chat) => 
-                  <MenuItem>
-                    <ListItemText
-                      request = {ChatUser(chat)}
-                      primary={
-                        chat.party === true 
-                        ? `${chat.name}` 
-                        : `${name.username}`
-                      }
-                    />
-                  </MenuItem>
-                )}
+                {dataChat.map((chat) => (
+                  <ListItem disablePadding>
+                    <ListItemButton>
+                      <ListItemText
+                        key={chat.chatId}
+                        {...chat}
+                        primary={
+                          chat.party === true ? `${chat.name}` : `${filterUser(chat.users)}`
+                        }
+                      />
+                    </ListItemButton>
+                  </ListItem>
+                ))}
               </ul>
-            </li>
+            </List>
           </List>
         </Box>
       </Grid>

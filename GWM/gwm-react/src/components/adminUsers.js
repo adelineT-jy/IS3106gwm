@@ -213,7 +213,7 @@ export default function AdminUsers() {
     };
 
     return (
-        <Box sx={{ minHeight: '80vh', width: '100%' }}>
+        <Box sx={{ minHeight: '81vh', width: '100%' }}>
             <div className="container">
                 <div style={{ display: 'flex', justifyContent: 'center' }}>
                     <h1>User Manager</h1>
