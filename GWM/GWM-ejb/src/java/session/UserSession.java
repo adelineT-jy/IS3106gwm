@@ -126,6 +126,16 @@ public class UserSession implements UserSessionLocal {
         //should check if there is any ongoing transactions before deleting
         u.getCards().remove(em.find(Card.class, cardId));
     }
+    
+    @Override
+    public List<Experience> getUserExperiences(Long userId)throws NoResultException {
+        User u  = getUserById(userId);
+        if (u != null) {
+            return u.getExperiences();
+        } else {
+            throw new NoResultException("No Exceperiences");
+        }
+    }
 
     @Override
     public void addExperience(Long userId, Experience exp, Long gameId) throws NoResultException, ExperienceExistException {
@@ -153,14 +163,8 @@ public class UserSession implements UserSessionLocal {
     }
 
     @Override
-    public void updateExperience(Experience exp, Long gameId) throws NoResultException {
+    public void updateExperience(Experience exp) throws NoResultException {
         Experience oldExp = em.find(Experience.class, exp.getExperienceId());
-
-        if (gameId != oldExp.getGame().getGameId() && gameId != null) {
-            Game updatedGame = em.find(Game.class, gameId);
-            oldExp.setGame(updatedGame);
-        }
-
         oldExp.setProfileLink(exp.getProfileLink());
         oldExp.setRanking(exp.getRanking());
     }

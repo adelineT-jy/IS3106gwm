@@ -52,8 +52,11 @@ export default function Settings() {
 export function CardSettings() {
     return (
         <Paper sx={{height: "80vh", padding: "4vh"}}>
-            giao
-            <Typography>What is going on</Typography>
+            <Typography variant="h6" sx={{ paddingLeft: "1vh", paddingBottom: "2vh" }}>
+                Cards
+            </Typography>
+
+             
         </Paper>
     );
 }

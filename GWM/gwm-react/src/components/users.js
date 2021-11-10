@@ -1,10 +1,13 @@
 import React, { useEffect, useState} from 'react';
 import { useHistory } from "react-router-dom";
-import { Box, Typography, Paper, Grid, Avatar, Button} from '@mui/material';
+import { Box, Container, Typography, Paper, Grid, Avatar, Button, Card, CardMedia, CardContent, CardActions, Modal} from '@mui/material';
 import SettingsIcon from '@mui/icons-material/Settings';
 import StarIcon from '@mui/icons-material/Star';
 import Api from "../helpers/Api.js";
 
+import lol from "../images/lol.jpeg"
+import dota from "../images/dota.jpeg"
+import cs from "../images/cs.jpeg"
 import logo from "../images/gwm.jpg"
 
 export default function Users() {
@@ -24,35 +27,54 @@ export function UserProfile() {
     );
 }
 
-
+const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    bgcolor: 'background.paper',
+    border: '1px solid #000',
+    boxShadow: 24,
+    p: 4,
+  };
 
 //Profile Page
 export function Account() {
     console.log("rendering");
-    const uId =
-      window.localStorage.user === undefined
+    const uId = window.localStorage.user === undefined
         ? 0
         : JSON.parse(window.localStorage.user).userId;
 
-    console.log("User id: " + uId);
     //users attributes
     const [user, setUser] = useState([]);
-
-    const [cId, setCId] = useState(null);
     const [following, setFollowing] = useState([]);
     const [followers, setFollowers] = useState([]);
-    const [parties, setParties] = useState([]);
-  
-    const [name, setName] = useState("");
-    const [cvv, setCvv] = useState("");
-    const [expiryDate, setExpiryDate] = useState(null);
-    const [cardNumber, setCardNumber] = useState(null);
-  
+    const [exp, setExp] = useState([]);
+    
+    //handle edit exp
+    const [openModal, setOpenModal] = useState(false);
+    const [expId, setExpId] = useState("");
+    const [ranking, setRanking] = useState("");
+    const [profileLink, setProfileLink] = useState("");
+
+
     const [reload, setReload] = useState(0);
-
     let history = useHistory();
+    
+    const handleClose = () => {
+        setOpenModal(false);
+    };
 
-
+    // const [cId, setCId] = useState(null);
+    // const [parties, setParties] = useState([]);
+  
+    // const [name, setName] = useState("");
+    // const [cvv, setCvv] = useState("");
+    // const [expiryDate, setExpiryDate] = useState(null);
+    // const [cardNumber, setCardNumber] = useState(null);
+  
+  
     useEffect(() => {
         Api.getUser(uId)
         .then((response) => response.json())
@@ -76,62 +98,56 @@ export function Account() {
             setFollowing(tempUsers);
             console.log(followers);
         });
+
+        Api.getUserExperiences(uId)
+        .then((response) => response.json())
+        .then((tempExp) => {
+            console.log(tempExp);
+            setExp(tempExp);
+        })
       }, [reload]);
-  
-    const addCard = () => {
-      const card = {
-        cardNum: cardNumber,
-        name: name,
-        cvv: cvv,
-        expDate: expiryDate,
-      };
-      const requestOptions = {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(card),
-        crossDomain: true,
-      };
-      fetch(`http://localhost:8080/Gwm-war/webresources/users/${uId}/cards`, {
-        requestOptions,
-      })
-        .then((response) => response.json())
-        .then((tempUser) => {
-          setUser(tempUser);
-        });
-    };
-  
-    const deleteCard = () => {
-      const requestOptions = {
-        method: "DELETE",
-        crossDomain: true,
-      };
-      fetch(
-        `http://localhost:8080/Gwm-war/webresources/users/${uId}/cards/${cId}`,
-        {
-          requestOptions,
+
+    function handleEditExp(exp) {
+        setExpId(exp.experienceId);
+        setRanking(exp.ranking);
+        setProfileLink(exp.profileLink);
+        setOpenModal(true);
+    }
+
+    const submitEditexp = (event) => {
+        event.preventDefault();
+        const newExp = {
+            experienceId:  expId,
+            ranking: ranking,
+            profileLink: profileLink
         }
-      )
-        .then((response) => response.json())
-        .then((tempUser) => {
-          setUser(tempUser);
-        });
-    };
-  
-    const getUserFollowing = () => {
-      fetch(`http://localhost:8080/Gwm-war/webresources/users/${uId}/following`)
-        .then((response) => response.json())
-        .then((follow) => setFollowing(follow));
-    };
-    
-    const getParties = () => {
-      fetch(`http://localhost:8080/Gwm-war/webresources/users/${uId}/party`)
-        .then((response) => response.json())
-        .then((tempParties) => setParties(tempParties));
-    };
+
+    }
+
+
   
     return (
-      <Box display="flex" justifyContent="center" sx={{ height: "100vh", padding: "5vh" }}>
-        <Grid container spacing={1}>
+      <Box justifyContent="center" sx={{ height: "130vh", padding: "5vh" }}>
+
+        <Modal open={openModal} onClose={handleClose}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description">
+            <Box sx={{style}}>
+                <Typography variant="h6">Please append any additional information to your request</Typography>
+
+                <Button onClick={handleClose} color="grey" variant="contained">
+                    Cancel
+                </Button>
+                <Button onClick={submitEditexp} color="secondary" variant="contained">
+                    Confirm
+                </Button>
+            </Box>
+        </Modal>
+
+
+
+
+        <Grid container spacing={2}>
             <Grid item xs={12}>
                 <Typography variant="h6" sx={{ paddingLeft: "1vh", paddingBottom: "2vh" }}>
                         My Profile
@@ -139,7 +155,7 @@ export function Account() {
             </Grid>
 
             <Grid item xs={12}>
-                <Paper sx={{height: "30vh", padding: "5vh"}}>
+                <Paper sx={{height: "33vh", padding: "5vh"}}>
                     <Grid container spacing={10}>
                     <Grid item xs={2} md={2} >
                         <Avatar alt="Profile Pic" src={logo}
@@ -168,10 +184,41 @@ export function Account() {
                 </Paper>
             </Grid>
             <Grid item xs={12}>
-                <Paper sx={{height: "40vh"}}>
-                    <Typography variant="h6" sx={{ padding: "4vh", paddingBottom: "3vh" }}>
-                        Experiences (TBC)
+                <Paper sx={{height: "70vh", padding: "6vh"}}>
+                    <Typography variant="h5" sx={{ fontWeight:"500", paddingBottom: "2vh"}}>
+                        Experiences
                     </Typography>
+                    <Grid container spacing={1} sx={{paddingLeft: "9vh"}}>
+                            {exp.map((eachExp) => (
+                                <>
+                                <Grid item xs={4} md={4} >
+                                    <Card sx={{maxWidth: "53vh"}}>
+                                    <CardMedia
+                                        component="img"
+                                        height="200"
+                                        image={eachExp.game.gameName === "Dota 2" ? dota : (eachExp.game.gameName === "League of Legends" ? lol : cs)}
+                                        alt="Game"/>
+                                    <CardContent sx={{paddingLeft: "4vh", paddingBottom: "1vh"}}>
+                                        <Typography gutterBottom variant="h6" component="div">
+                                            {eachExp.game.gameName}
+                                        </Typography>
+                                        <Typography variant="body1">
+                                            <b>Ranking:</b> {eachExp.ranking}
+                                        </Typography>
+                                        <Typography variant="body1">
+                                            <b>Profile Link:</b> {eachExp.profileLink}
+                                        </Typography>
+                                    </CardContent>
+                                    <CardActions sx={{float:"right", paddingTop: "0vh"}}>
+                                        <Button variant="contained" color="secondary" size="small" onClick={() => handleEditExp(eachExp)}>
+                                            Edit
+                                        </Button>
+                                    </CardActions>
+                                    </Card>
+                                </Grid>
+                             </>
+                            ))}
+                    </Grid>
                 </Paper>
             </Grid>
         </Grid>

@@ -81,6 +81,7 @@ public class DataInitialisationSession {
             g3.setGameDescription("Every day, millions of players worldwide enter battle as one of over a hundred Dota heroes. And no matter if it's their 10th hour of play or 1,000th, there's always something new to discover.");
             g3.setGameDownloadLink("https://store.steampowered.com/app/570/Dota_2/");
             adminSessionLocal.createGame(g3);
+            
 
             User u = new User();
             u.setEmail("first@gmail.com");
@@ -88,6 +89,12 @@ public class DataInitialisationSession {
             u.setPassword("password");
             u.setGender((byte) 0);
             u.setDob(new Date());
+            Experience e3 = new Experience(g3, "Level 100", "link2.com");
+            u.addExperience(e3);
+            Experience e4 = new Experience(g1, "Platinum", "link2.com");
+            u.addExperience(e4);
+            Experience e5 = new Experience(g2, "Pro", "link3.com");
+            u.addExperience(e5);
             userSessionLocal.createUser(u);
 
             User u2 = new User();

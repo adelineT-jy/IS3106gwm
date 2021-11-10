@@ -20,6 +20,10 @@ const Api = {
             method: "PUT",
             body: JSON.stringify(data),
         });
+    },
+
+    getUserExperiences(uId) {
+        return fetch(`${SERVER_PREFIX}/users/${uId}/exp`);
     }
     
 }

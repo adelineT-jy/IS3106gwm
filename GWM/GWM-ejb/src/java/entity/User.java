@@ -59,7 +59,7 @@ public class User implements Serializable {
     @OneToMany
     private List<User> following;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH} )
     private List<Experience> experiences;
 
     @OneToMany
