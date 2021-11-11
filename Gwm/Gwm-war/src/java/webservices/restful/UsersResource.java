@@ -163,15 +163,15 @@ public class UsersResource {
     @Path("/{user_id}/cards")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public User addCard(@PathParam("user_id") Long uId, Card c) {
+    public Response addCard(@PathParam("user_id") Long uId, Card c) {
         try {
             System.out.println("add card");
             userSessionLocal.addCard(uId, c);
-            User u = userSessionLocal.getUserById(uId);
-            return u;
+            JsonObject success = Json.createObjectBuilder().add("Success", "Add Card Successful").build();
+            return Response.status(200).entity(success).type(MediaType.APPLICATION_JSON).build();
         } catch (Exception ex) {
-            System.out.println("Add card error");
-            return null;
+            JsonObject exception = Json.createObjectBuilder().add("error", ex.getMessage()).build();
+            return Response.status(404).entity(exception).type(MediaType.APPLICATION_JSON).build();
         }
     }
 

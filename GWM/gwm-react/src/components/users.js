@@ -85,7 +85,7 @@ export function Account() {
         .then((response) => response.json())
         .then((tempUser) => {
             setUser(tempUser);
-            console.log(user);
+            // console.log(user);
         });
 
         Api.getUserFollowers(uId)
@@ -170,7 +170,6 @@ export function Account() {
             }
         })
         .then((response) => {
-            handleClose();
             setReloadExp(reloadExp + 1);
         });
     }
@@ -284,6 +283,7 @@ export function Account() {
                             value={ranking}
                             size="small"
                             fullWidth
+                            error
                             required
                             onChange={(event) => setRanking(event.target.value)}
                             />
@@ -294,6 +294,7 @@ export function Account() {
                             label="Profile Link"
                             size="small"
                             fullWidth
+                            error
                             value={profileLink}
                             onChange={(event) => setProfileLink(event.target.value)}
                             />

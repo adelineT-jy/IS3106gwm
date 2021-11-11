@@ -76,6 +76,17 @@ const Api = {
         });
     },
 
+    addFollowing(uId, followId) {
+        return fetch(`${SERVER_PREFIX}/users/${uId}/following/${followId}`, {
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+            },
+            method: "POST",
+            crossDomain: true,
+        });
+    },
+
     //GAMES
     getAllGames() {
         return fetch(`${SERVER_PREFIX}/admin/game`);
@@ -119,11 +130,6 @@ const Api = {
     //     });
     // };
   
-    // const getUserFollowing = () => {
-    //   fetch(`http://localhost:8080/Gwm-war/webresources/users/${uId}/following`)
-    //     .then((response) => response.json())
-    //     .then((follow) => setFollowing(follow));
-    // };
     
     // const getParties = () => {
     //   fetch(`http://localhost:8080/Gwm-war/webresources/users/${uId}/party`)

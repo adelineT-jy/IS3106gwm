@@ -1,10 +1,20 @@
 import React, { useEffect, useState } from "react";
-
+import StarIcon from '@mui/icons-material/Star';
+import AddIcon from '@mui/icons-material/Add';
+import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import {
     Avatar,
     Box,
     Button,
     Chip,
+    Card,
+    CardMedia,
+    CardContent,
+    CardActions,
+    Grid,
+    IconButton,
+    Typography,
+    Paper,
     Link,
     List,
     ListItem,
@@ -13,30 +23,77 @@ import {
     Modal,
     Stack,
 } from "@mui/material";
+import Api from "../helpers/Api.js";
+import lol from "../images/lol.jpeg"
+import dota from "../images/dota.jpeg"
+import cs from "../images/cs.jpeg"
+import logo from "../images/gwm.jpg"
 
 export const modalStyle = {
     position: "absolute",
     top: "50%",
     left: "50%",
     transform: "translate(-50%, -50%)",
-    minWidth: 300,
+    minWidth: 450,
     boxShadow: 12,
-    bgcolor: "#eeeeee",
+    bgcolor: "background.paper",
     padding: 4,
     borderRadius: "3px",
+    border: '1px solid #000',
 };
 
 export default function UserView(props) {
     const { uId } = props;
     const [user, setUser] = useState({ username: "Loading", followers: [], following: [] });
     const [openModal, setOpenModal] = useState(false);
+    const [following, setFollowing] = useState([]);
+    const [followers, setFollowers] = useState([]);
+    const [exp, setExp] = useState([]);
+    const [reload, setReload] = useState(0);
+
+    // useEffect(() => {
+    //     fetch(`http://localhost:8080/Gwm-war/webresources/users/${uId}/`)
+    //         .then((response) => response.json())
+    //         .then((tempUser) => setUser(tempUser))
+    //         .catch((error) => alert(error));
+    // }, [uId]);
+
+    const currentUId = window.localStorage.user === undefined
+        ? 0
+        : JSON.parse(window.localStorage.user).userId;
+
 
     useEffect(() => {
-        fetch(`http://localhost:8080/Gwm-war/webresources/users/${uId}/`)
-            .then((response) => response.json())
-            .then((tempUser) => setUser(tempUser))
-            .catch((error) => alert(error));
-    }, [uId]);
+        Api.getUser(uId)
+        .then((response) => response.json())
+        .then((tempUser) => {
+            setUser(tempUser);
+            console.log(user);
+        });
+
+        Api.getUserFollowers(uId)
+        .then((response) => response.json())
+        .then((tempUsers) => {
+            console.log("followers:")
+            setFollowers(tempUsers);
+            console.log(followers);
+        });
+
+        Api.getUserFollowings(uId)
+        .then((response) => response.json())
+        .then((tempUsers) => {
+            console.log("followings:")
+            setFollowing(tempUsers);
+            console.log(followers);
+        });
+
+        Api.getUserExperiences(uId)
+        .then((response) => response.json())
+        .then((tempExp) => {
+            console.log(tempExp);
+            setExp(tempExp);
+        });
+      }, [reload]);
 
     const handleOpen = (event) => {
         event.preventDefault();
@@ -49,7 +106,17 @@ export default function UserView(props) {
 
     const submitFollow = () => {
         console.log("Unsupported currently.");
-        handleClose();
+        Api.addFollowing(currentUId, uId)
+        .then((response) => {
+            if (response.ok) {
+                return response.json;
+            } else {
+                alert("Follow failed");
+            }
+        })
+        .then((response) => {
+            setReload(reload + 1);
+        });
     };
 
     return (
@@ -63,7 +130,7 @@ export default function UserView(props) {
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description"
             >
-                <Box sx={modalStyle} centered>
+                {/* <Box sx={modalStyle} centered>
                     <List sx={{ width: "100%" }}>
                         <ListItem>
                             <ListItemAvatar>
@@ -92,6 +159,76 @@ export default function UserView(props) {
                     >
                         Follow
                     </Button>
+                </Box> */}
+                <Box sx={modalStyle} centered>
+                    <Grid container spacing={2}>
+                        <Paper sx={{ width: "100vh", padding: "2vh"}}>
+                            <Grid item xs={12}>
+                                <Typography variant="body1" sx={{ fontWeight:"500", paddingBottom: "4vh", paddingLeft: "1vh"}}>
+                                    Profile
+                                </Typography>
+                                <Grid container spacing={8}>
+                                    <Grid item xs={2} md={2} >
+                                        <Avatar alt="Profile Pic" src={logo}
+                                                sx={{width: "10vh", height: "10vh"}}/>
+                                    </Grid>
+                                    <Grid item xs={10} md={10}>
+                                        <Button variant="contained" size="small" 
+                                                endIcon={<AddIcon/>} color="secondary" 
+                                                sx={{float: "right"}}
+                                                onClick={() => submitFollow()}>
+                                            Follow
+                                        </Button>
+                                        <Typography variant="h6" sx={{fontWeight: "500"}}>
+                                        {user.username}
+                                        </Typography>
+                                        <Typography variant="body1" sx={{ paddingTop: "2vh"}}>
+                                            Gender: <b>{user.gender === 0 ? "F" : "M"}</b>
+                                        </Typography>
+                                        <Typography variant="body1" sx={{ paddingTop: "2vh"}}>
+                                            Followers: <b>{followers.length}</b> &nbsp; Following: <b>{following.length}</b>
+                                        </Typography>
+                                        <Typography variant="body1" sx={{ paddingTop: "2vh"}}>
+                                            Ratings: <b>coming soon</b>
+                                            <StarIcon sx={{color: "#f2bd0c", paddingBottom:"0.5vh"}} />
+                                        </Typography>
+                                    </Grid>
+                                </Grid>
+                            </Grid>
+
+                            <Grid item xs={12}>
+                                <hr/>
+                                <Typography variant="body1" sx={{ fontWeight:"500", paddingBottom: "4vh", paddingLeft: "1vh"}}>
+                                    Experiences
+                                </Typography>
+
+                                {exp.map((eachExp) => (
+                                <>
+                                <Grid item xs={12} md={12} key={eachExp.experienceId}>
+                                    <Card sx={{maxWidth: "40vh"}}>
+                                    <CardMedia
+                                        component="img"
+                                        height="120"
+                                        image={eachExp.game.gameName === "Dota 2" ? dota : (eachExp.game.gameName === "League of Legends" ? lol : cs)}
+                                        alt="Game"/>
+                                    <CardContent sx={{paddingLeft: "4vh", paddingBottom: "1vh"}}>
+                                        <Typography gutterBottom variant="body1" component="div">
+                                            <b>{eachExp.game.gameName}</b>
+                                        </Typography>
+                                        <Typography variant="body1">
+                                            <b>Ranking:</b> {eachExp.ranking}
+                                        </Typography>
+                                        <Typography variant="body1">
+                                            <b>Profile Link:</b> {eachExp.profileLink}
+                                        </Typography>
+                                    </CardContent>
+                                    </Card>
+                                </Grid>
+                             </>
+                            ))}
+                            </Grid>
+                        </Paper>
+                    </Grid>
                 </Box>
             </Modal>
         </>

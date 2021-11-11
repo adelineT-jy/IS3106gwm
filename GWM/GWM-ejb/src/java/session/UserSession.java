@@ -116,8 +116,14 @@ public class UserSession implements UserSessionLocal {
     @Override
     public void addCard(Long userId, Card c) throws NoResultException {
         User u = getUserById(userId);
+        
+        if (c.getCardNum().equals("") || c.getCvv().equals("") 
+                || c.getName().equals("") || c.getExpDate() == null) {
+            throw new NoResultException("Missing values");
+        } else {
         em.persist(c);
         u.addCard(c);
+        }
     }
 
     @Override
