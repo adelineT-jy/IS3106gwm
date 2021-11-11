@@ -27,7 +27,7 @@ import logo from "../images/gwm.jpg"
 import { AccountCircle } from '@mui/icons-material';
 
 export function NavTabs() {
-    const routeMatch = useRouteMatch(['/posts', '/party', '/requests', '/account', '/']);
+    const routeMatch = useRouteMatch(['/posts', '/party', '/requests', '/account', '/chats', '/']);
     const currentTab = routeMatch?.path;
 
     return (
@@ -37,6 +37,7 @@ export function NavTabs() {
                 <Tab icon={<PeopleAlt />} label="Parties" value="/party" to="/party" component={Link} sx={{ color: 'primary.main' }} />
                 <Tab icon={<CleanHands />} label="Requests" value="/requests" to="/requests" component={Link} sx={{ color: 'primary.main' }} />
                 <Tab icon={<AccountCircle />} label="Account" value="/account" to="/account" component={Link} sx={{ color: 'primary.main' }} />
+                <Tab icon={<Chat />} label="Chats" value="/account/chats" to="/account/chats" component={Link} sx={{ color: 'primary.main' }} />
             </Tabs>
         </Box>
     );

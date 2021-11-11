@@ -44,4 +44,5 @@ public interface ChatSessionLocal {
     public Party getParty(Long partyId) throws NoResultException;
 
     public User getUser(Long userId) throws NoResultException;
+
 }

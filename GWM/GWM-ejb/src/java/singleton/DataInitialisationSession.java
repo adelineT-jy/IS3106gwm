@@ -7,6 +7,7 @@ package singleton;
 
 import entity.Admin;
 import entity.Chat;
+import entity.ChatMessage;
 import entity.Experience;
 import entity.Game;
 import entity.Party;
@@ -481,6 +482,22 @@ public class DataInitialisationSession {
             c1.getUsers().add(u6);
             chatSessionBeanLocal.addGroupChat(c1, new Long(1));
 
+            ChatMessage cm1 = new ChatMessage();
+            cm1.setMessage("Hey whatsupppppp");
+            chatSessionBeanLocal.addMessage(cm1, new Long(3), new Long(1));
+
+            ChatMessage cm2 = new ChatMessage();
+            cm2.setMessage("Yo");
+            chatSessionBeanLocal.addMessage(cm2, new Long(6), new Long(1));
+
+            ChatMessage cm3 = new ChatMessage();
+            cm3.setMessage("Lets get this Boisssssssssssssssssssssssssssssss");
+            chatSessionBeanLocal.addMessage(cm3, new Long(4), new Long(1));
+
+            Chat newC1 = chatSessionBeanLocal.getChat(new Long(1));
+            Date time = chatSessionBeanLocal.getChatMessage(new Long(3)).getDateTime();
+            newC1.setLastMsgTime(time);
+
             Chat c2 = new Chat();
             c2.setName("party p2");
             c2.setParty(Boolean.TRUE);
@@ -489,6 +506,14 @@ public class DataInitialisationSession {
             c2.getUsers().add(u14);
             c2.getUsers().add(u16);
             chatSessionBeanLocal.addGroupChat(c2, new Long(2));
+
+            ChatMessage cm4 = new ChatMessage();
+            cm4.setMessage("Nice to meet all of you");
+            chatSessionBeanLocal.addMessage(cm4, new Long(3), new Long(2));
+
+            Chat newC2 = chatSessionBeanLocal.getChat(new Long(2));
+            Date timec2 = chatSessionBeanLocal.getChatMessage(new Long(4)).getDateTime();
+            newC2.setLastMsgTime(timec2);
 
             Chat c3 = new Chat();
             c3.getUsers().add(u2);
@@ -499,6 +524,48 @@ public class DataInitialisationSession {
             c4.getUsers().add(u10);
             c4.getUsers().add(u);
             chatSessionBeanLocal.addChat(c4, new Long(10));
+
+            ChatMessage cm5 = new ChatMessage();
+            cm5.setMessage("Hey I am interested in your teaching, may i know what do you teach?");
+            chatSessionBeanLocal.addMessage(cm5, new Long(1), new Long(4));
+
+            ChatMessage cm6 = new ChatMessage();
+            cm6.setMessage("I am coach for the games. I can lead u in team battles.");
+            chatSessionBeanLocal.addMessage(cm6, new Long(10), new Long(4));
+
+            Chat newC4 = chatSessionBeanLocal.getChat(new Long(4));
+            Date timec4 = chatSessionBeanLocal.getChatMessage(new Long(6)).getDateTime();
+            newC4.setLastMsgTime(timec4);
+
+            Chat c5 = new Chat();
+            c5.getUsers().add(u6);
+            c5.getUsers().add(u);
+            chatSessionBeanLocal.addChat(c5, new Long(6));
+
+            Chat c6 = new Chat();
+            c6.getUsers().add(u8);
+            c6.getUsers().add(u);
+            chatSessionBeanLocal.addChat(c6, new Long(8));
+
+            Chat c7 = new Chat();
+            c7.getUsers().add(u15);
+            c7.getUsers().add(u);
+            chatSessionBeanLocal.addChat(c7, new Long(15));
+
+            Chat c8 = new Chat();
+            c8.getUsers().add(u9);
+            c8.getUsers().add(u);
+            chatSessionBeanLocal.addChat(c8, new Long(9));
+
+            Chat c9 = new Chat();
+            c9.getUsers().add(u17);
+            c9.getUsers().add(u);
+            chatSessionBeanLocal.addChat(c9, new Long(17));
+
+            Chat c10 = new Chat();
+            c10.getUsers().add(u27);
+            c10.getUsers().add(u);
+            chatSessionBeanLocal.addChat(c10, new Long(27));
 
         } catch (Exception ex) {
             Logger.getLogger(DataInitialisationSession.class.getName()).log(Level.SEVERE, null, ex);
