@@ -8,6 +8,7 @@ package webservices.restful;
 import entity.Game;
 import entity.Party;
 import entity.Post;
+import entity.Review;
 import error.InsufficientFundsException;
 import java.util.List;
 import java.util.logging.Level;
@@ -229,6 +230,21 @@ public class PartyResource {
         } catch (Exception ex) {
             JsonObject exception = Json.createObjectBuilder().add("error", ex.getMessage()).build();
             return Response.status(404).entity(exception).type(MediaType.APPLICATION_JSON).build();
+        }
+    }
+    
+    @PUT
+    @Path("/{partyId}/reviewer/{uId}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response createReview(@PathParam("partyId") Long partyid, @PathParam("uId") Long uid,
+            Review review) {
+        try {
+            postSessionBeanLocal.createReview(review, uid, partyid);
+            return Response.status(200).build();
+        } catch (Exception ex) {
+            JsonObject exception = Json.createObjectBuilder().add("error", ex.getMessage()).build();
+            return Response.status(404, ex.getMessage()).entity(exception).type(MediaType.APPLICATION_JSON).build();
         }
     }
 }

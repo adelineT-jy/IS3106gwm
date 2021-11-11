@@ -12,6 +12,7 @@ import error.AuthenticationException;
 import error.InsufficientFundsException;
 import error.NoResultException;
 import error.RequestExistException;
+import error.ReviewExistException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
@@ -392,14 +393,18 @@ public class PostSessionBean implements PostSessionBeanLocal {
     }
 
     @Override
-    public void createReview(Review rev, Long userId, Long partyId) throws NoResultException {
+    public void createReview(Review rev, Long userId, Long partyId) throws NoResultException, ReviewExistException {
         rev.setUserId(userId);
         Party p = getParty(partyId);
         if (!checkPartyUser(partyId, userId)) {
             throw new NoResultException("You were not in this party.");
         }
+        if (p.getReviews().stream().anyMatch(x -> x.getUserId().equals(userId))) {
+            throw new ReviewExistException("You have already left a review");
+        }
         em.persist(rev);
         p.getReviews().add(rev);
+        getUser(userId).getReviews().add(rev);
         em.flush();
     }
 
