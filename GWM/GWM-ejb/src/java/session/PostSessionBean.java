@@ -62,9 +62,9 @@ public class PostSessionBean implements PostSessionBeanLocal {
     @Override
     public List<Post> searchPostsByUsername(String username) {
         Query q;
-        
+
         if (username != null) {
-            q = em.createQuery("SELECT p FROM Post p INNER JOIN User u ON p.userId = u.userId WHERE LOWER(u.username) LIKE :username");
+            q = em.createQuery("SELECT p FROM Post p INNER JOIN User u ON p.username = u.username WHERE LOWER(u.username) LIKE :username");
             q.setParameter("username", "%" + username.toLowerCase() + "%");
         } else {
             q = em.createQuery("SELECT p FROM Post p");
@@ -172,17 +172,16 @@ public class PostSessionBean implements PostSessionBeanLocal {
 
         party.getUsers().add(u);
         u.getParties().add(party);
-        
+
         try {
-        Post p = party.getPost();
-        p.setRequestQty(p.getRequestQty() - 1);
-        if (p.getRequestQty() == 0) {
-            p.setIsAvailable(false);
-        }
+            Post p = party.getPost();
+            p.setRequestQty(p.getRequestQty() - 1);
+            if (p.getRequestQty() == 0) {
+                p.setIsAvailable(false);
+            }
         } catch (NullPointerException ex) {
         }
     }
-        
 
     @Override
     public void acceptToParty(Long rId, Long partyId, Long userId) throws NoResultException, AuthenticationException, InsufficientFundsException { // userId is the one accepting, has to be party owner.
@@ -269,7 +268,7 @@ public class PostSessionBean implements PostSessionBeanLocal {
         p.setGame(game);
         p.setIsAvailable(true);
         p.setPostDate(new Date());
-        p.setUserId(user.getUserId());
+        p.setUsername(user.getUsername());
         p.setHidden(false);
 
         em.persist(p);
@@ -389,7 +388,7 @@ public class PostSessionBean implements PostSessionBeanLocal {
     }
 
     @Override
-    public void createReview(Review rev, Long userId, Long forUserId, Long partyId) throws NoResultException {
+    public void createReview(Review rev, Long userId, Long partyId) throws NoResultException {
         rev.setUserId(userId);
         Party p = getParty(partyId);
         if (!checkPartyUser(partyId, userId)) {
@@ -397,8 +396,6 @@ public class PostSessionBean implements PostSessionBeanLocal {
         }
         em.persist(rev);
         p.getReviews().add(rev);
-        User forUser = userSessionLocal.getUserById(forUserId);
-        forUser.getReviews().add(rev);
         em.flush();
     }
 
@@ -459,8 +456,8 @@ public class PostSessionBean implements PostSessionBeanLocal {
         try {
             return getPost(postId)
                     //.getUser()
-                    .getUserId()
-                    .equals(userId);
+                    .getUsername()
+                    .equals(getUser(userId).getUsername());
         } catch (NoResultException e) {
             return false;
         }
