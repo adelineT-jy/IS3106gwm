@@ -97,9 +97,9 @@ public class DataInitialisationSession {
             Experience e5 = new Experience(g2, "Pro", "link3.com");
             u.addExperience(e5);
             Card c = new Card();
-            c.setCardNum("4411 1111 9411 4781");
+            c.setCardNum("4411111194114781");
             c.setCvv("333");
-            c.setExpDate("22/11");
+            c.setExpDate(new Date());
             c.setName("Game With Me");
             u.addCard(c);
             userSessionLocal.createUser(u);
