@@ -66,14 +66,14 @@ class App extends Component {
                         {/* users */}
                         <RedirectUnauthorised path={`/account/settings`} component={Settings} />
                         {/* <RedirectUnauthorised exact path={`/account/settings/cards`} component={Settings} /> */}
-                        <RedirectUnauthorised path={`/account/chats/message`} component={Settings} />
-                        <RedirectUnauthorised exact path={`/account/chats`} component={Chat} />
                         <RedirectUnauthorised exact path={`/account`} component={Account} />
 
 
                         <RedirectUnauthorised exact path={`/posts`} component={Posts} />
                         <RedirectUnauthorised exact path={`/party`} component={Parties} />
                         <RedirectUnauthorised exact path={`/requests`} component={Requests} />
+                        <RedirectUnauthorised exact path={`/chats`} component={Chat} />
+                        {/*<RedirectUnauthorised path={`/account/chats/message`} component={Settings} />*/}
 
                         {/* admin */}
                         <Route exact path="/admin" component={AdminLogin} />
