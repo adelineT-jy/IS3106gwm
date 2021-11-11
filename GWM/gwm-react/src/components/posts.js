@@ -135,6 +135,7 @@ export default function Posts(props) {
     const [query, setQuery] = React.useState("");
     const [posts, setPosts] = React.useState([]);
     const [reload, setReload] = React.useState(0);
+    const { request = true } = props;
 
     useEffect(() => {
         console.log(query);
@@ -178,7 +179,7 @@ export default function Posts(props) {
                         </IconButton>
                     </Grid>
                     {
-                        posts.map((post) => <Post key={post.postId} {...post} request={props.request} />)
+                        posts.map((post) => <Post key={post.postId} {...post} request={request} />)
                     }
                 </Grid>
             </Container>

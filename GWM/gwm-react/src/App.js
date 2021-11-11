@@ -70,7 +70,7 @@ class App extends Component {
                         <RedirectUnauthorised exact path={`/account`} component={Account} />
 
 
-                        <Route exact path="/posts"><Posts request={true} /></Route> {/*Need to set request default as true before implementing redirect*/}
+                        <RedirectUnauthorised exact path={`/posts`} component={Posts} />
                         <RedirectUnauthorised exact path={`/party`} component={Parties} />
                         <RedirectUnauthorised exact path={`/requests`} component={Requests} />
 
