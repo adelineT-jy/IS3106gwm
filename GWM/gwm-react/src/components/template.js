@@ -50,6 +50,7 @@ export function NavTabs() {
         "/account",
         "/",
     ]);
+
     const currentTab = routeMatch?.path;
 
     return (

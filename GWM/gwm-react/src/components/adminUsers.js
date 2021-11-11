@@ -13,7 +13,7 @@ export default function AdminUsers() {
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
     useEffect(() => {
-        fetch(`http://localhost:8080/Gwm-war/webresources/users/query?name=${query}`, { crossDomain: true })
+        fetch(`http://localhost:8080/Gwm-war/webresources/users/query?name=${query}`)
             .then((response) => {
                 if (response.ok) {
                     return response.json();
@@ -21,9 +21,8 @@ export default function AdminUsers() {
                     throw new Error('Something went wrong when creating Game');
                 }
             })
-            .then((data) => {
-                setUsers(data);
-            });
+            .then((data) => { setUsers(data); })
+            .catch((error) => alert(error));
     }, [reload, query]);
 
     const handleSubmit = () => {
@@ -34,25 +33,11 @@ export default function AdminUsers() {
         const { userId, isAvailable } = props.user
 
         function banUser(userId) {
-            const requestOptions = {
-                crossDomain: true,
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ title: 'Ban User' })
-            };
-            fetch(`http://localhost:8080/Gwm-war/webresources/admin/ban/${userId}`, requestOptions)
-                .then(handleSubmit)
+            fetch(`http://localhost:8080/Gwm-war/webresources/admin/ban/${userId}`, { method: 'PUT' }).then(handleSubmit)
         }
 
         function unbanUser(userId) {
-            const requestOptions = {
-                crossDomain: true,
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ title: 'Unban User' })
-            };
-            fetch(`http://localhost:8080/Gwm-war/webresources/admin/unban/${userId}`, requestOptions)
-                .then(handleSubmit)
+            fetch(`http://localhost:8080/Gwm-war/webresources/admin/unban/${userId}`, { method: 'PUT' }).then(handleSubmit)
         }
 
         if (isAvailable) {
@@ -139,6 +124,11 @@ export default function AdminUsers() {
             label: 'Gender',
         },
         {
+            id: 'dob',
+            numeric: true,
+            label: 'Date of Birth',
+        },
+        {
             id: 'wallet',
             numeric: true,
             label: 'Wallet Amount ($)',
@@ -171,11 +161,6 @@ export default function AdminUsers() {
                                 onClick={createSortHandler(headCell.id)}
                             >
                                 {headCell.label}
-                                {orderBy === headCell.id ? (
-                                    <Box component="span" sx={visuallyHidden}>
-                                        {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                                    </Box>
-                                ) : null}
                             </TableSortLabel>
                         </TableCell>
                     ))}
@@ -232,6 +217,7 @@ export default function AdminUsers() {
                                                 <TableCell align="right">{user.username}</TableCell>
                                                 <TableCell align="right">{user.email}</TableCell>
                                                 <TableCell align="right">{user.gender === 0 ? 'Female' : 'Male'}</TableCell>
+                                                <TableCell align="right">{user.dob.slice(0, 10)}</TableCell>
                                                 <TableCell align="right">{user.wallet}</TableCell>
                                                 <TableCell align="right"><BanUnban user={user} /></TableCell>
                                             </TableRow>

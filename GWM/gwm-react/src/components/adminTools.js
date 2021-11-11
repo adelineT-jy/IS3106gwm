@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Box, Modal, Typography, Button, FormControlLabel, TextField, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TablePagination, TableSortLabel, Paper, Grid, Switch } from '@mui/material';
-import { visuallyHidden } from '@mui/utils';
 
 const modalStyle = {
     position: 'absolute',
@@ -27,17 +26,16 @@ function PartyManager() {
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
     useEffect(() => {
-        fetch(`http://localhost:8080/Gwm-war/webresources/party/query?username=${query}`, { crossDomain: true })
+        fetch(`http://localhost:8080/Gwm-war/webresources/party/query?username=${query}`)
             .then((response) => {
                 if (response.ok) {
                     return response.json();
                 } else {
-                    throw new Error('Something went wrong when creating Game');
+                    throw new Error('Something went wrong when searching for parties');
                 }
             })
-            .then((data) => {
-                setParties(data);
-            });
+            .then((data) => { setParties(data); })
+            .catch((error) => alert(error));
     }, [reload, query]);
 
     const handleSubmit = () => {
@@ -90,7 +88,7 @@ function PartyManager() {
             label: 'Party Id',
         },
         {
-            id: 'username',
+            id: 'created by',
             numeric: true,
             label: 'Created By',
         },
@@ -142,11 +140,6 @@ function PartyManager() {
                                 onClick={createSortHandler(headCell.id)}
                             >
                                 {headCell.label}
-                                {orderBy === headCell.id ? (
-                                    <Box component="span" sx={visuallyHidden}>
-                                        {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                                    </Box>
-                                ) : null}
                             </TableSortLabel>
                         </TableCell>
                     ))}
@@ -182,25 +175,11 @@ function PartyManager() {
         const { partyId, hidden } = props.party
 
         function hideParty(partyId) {
-            const requestOptions = {
-                crossDomain: true,
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ title: 'Hide Party' })
-            };
-            fetch(`http://localhost:8080/Gwm-war/webresources/party/hide/${partyId}`, requestOptions)
-                .then(handleSubmit)
+            fetch(`http://localhost:8080/Gwm-war/webresources/party/hide/${partyId}`, { method: 'PUT' }).then(handleSubmit)
         }
 
         function unhideParty(partyId) {
-            const requestOptions = {
-                crossDomain: true,
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ title: 'Unhide Party' })
-            };
-            fetch(`http://localhost:8080/Gwm-war/webresources/party/unhide/${partyId}`, requestOptions)
-                .then(handleSubmit)
+            fetch(`http://localhost:8080/Gwm-war/webresources/party/unhide/${partyId}`, { method: 'PUT' }).then(handleSubmit)
         }
 
         if (!hidden) {
@@ -256,15 +235,12 @@ function PartyManager() {
                             </TableHead>
                             <TableBody>
                                 {users.map((user) => (
-                                    <TableRow
-                                        key={user.userId}
-                                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                                    >
+                                    <TableRow key={user.userId} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                                         <TableCell component="th" scope="row">{user.userId}</TableCell>
                                         <TableCell align="right">{user.username}</TableCell>
                                         <TableCell align="right">{user.email}</TableCell>
                                         <TableCell align="right">{user.gender === 0 ? 'Female' : 'Male'}</TableCell>
-                                        <TableCell align="right">yet to implement</TableCell>
+                                        <TableCell align="right">{user.dob.slice(0, 10)}</TableCell>
                                         <TableCell align="right">{user.wallet}</TableCell>
                                     </TableRow>
                                 ))}
@@ -293,23 +269,15 @@ function PartyManager() {
                                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                 .map((party) => {
                                     return (
-                                        <TableRow
-                                            hover
-                                            key={party.partyId}
-                                        >
-                                            <TableCell
-                                                component="th"
-                                                scope="row"
-                                            >
-                                                {party.partyId}
-                                            </TableCell>
+                                        <TableRow hover key={party.partyId} >
+                                            <TableCell component="th" scope="row">{party.partyId}</TableCell>
                                             <TableCell align="right">{party.partyOwner.username}</TableCell>
                                             <TableCell align="right">{party.partyStartTime.slice(0, 10)} {party.partyStartTime.slice(11, 16)}</TableCell>
                                             <TableCell align="right">
-                                                {party.partyEndTime !== undefined ? party.partyEndTime.slice(0, 10) : 'nil'}
-                                                {party.partyEndTime !== undefined && party.partyEndTime.slice(11, 17)}</TableCell>
-                                            <TableCell align="right">
-                                                {party.post !== undefined ? party.post.postId : 'nil'}</TableCell>
+                                                {party.partyEndTime !== undefined ? party.partyEndTime.slice(0, 10) : 'nil'}&nbsp;
+                                                {party.partyEndTime !== undefined && party.partyEndTime.slice(11, 16)}
+                                            </TableCell>
+                                            <TableCell align="right">{party.post !== undefined ? party.post.postId : 'nil'}</TableCell>
                                             <TableCell align="right">
                                                 <Button onClick={() => openViewUsersModal(party.users)} color="secondary" variant="outlined">
                                                     All Users
@@ -320,11 +288,7 @@ function PartyManager() {
                                     );
                                 })}
                             {emptyRows > 0 && (
-                                <TableRow
-                                    style={{
-                                        height: 53 * emptyRows,
-                                    }}
-                                >
+                                <TableRow style={{ height: 53 * emptyRows }}>
                                     <TableCell colSpan={8} />
                                 </TableRow>
                             )}

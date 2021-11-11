@@ -29,13 +29,17 @@ public class ChatSession implements ChatSessionLocal {
 
     @Override
     public List<Chat> getAllChats(Long userId) {
-        User u = getUser(userId);
-        List<Chat> cc = u.getChats();
-        return cc;
+        Query q = em.createQuery("SELECT DISTINCT c FROM Chat c JOIN c.users u WHERE u.userId = :uid"
+                + " ORDER BY c.lastMsgTime DESC");
+        q.setParameter("uid", userId);
+        List<Chat> chats = q.getResultList();
+
+        return q.getResultList();
     }
 
     @Override
     public List<ChatMessage> getAllMessage(Long chatId) {
+
         Chat c = getChat(chatId);
         return c.getChatMessage();
     }
@@ -92,10 +96,12 @@ public class ChatSession implements ChatSessionLocal {
     public void addMessage(ChatMessage message, Long uid, Long cid) {
         if (message != null) {
             message.setDateTime(new Date());
+            message.setMsgOwnerId(getUser(uid).getUserId());
             em.persist(message);
-            message.setMsgOwnerId(uid);
+            em.flush();
             Chat c = getChat(cid);
             c.getChatMessage().add(message);
+
         }
 
     }

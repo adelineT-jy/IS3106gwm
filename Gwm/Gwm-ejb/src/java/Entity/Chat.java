@@ -7,6 +7,7 @@ package entity;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.CascadeType;
@@ -39,6 +40,8 @@ public class Chat implements Serializable {
     //if true is a party
     private Boolean party;
 
+    private Date lastMsgTime;
+
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "chats")
     private List<User> users;
 
@@ -48,6 +51,7 @@ public class Chat implements Serializable {
     public Chat() {
         this.party = false;
         users = new ArrayList<>();
+        chatMessage = new ArrayList<>();
     }
 
     public Long getChatId() {
@@ -88,6 +92,14 @@ public class Chat implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Date getLastMsgTime() {
+        return lastMsgTime;
+    }
+
+    public void setLastMsgTime(Date lastMsgTime) {
+        this.lastMsgTime = lastMsgTime;
     }
 
     @Override

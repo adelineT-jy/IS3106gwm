@@ -8,6 +8,7 @@ package singleton;
 import entity.Admin;
 import entity.Card;
 import entity.Chat;
+import entity.ChatMessage;
 import entity.Experience;
 import entity.Game;
 import entity.Party;
@@ -109,6 +110,7 @@ public class DataInitialisationSession {
             u2.setUsername("secondUser");
             u2.setPassword("password");
             u2.setGender((byte) 1);
+            u2.setDob(new Date());
             userSessionLocal.createUser(u2);
 
             User u3 = new User();
@@ -116,6 +118,7 @@ public class DataInitialisationSession {
             u3.setUsername("thirdUser");
             u3.setPassword("password");
             u3.setGender((byte) 1);
+            u3.setDob(new Date());
             userSessionLocal.createUser(u3);
 
             User u4 = new User();
@@ -123,6 +126,7 @@ public class DataInitialisationSession {
             u4.setUsername("fourthUser");
             u4.setPassword("password");
             u4.setGender((byte) 1);
+            u4.setDob(new Date());
             userSessionLocal.createUser(u4);
 
             User u5 = new User();
@@ -130,6 +134,7 @@ public class DataInitialisationSession {
             u5.setUsername("fifthUser");
             u5.setPassword("password");
             u5.setGender((byte) 1);
+            u5.setDob(new Date());
             userSessionLocal.createUser(u5);
 
             User u6 = new User();
@@ -137,6 +142,7 @@ public class DataInitialisationSession {
             u6.setUsername("sixthUser");
             u6.setPassword("password");
             u6.setGender((byte) 1);
+            u6.setDob(new Date());
             userSessionLocal.createUser(u6);
 
             User u7 = new User();
@@ -144,6 +150,7 @@ public class DataInitialisationSession {
             u7.setUsername("sevenUser");
             u7.setPassword("password");
             u7.setGender((byte) 1);
+            u7.setDob(new Date());
             userSessionLocal.createUser(u7);
 
             User u8 = new User();
@@ -151,6 +158,7 @@ public class DataInitialisationSession {
             u8.setUsername("eightUser");
             u8.setPassword("password");
             u8.setGender((byte) 1);
+            u8.setDob(new Date());
             userSessionLocal.createUser(u8);
 
             User u9 = new User();
@@ -160,6 +168,7 @@ public class DataInitialisationSession {
             u9.setGender((byte) 1);
             Experience e2 = new Experience(g3, "6000MMR", "link2.com");
             u9.addExperience(e2);
+            u9.setDob(new Date());
             userSessionLocal.createUser(u9);
 
             User u10 = new User();
@@ -167,6 +176,7 @@ public class DataInitialisationSession {
             u10.setUsername("tenUser");
             u10.setPassword("password");
             u10.setGender((byte) 1);
+            u10.setDob(new Date());
             userSessionLocal.createUser(u10);
 
             User u11 = new User();
@@ -174,6 +184,7 @@ public class DataInitialisationSession {
             u11.setUsername("elevenUser");
             u11.setPassword("password");
             u11.setGender((byte) 1);
+            u11.setDob(new Date());
             userSessionLocal.createUser(u11);
 
             User u12 = new User();
@@ -181,6 +192,7 @@ public class DataInitialisationSession {
             u12.setUsername("twelveUser");
             u12.setPassword("password");
             u12.setGender((byte) 1);
+            u12.setDob(new Date());
             userSessionLocal.createUser(u12);
 
             User u13 = new User();
@@ -188,6 +200,7 @@ public class DataInitialisationSession {
             u13.setUsername("13User");
             u13.setPassword("password");
             u13.setGender((byte) 1);
+            u13.setDob(new Date());
             userSessionLocal.createUser(u13);
 
             User u14 = new User();
@@ -195,6 +208,7 @@ public class DataInitialisationSession {
             u14.setUsername("14User");
             u14.setPassword("password");
             u14.setGender((byte) 1);
+            u14.setDob(new Date());
             userSessionLocal.createUser(u14);
 
             User u15 = new User();
@@ -204,6 +218,7 @@ public class DataInitialisationSession {
             u15.setGender((byte) 1);
             Experience e1 = new Experience(g1, "Pro", "link.com");
             u15.addExperience(e1);
+            u15.setDob(new Date());
             userSessionLocal.createUser(u15);
 
             User u16 = new User();
@@ -211,6 +226,7 @@ public class DataInitialisationSession {
             u16.setUsername("16User");
             u16.setPassword("password");
             u16.setGender((byte) 1);
+            u16.setDob(new Date());
             userSessionLocal.createUser(u16);
 
             User u17 = new User();
@@ -218,6 +234,7 @@ public class DataInitialisationSession {
             u17.setUsername("17User");
             u17.setPassword("password");
             u17.setGender((byte) 1);
+            u17.setDob(new Date());
             userSessionLocal.createUser(u17);
 
             User u18 = new User();
@@ -225,6 +242,7 @@ public class DataInitialisationSession {
             u18.setUsername("18User");
             u18.setPassword("password");
             u18.setGender((byte) 1);
+            u18.setDob(new Date());
             userSessionLocal.createUser(u18);
 
             User u19 = new User();
@@ -232,6 +250,7 @@ public class DataInitialisationSession {
             u19.setUsername("19dUser");
             u19.setPassword("password");
             u19.setGender((byte) 1);
+            u19.setDob(new Date());
             userSessionLocal.createUser(u19);
 
             User u20 = new User();
@@ -239,6 +258,7 @@ public class DataInitialisationSession {
             u20.setUsername("20User");
             u20.setPassword("password");
             u20.setGender((byte) 1);
+            u20.setDob(new Date());
             userSessionLocal.createUser(u20);
 
             User u21 = new User();
@@ -246,6 +266,7 @@ public class DataInitialisationSession {
             u21.setUsername("21User");
             u21.setPassword("password");
             u21.setGender((byte) 1);
+            u21.setDob(new Date());
             userSessionLocal.createUser(u21);
 
             User u22 = new User();
@@ -253,6 +274,7 @@ public class DataInitialisationSession {
             u22.setUsername("u22User");
             u22.setPassword("password");
             u22.setGender((byte) 1);
+            u22.setDob(new Date());
             userSessionLocal.createUser(u22);
 
             User u23 = new User();
@@ -260,6 +282,7 @@ public class DataInitialisationSession {
             u23.setUsername("23User");
             u23.setPassword("password");
             u23.setGender((byte) 1);
+            u23.setDob(new Date());
             userSessionLocal.createUser(u23);
 
             User u24 = new User();
@@ -267,6 +290,7 @@ public class DataInitialisationSession {
             u24.setUsername("24User");
             u24.setPassword("password");
             u24.setGender((byte) 1);
+            u24.setDob(new Date());
             userSessionLocal.createUser(u24);
 
             User u25 = new User();
@@ -274,6 +298,7 @@ public class DataInitialisationSession {
             u25.setUsername("25User");
             u25.setPassword("password");
             u25.setGender((byte) 1);
+            u25.setDob(new Date());
             userSessionLocal.createUser(u25);
 
             User u26 = new User();
@@ -281,6 +306,7 @@ public class DataInitialisationSession {
             u26.setUsername("26User");
             u26.setPassword("password");
             u26.setGender((byte) 1);
+            u26.setDob(new Date());
             userSessionLocal.createUser(u26);
 
             User u27 = new User();
@@ -288,6 +314,7 @@ public class DataInitialisationSession {
             u27.setUsername("27User");
             u27.setPassword("password");
             u27.setGender((byte) 1);
+            u27.setDob(new Date());
             userSessionLocal.createUser(u27);
 
             User u28 = new User();
@@ -295,6 +322,7 @@ public class DataInitialisationSession {
             u28.setUsername("28User");
             u28.setPassword("password");
             u28.setGender((byte) 1);
+            u28.setDob(new Date());
             userSessionLocal.createUser(u28);
 
             User u29 = new User();
@@ -302,6 +330,7 @@ public class DataInitialisationSession {
             u29.setUsername("29User");
             u29.setPassword("password");
             u29.setGender((byte) 1);
+            u29.setDob(new Date());
             userSessionLocal.createUser(u29);
 
             User u30 = new User();
@@ -309,6 +338,7 @@ public class DataInitialisationSession {
             u30.setUsername("30User");
             u30.setPassword("password");
             u30.setGender((byte) 1);
+            u30.setDob(new Date());
             userSessionLocal.createUser(u30);
 
             User u31 = new User();
@@ -316,6 +346,7 @@ public class DataInitialisationSession {
             u31.setUsername("31User");
             u31.setPassword("password");
             u31.setGender((byte) 1);
+            u31.setDob(new Date());
             userSessionLocal.createUser(u31);
             
             User badUser = new User();
@@ -323,6 +354,7 @@ public class DataInitialisationSession {
             badUser.setUsername("NaughtyUser");
             badUser.setPassword("password");
             badUser.setGender((byte) 1);
+            badUser.setDob(new Date());
             userSessionLocal.createUser(badUser);
 
 
@@ -529,6 +561,22 @@ public class DataInitialisationSession {
             c1.getUsers().add(u6);
             chatSessionBeanLocal.addGroupChat(c1, new Long(1));
 
+            ChatMessage cm1 = new ChatMessage();
+            cm1.setMessage("Hey whatsupppppp");
+            chatSessionBeanLocal.addMessage(cm1, new Long(3), new Long(1));
+
+            ChatMessage cm2 = new ChatMessage();
+            cm2.setMessage("Yo");
+            chatSessionBeanLocal.addMessage(cm2, new Long(6), new Long(1));
+
+            ChatMessage cm3 = new ChatMessage();
+            cm3.setMessage("Lets get this Boisssssssssssssssssssssssssssssss");
+            chatSessionBeanLocal.addMessage(cm3, new Long(4), new Long(1));
+
+            Chat newC1 = chatSessionBeanLocal.getChat(new Long(1));
+            Date time = chatSessionBeanLocal.getChatMessage(new Long(3)).getDateTime();
+            newC1.setLastMsgTime(time);
+
             Chat c2 = new Chat();
             c2.setName("party p2");
             c2.setParty(Boolean.TRUE);
@@ -537,6 +585,14 @@ public class DataInitialisationSession {
             c2.getUsers().add(u14);
             c2.getUsers().add(u16);
             chatSessionBeanLocal.addGroupChat(c2, new Long(2));
+
+            ChatMessage cm4 = new ChatMessage();
+            cm4.setMessage("Nice to meet all of you");
+            chatSessionBeanLocal.addMessage(cm4, new Long(3), new Long(2));
+
+            Chat newC2 = chatSessionBeanLocal.getChat(new Long(2));
+            Date timec2 = chatSessionBeanLocal.getChatMessage(new Long(4)).getDateTime();
+            newC2.setLastMsgTime(timec2);
 
             Chat c3 = new Chat();
             c3.getUsers().add(u2);
@@ -547,6 +603,48 @@ public class DataInitialisationSession {
             c4.getUsers().add(u10);
             c4.getUsers().add(u);
             chatSessionBeanLocal.addChat(c4, new Long(10));
+
+            ChatMessage cm5 = new ChatMessage();
+            cm5.setMessage("Hey I am interested in your teaching, may i know what do you teach?");
+            chatSessionBeanLocal.addMessage(cm5, new Long(1), new Long(4));
+
+            ChatMessage cm6 = new ChatMessage();
+            cm6.setMessage("I am coach for the games. I can lead u in team battles.");
+            chatSessionBeanLocal.addMessage(cm6, new Long(10), new Long(4));
+
+            Chat newC4 = chatSessionBeanLocal.getChat(new Long(4));
+            Date timec4 = chatSessionBeanLocal.getChatMessage(new Long(6)).getDateTime();
+            newC4.setLastMsgTime(timec4);
+
+            Chat c5 = new Chat();
+            c5.getUsers().add(u6);
+            c5.getUsers().add(u);
+            chatSessionBeanLocal.addChat(c5, new Long(6));
+
+            Chat c6 = new Chat();
+            c6.getUsers().add(u8);
+            c6.getUsers().add(u);
+            chatSessionBeanLocal.addChat(c6, new Long(8));
+
+            Chat c7 = new Chat();
+            c7.getUsers().add(u15);
+            c7.getUsers().add(u);
+            chatSessionBeanLocal.addChat(c7, new Long(15));
+
+            Chat c8 = new Chat();
+            c8.getUsers().add(u9);
+            c8.getUsers().add(u);
+            chatSessionBeanLocal.addChat(c8, new Long(9));
+
+            Chat c9 = new Chat();
+            c9.getUsers().add(u17);
+            c9.getUsers().add(u);
+            chatSessionBeanLocal.addChat(c9, new Long(17));
+
+            Chat c10 = new Chat();
+            c10.getUsers().add(u27);
+            c10.getUsers().add(u);
+            chatSessionBeanLocal.addChat(c10, new Long(27));
 
         } catch (Exception ex) {
             Logger.getLogger(DataInitialisationSession.class.getName()).log(Level.SEVERE, null, ex);
