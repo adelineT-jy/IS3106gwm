@@ -351,22 +351,25 @@ export const Party = (party) => {
                     <Typography variant="h5" component="div">
                         Party Id: {party.partyId}
                     </Typography>
-                    <Stack spacing={2} direction="row">
-                        <Button
-                            variant="contained"
-                            color="warning"
-                            onClick={endParty}
-                        >
-                            End party
-                        </Button>
-                        <Button
-                            variant="contained"
-                            color="error"
-                            onClick={deleteParty}
-                        >
-                            Delete party
-                        </Button>
-                    </Stack>
+                    {party.mode === "current" &&
+                    party.partyOwner.userId === uId ? (
+                        <Stack spacing={2} direction="row">
+                            <Button
+                                variant="contained"
+                                color="warning"
+                                onClick={endParty}
+                            >
+                                End party
+                            </Button>
+                            <Button
+                                variant="contained"
+                                color="error"
+                                onClick={deleteParty}
+                            >
+                                Delete party
+                            </Button>
+                        </Stack>
+                    ) : null}
                 </Stack>
                 <Typography sx={{ mb: 1.5, mt: 1 }} color="text.secondary">
                     Discord Link:{" "}
@@ -388,7 +391,7 @@ export const Party = (party) => {
                     color="text.secondary"
                     gutterBottom
                 >
-                    Created by {party.partyOwner.username}
+                    Created by <UserView uId={party.partyOwner.userId} />
                 </Typography>
                 <Chip
                     sx={{ margin: "2px" }}
@@ -396,8 +399,18 @@ export const Party = (party) => {
                         0,
                         10
                     )} at ${party.partyStartTime.substring(11, 16)}`}
-                    color="secondary"
+                    color="info"
                 />
+                {party.mode === "ended" ? (
+                    <Chip
+                        sx={{ margin: "2px" }}
+                        label={`Party ended on ${party.partyEndTime.substring(
+                            0,
+                            10
+                        )} at ${party.partyEndTime.substring(11, 16)}`}
+                        color="secondary"
+                    />
+                ) : null}
             </CardContent>
             <CardActions sx={{ p: 2 }} onClick={handleExpandClick}>
                 <Typography variant="button">
@@ -450,7 +463,7 @@ export const Party = (party) => {
                                     <Typography variant="body2">
                                         Your post has no requests
                                     </Typography>
-                                ) : (
+                                ) : party.partyOwner.userId === uId ? (
                                     party.post.request.map((request) => {
                                         return (
                                             <Request
@@ -469,35 +482,48 @@ export const Party = (party) => {
                                             />
                                         );
                                     })
+                                ) : (
+                                    party.post.request.map((request) => {
+                                        return (
+                                            <Request
+                                                key={request.requestId}
+                                                {...request}
+                                            />
+                                        );
+                                    })
                                 )}
                             </List>
                         </Grid>
                     </Grid>
-                    <Stack spacing={1}>
-                        <Button
-                            sx={{ width: "50%" }}
-                            onClick={handleOpen}
-                            color={
-                                party.post === undefined ? "success" : "warning"
-                            }
-                            variant="contained"
-                        >
-                            {party.post === undefined
-                                ? "Create a "
-                                : "Edit your "}{" "}
-                            Post
-                        </Button>
-                        {party.post === undefined ? null : (
+                    {party.partyOwner.userId === uId ? (
+                        <Stack spacing={1}>
                             <Button
                                 sx={{ width: "50%" }}
-                                onClick={deletePost}
-                                color="error"
+                                onClick={handleOpen}
+                                color={
+                                    party.post === undefined
+                                        ? "success"
+                                        : "warning"
+                                }
                                 variant="contained"
                             >
-                                Delete your Post
+                                {party.post === undefined
+                                    ? "Create a "
+                                    : "Edit your "}{" "}
+                                Post
                             </Button>
-                        )}
-                    </Stack>
+                            {party.post === undefined ? null : (
+                                <Button
+                                    sx={{ width: "50%" }}
+                                    onClick={deletePost}
+                                    color="error"
+                                    variant="contained"
+                                >
+                                    Delete your Post
+                                </Button>
+                            )}
+                        </Stack>
+                    ) : null}
                 </Collapse>
             </CardContent>
         </Card>
@@ -515,6 +541,7 @@ export default function Parties() {
     const [mode, setMode] = useState("current");
 
     const handleChange = (event, newValue) => {
+        setParties([]);
         setMode(newValue);
     };
 
@@ -671,6 +698,7 @@ export default function Parties() {
                                     {...party}
                                     reload={reload}
                                     setReload={setReload}
+                                    mode={mode}
                                 />
                             ))
                         )}
