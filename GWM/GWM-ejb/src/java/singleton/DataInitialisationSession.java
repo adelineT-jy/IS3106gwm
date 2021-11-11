@@ -310,6 +310,14 @@ public class DataInitialisationSession {
             u31.setPassword("password");
             u31.setGender((byte) 1);
             userSessionLocal.createUser(u31);
+            
+            User badUser = new User();
+            badUser.setEmail("Naughty@gmail.com");
+            badUser.setUsername("NaughtyUser");
+            badUser.setPassword("password");
+            badUser.setGender((byte) 1);
+            userSessionLocal.createUser(badUser);
+
 
             Party p = new Party();
             p.setInviteLink("xxxLOLshhaicnru.djannic.lol");
@@ -366,6 +374,16 @@ public class DataInitialisationSession {
             p10.setInviteLink("inviteLink10");
             p10.setPartyStartTime(new Date());
             postSessionBeanLocal.createParty(p10, 21L);
+            
+            Party p11 = new Party();
+            p11.setInviteLink("inviteLink110");
+            p11.setPartyStartTime(new Date());
+            postSessionBeanLocal.createParty(p11, 23L);
+            
+            Party badParty = new Party();
+            badParty.setInviteLink("badLink");
+            badParty.setPartyStartTime(new Date());
+            postSessionBeanLocal.createParty(badParty, 32L);
 
             postSessionBeanLocal.joinParty(1L, 2L);
             postSessionBeanLocal.joinParty(1L, 3L);
@@ -478,6 +496,22 @@ public class DataInitialisationSession {
             o6.setRequestPrice(BigDecimal.valueOf(50));
             o6.setGame(g2);
             postSessionBeanLocal.createPost(o6, 4L, 7L, 2L);
+            
+            Post o7 = new Post();
+            o7.setTitle("Hello everyone!");
+            o7.setDescription("Testing testing");
+            o7.setRequestQty(1);
+            o7.setRequestPrice(BigDecimal.valueOf(0));
+            o7.setGame(g1);
+            postSessionBeanLocal.createPost(o7, 12L, 23L, 1L);
+            
+            Post badPost = new Post();
+            badPost.setTitle("Accepting Bets");
+            badPost.setDescription("Random 1v1 game, odds 1:1, no gimmicks, Paypal fast cash, no scams");
+            badPost.setRequestQty(100);
+            badPost.setRequestPrice(BigDecimal.valueOf(10));
+            badPost.setGame(g2);
+            postSessionBeanLocal.createPost(badPost, 13L, 32L, 2L);
 
             Chat c1 = new Chat();
             c1.setName("party p1");
