@@ -180,8 +180,10 @@ export function Login() {
         })
         .then((data) => {
           console.log(data);
-          window.localStorage.setItem("user", JSON.stringify(data));
-          history.push("/posts");
+          if (data != null || data != undefined) {
+              window.localStorage.setItem("user", JSON.stringify(data));
+              history.push("/posts");
+          }
         });
     } catch (e) {
       console.log(e.message);

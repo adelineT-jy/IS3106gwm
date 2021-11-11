@@ -1,11 +1,14 @@
 package entity;
 
 import java.io.Serializable;
+import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 @Entity
 public class Card implements Serializable {
@@ -15,11 +18,12 @@ public class Card implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long cardId;
 
-    @Column(length = 19, nullable = false)
+    @Column(length = 16, nullable = false)
     private String cardNum;
     
-    @Column(length = 5, nullable = false)
-    private String expDate;
+    @Temporal(TemporalType.DATE)
+    @Column(nullable=false)
+    private Date expDate;
     
     @Column(length = 4, nullable = false)
     private String cvv;
@@ -30,7 +34,7 @@ public class Card implements Serializable {
     public Card() {
     }
 
-    public Card(Long cardId, String cardNum, String expDate, String cvv, String name) {
+    public Card(Long cardId, String cardNum, Date expDate, String cvv, String name) {
         this();
         this.cardId = cardId;
         this.cardNum = cardNum;
@@ -55,11 +59,11 @@ public class Card implements Serializable {
         this.cardNum = cardNum;
     }
 
-    public String getExpDate() {
+    public Date getExpDate() {
         return expDate;
     }
 
-    public void setExpDate(String expDate) {
+    public void setExpDate(Date expDate) {
         this.expDate = expDate;
     }
 

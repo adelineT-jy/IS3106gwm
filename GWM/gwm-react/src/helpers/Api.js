@@ -46,16 +46,33 @@ const Api = {
     },
 
     addUserExperience(uId, gId, data) {
-        console.log("API: " + gId);
-        console.log(data);
-        console.log(`${SERVER_PREFIX}/users/${uId}/games/${gId}/exp`);
         return fetch(`${SERVER_PREFIX}/users/${uId}/games/${gId}/exp`, {
             headers: {
                 Accept: "application/json",
                 "Content-Type": "application/json",
             },
             method: "POST",
+            crossDomain: true,
             body: JSON.stringify(data),
+        });
+    },
+    
+    deleteCard(uId, cId) {
+        console.log("delete card" + cId);
+        return fetch(`${SERVER_PREFIX}/users/${uId}/cards/${cId}`, {
+            method: "DELETE",
+        });
+    },
+
+    addCard(uId, data) {
+        return fetch(`${SERVER_PREFIX}/users/${uId}/cards/`, {
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+            },
+            method: "POST",
+            body: JSON.stringify(data),
+            crossDomain: true,
         });
     },
 

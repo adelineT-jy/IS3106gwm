@@ -18,6 +18,7 @@ import {
     MenuItem,
     Modal,
     Paper,
+    Rating,
     Select,
     Stack,
     Tab,
@@ -76,16 +77,20 @@ const UserCard = (user) => {
 
 export const Party = (party) => {
     const uId = JSON.parse(window.localStorage.user).userId;
-    const [games, setGames] = React.useState([]);
-    const [openModal, setOpenModal] = React.useState(false);
-    const [gameId, setGameId] = React.useState(0);
-    const [title, setTitle] = React.useState("");
-    const [description, setDescription] = React.useState("");
-    const [requestSign, setRequestSign] = React.useState(0);
-    const [requestPrice, setRequestPrice] = React.useState(0);
-    const [requestQty, setRequestQty] = React.useState(1);
+    const [games, setGames] = useState([]);
+    const [openModal, setOpenModal] = useState(false);
+    const [gameId, setGameId] = useState(0);
+    const [title, setTitle] = useState("");
+    const [description, setDescription] = useState("");
+    const [requestSign, setRequestSign] = useState(0);
+    const [requestPrice, setRequestPrice] = useState(0);
+    const [requestQty, setRequestQty] = useState(1);
 
-    const [expanded, setExpanded] = React.useState(false);
+    const [openReview, setOpenReview] = useState(false);
+    const [note, setNote] = useState("");
+    const [stars, setStars] = useState(null);
+
+    const [expanded, setExpanded] = useState(false);
 
     const handleExpandClick = () => {
         setExpanded(!expanded);
@@ -127,7 +132,10 @@ export const Party = (party) => {
         setRequestQty(0);
         setRequestPrice(0);
         setRequestSign(0);
+        setNote("");
+        setStars(null);
         setOpenModal(false);
+        setOpenReview(false);
     };
 
     const handleRequestQty = (e) => {
@@ -143,7 +151,7 @@ export const Party = (party) => {
     };
 
     const savePost = () => {
-        if (!window.confirm('Are you sure you want to save this post?')) return;
+        if (!window.confirm("Are you sure you want to save this post?")) return;
         const post = {
             title: title,
             userId: uId,
@@ -170,7 +178,8 @@ export const Party = (party) => {
     };
 
     const deletePost = () => {
-        if (!window.confirm('Are you sure you want to delete this post?')) return;
+        if (!window.confirm("Are you sure you want to delete this post?"))
+            return;
         fetch(
             `http://localhost:8080/Gwm-war/webresources/party/${party.partyId}/post/${party.post.postId}/deleteBy/${uId}`,
             { method: "DELETE" }
@@ -183,14 +192,15 @@ export const Party = (party) => {
     };
 
     const acceptRequest = (rId) => {
-        if (!window.confirm('Are you sure you want to accept this request?')) return;
+        if (!window.confirm("Are you sure you want to accept this request?"))
+            return;
         fetch(
             `http://localhost:8080/Gwm-war/webresources/party/${party.partyId}/user/${uId}/acceptRequest/${rId}`,
             { method: "PUT" }
         )
             .then((response) => {
                 if (response.ok) {
-                party.setReload(party.reload + 1);
+                    party.setReload(party.reload + 1);
                 } else {
                     throw new Error(response.statusText);
                 }
@@ -199,7 +209,8 @@ export const Party = (party) => {
     };
 
     const rejectRequest = (rId) => {
-        if (!window.confirm('Are you sure you want to reject this request?')) return;
+        if (!window.confirm("Are you sure you want to reject this request?"))
+            return;
         fetch(
             `http://localhost:8080/Gwm-war/webresources/party/${party.partyId}/user/${uId}/rejectRequest/${rId}`,
             { method: "PUT" }
@@ -209,7 +220,7 @@ export const Party = (party) => {
     };
 
     const endParty = () => {
-        if (!window.confirm('Are you sure you want to end this party?')) return;
+        if (!window.confirm("Are you sure you want to end this party?")) return;
         fetch(
             `http://localhost:8080/Gwm-war/webresources/party/${party.partyId}/user/${uId}/end`,
             { method: "PUT" }
@@ -219,7 +230,8 @@ export const Party = (party) => {
     };
 
     const deleteParty = () => {
-        if (!window.confirm('Are you sure you want to delete this party?')) return;
+        if (!window.confirm("Are you sure you want to delete this party?"))
+            return;
         fetch(
             `http://localhost:8080/Gwm-war/webresources/party/${party.partyId}/user/${uId}/delete`,
             { method: "DELETE" }
@@ -228,8 +240,76 @@ export const Party = (party) => {
             .catch((error) => alert(error));
     };
 
+    const createReview = () => {
+        if (!window.confirm("Are you sure you want to create a new review?"))
+            return;
+        if (stars === null) {
+            return alert(
+                "You have not selected a rating. Please add a rating before continuing."
+            );
+        }
+        const review = {
+            userId: uId,
+            rating: stars,
+            note: note,
+        };
+        const requestOptions = {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(review),
+        };
+        fetch(
+            `http://localhost:8080/Gwm-war/webresources/party/${party.partyId}/reviewer/${uId}`,
+            requestOptions
+        )
+            .then(() => {
+                handleClose();
+                party.setReload(party.reload + 1);
+            })
+            .catch((error) => alert(error));
+    };
+
     return (
         <Card sx={{ maxWidth: "800", mb: 2 }} raised>
+            <Modal open={openReview} onClose={handleClose}>
+                <Box sx={modalStyle} centered>
+                    <Typography variant="h6">
+                        Add your rating and review
+                    </Typography>
+                    <Rating
+                        value={stars}
+                        size="large"
+                        onChange={(event, newValue) => {
+                            setStars(newValue);
+                        }}
+                    />
+                    <TextField
+                        sx={{ width: "100%", mt: 1, mb: 1 }}
+                        variant="outlined"
+                        placeholder="Type your review here!"
+                        value={note}
+                        onChange={(e) => setNote(e.target.value)}
+                    >
+                        Request Text
+                    </TextField>
+                    <Button
+                        sx={{ width: "50%" }}
+                        onClick={handleClose}
+                        color="error"
+                        variant="contained"
+                    >
+                        Cancel
+                    </Button>
+                    <Button
+                        sx={{ width: "50%" }}
+                        onClick={() => createReview()}
+                        color="success"
+                        variant="contained"
+                    >
+                        Add Review
+                    </Button>
+                </Box>
+            </Modal>
             <Modal
                 open={openModal}
                 onClose={handleClose}
@@ -358,24 +438,35 @@ export const Party = (party) => {
                         Party Id: {party.partyId}
                     </Typography>
                     {party.mode === "current" &&
-                    party.partyOwner.userId === uId ? (
+                        party.partyOwner.userId === uId && (
+                            <Stack spacing={2} direction="row">
+                                <Button
+                                    variant="contained"
+                                    color="warning"
+                                    onClick={endParty}
+                                >
+                                    End party
+                                </Button>
+                                <Button
+                                    variant="contained"
+                                    color="error"
+                                    onClick={deleteParty}
+                                >
+                                    Delete party
+                                </Button>
+                            </Stack>
+                        )}
+                    {party.mode === "ended" && (
                         <Stack spacing={2} direction="row">
                             <Button
                                 variant="contained"
-                                color="warning"
-                                onClick={endParty}
+                                color="info"
+                                onClick={() => setOpenReview(true)}
                             >
-                                End party
-                            </Button>
-                            <Button
-                                variant="contained"
-                                color="error"
-                                onClick={deleteParty}
-                            >
-                                Delete party
+                                Add a Review
                             </Button>
                         </Stack>
-                    ) : null}
+                    )}
                 </Stack>
                 <Typography sx={{ mb: 1.5, mt: 1 }} color="text.secondary">
                     Discord Link:{" "}
@@ -417,16 +508,14 @@ export const Party = (party) => {
                         color="secondary"
                     />
                 ) : null}
-            </CardContent>
-            <CardActions sx={{ p: 2 }} onClick={handleExpandClick}>
-                <Typography variant="button">
-                    View {expanded ? "Less" : "More"}
-                </Typography>
-                <ExpandMore expand={expanded}>
-                    <ExpandMoreIcon />
-                </ExpandMore>
-            </CardActions>
-            <CardContent>
+                <CardActions sx={{ p: 2 }} onClick={handleExpandClick}>
+                    <Typography variant="button">
+                        View {expanded ? "Less" : "More"}
+                    </Typography>
+                    <ExpandMore expand={expanded}>
+                        <ExpandMoreIcon />
+                    </ExpandMore>
+                </CardActions>
                 <Collapse in={expanded} timeout="auto" unmountOnExit>
                     <Typography sx={{ mt: 4 }} variant="body1">
                         Party Members
@@ -551,16 +640,17 @@ export default function Parties() {
         setMode(newValue);
     };
 
-    const [inviteLink, setInviteLink] = React.useState("");
+    const [inviteLink, setInviteLink] = useState("");
 
-    const [openModal, setOpenModal] = React.useState(false);
+    const [openModal, setOpenModal] = useState(false);
 
     const handleOpen = () => setOpenModal(true);
 
     const handleClose = () => setOpenModal(false);
 
     const createParty = () => {
-        if (!window.confirm('Are you sure you want to create this party?')) return;
+        if (!window.confirm("Are you sure you want to create this party?"))
+            return;
         const requestOptions = {
             crossDomain: true,
             method: "POST",

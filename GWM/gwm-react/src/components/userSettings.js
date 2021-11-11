@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from "react"; 
-import {Box, IconButton, Card, Collapse, Grid, Paper, Typography, TextField, FormControl, InputLabel, Select, MenuItem, Button, Tabs, Tab, CardContent, CardHeader, CardActions} from "@mui/material";
+import {Box, IconButton, Card, Collapse, Modal, Grid, Paper, Typography, TextField, FormControl, InputLabel, Select, MenuItem, Button, Tabs, Tab, CardContent, CardHeader, CardActions} from "@mui/material";
 import {Switch, Route, useRouteMatch, Link} from "react-router-dom";
 import { styled } from '@mui/material/styles';
 import {DatePicker} from "@mui/lab";
@@ -7,12 +7,77 @@ import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import CreditCardIcon from '@mui/icons-material/CreditCard';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import DeleteIcon from '@mui/icons-material/Delete';
+import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import moment from "moment";
 
 import Api from "../helpers/Api.js";
 import MasterCard from "../images/mastercard.png"
 
+const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    height: 240,
+    bgcolor: 'background.paper',
+    border: '1px solid #000',
+    boxShadow: 24,
+    p: 4,
+  };
 
+const style2 = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    height: 380,
+    bgcolor: 'background.paper',
+    border: '1px solid #000',
+    boxShadow: 24,
+    p: 4,
+  };
+
+  const months = [
+    {
+        value: "01",
+        label: "01",
+    }, {
+        value: "02",
+        label: "02",
+    }, {
+        value: "03",
+        label: "03",
+    }, {
+        value: "04",
+        label: "04",
+    }, {
+        value: "05",
+        label: "05",
+    }, {
+        value: "06",
+        label: "06",
+    }, {
+        value: "07",
+        label: "07",
+    }, {
+        value: "08",
+        label: "08",
+    }, {
+        value: "09",
+        label: "09",
+    }, {
+        value: "10",
+        label: "10",
+    }, {
+        value: "11",
+        label: "11",
+    }, {
+        value: "12",
+        label: "12",
+    }
+]
 
 export default function Settings() {
 
@@ -24,12 +89,12 @@ export default function Settings() {
     };
 
     return (
-        <Box display="flex" justifyContent="center" sx={{ height: "200vh", padding: "5vh" }}>
+        <Box display="flex" justifyContent="center" sx={{ height: "130vh", padding: "5vh" }}>
             <Grid container spacing={1}>
                 <Grid item xs={12}>
                     <Grid container spacing={2}>
                         <Grid item xs={3} md={3}>
-                            <Paper sx={{height: "95vh", padding: "4vh"}}>
+                            <Paper sx={{height: "120vh", padding: "4vh"}}>
                                 <Typography variant="h6" sx={{paddingLeft: "1vh", paddingBottom: "2vh" }}>
                                     Settings
                                 </Typography>
@@ -68,9 +133,22 @@ const ExpandMore = styled((props) => {
 export function CardSettings() {
     const [user, setUser] = useState([]);
     const [balance, setBalance] = useState("");
-    const [reloadWallet, reloadCard] = useState("");
+    const [reload, setReload] = useState("");
     const [cards, setCards] = useState([]);
+    const [cId, setCId] = useState("");
+
+    //add card
+    const [cardNum, setCardNum] = useState("");
+    const [cardName, setCardName] = useState("");
+    const [exp, setExp] = useState(moment("1990-01-01 00:00:00").toDate());
+    const [cvv, setCvv] = useState("");
+
+    
     const [expanded, setExpanded] = useState(false);
+    const [openDeleteCard, setOpenDeleteCard] = useState(false);
+    const [openAddCard, setOpenAddCard] = useState(false);
+
+    console.log("rendering");
 
     const uId =
       window.localStorage.user === undefined
@@ -87,26 +165,177 @@ export function CardSettings() {
             }).then((tempUser) => {
                 setBalance(tempUser.wallet);
                 setCards(tempUser.cards);
-                console.log(cards);
         });
 
-    }, [reloadWallet]);
+    }, [reload]);
 
     //card expand more
     const handleExpandClick = () => {
         setExpanded(!expanded);
       };
 
+    //modal stuff
+    const handleClose = () => {
+        setOpenDeleteCard(false);
+        setOpenAddCard(false);
+        setCardNum("");
+        setCardName("");
+        setExp("");
+        setCvv("");
+    };
+
+    function handleDeleteCard(cardId, e) {
+        e.preventDefault();
+        console.log(cardId);
+        setCId(cardId);
+        setOpenDeleteCard(true);
+    };
+
+
+    //delete card
+    const deleteCard = () => {
+        Api.deleteCard(uId, cId)
+        .then((response) => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                alert("Delete card failed");
+            }
+        }).then((temp) => {
+            setReload(reload + 1);
+            handleClose();
+        });
+    }
+
+    function handleAddCard(e) {
+        e.preventDefault();
+        setOpenAddCard(true);
+    }
+
+    const addCard = () => {
+        const newCard = {
+            cardNum: cardNum,
+            expDate: exp,
+            cvv: cvv,
+            name: cardName
+        }
+        Api.addCard(uId, newCard)    
+        .then((response) => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                alert("Add card failed, check the format");
+            }
+        }).then((temp) => {
+            setReload(reload + 1);
+            handleClose();
+        });
+    }
+
     return (
-        <Paper sx={{height: "150vh", padding: "5vh"}}>
+        <Paper sx={{height: "120vh", padding: "5vh"}}>
             <Typography variant="h6" sx={{ paddingLeft: "1vh", paddingBottom: "2vh" }}>
                 Finance
             </Typography>
+
+            <Modal open={openDeleteCard} onClose={handleClose}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description">
+                <Box sx={style} display="flex">
+                    <Grid container spacing={2}>
+                        <Grid item xs={12} md={12}>
+                            <IconButton onClick={handleClose} sx={{float:"right"}}>
+                                <CloseRoundedIcon/>
+                            </IconButton>
+                            <Typography variant="h6">Confirm Remove Card</Typography>
+                        </Grid>
+                        <Grid item xs={12} sx={{paddingLeft: "3vh", paddingRight: "3vh"}}>
+                            <Typography paragraph variant="body1">Are you sure you want to remove your card?</Typography>
+                        </Grid>
+                        <Grid item xs={12}>
+                            <Button onClick={() => deleteCard()} color="secondary" variant="contained" sx={{float:"right"}}>
+                                Confirm
+                            </Button>
+                        </Grid>
+                    </Grid>
+                </Box>
+            </Modal>
+
+            <Modal open={openAddCard} onClose={handleClose}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description">
+                <Box sx={style2} display="flex">
+                    <Grid container spacing={2}>
+                        <Grid item xs={12} md={12}>
+                            <IconButton onClick={handleClose} sx={{float:"right"}}>
+                                <CloseRoundedIcon/>
+                            </IconButton>
+                            <Typography variant="h6">Add Card</Typography>
+                        </Grid>
+                        <Grid item xs={12} md={12}>
+                            <TextField
+                                id="outlined-basic"
+                                label="Card Number"
+                                value={cardNum}
+                                size="small"
+                                fullWidth
+                                required
+                                inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
+                                onChange={(event) => setCardNum(event.target.value)}
+                                />
+                        </Grid>
+                        <Grid item xs={12} md={12}>
+                            <TextField
+                                id="outlined-basic"
+                                label="Card Name"
+                                value={cardName}
+                                size="small"
+                                fullWidth
+                                required
+                                onChange={(event) => setCardName(event.target.value)}
+                                />
+                        </Grid>
+                        <Grid item xs={12} md={12}>
+                            <TextField
+                                id="outlined-basic"
+                                label="cvv"
+                                value={cvv}
+                                size="small"
+                                required
+                                inputProps={{ maxLength: 3, pattern: "[0-9]*" }}
+                                onChange={(event) => setCvv(event.target.value)}
+                                />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <DatePicker
+                            label="Exp Date"
+                            value={exp}
+                            views={['year', 'month']}
+                            minDate={moment()}
+                            onChange={(newexp) => {
+                                setExp(newexp);
+                            }}
+                            inputProps={{
+                                readOnly: true,
+                               }}
+                            renderInput={(params) => <TextField {...params} />}
+                            />
+                        </Grid>
+
+                        <Grid item xs={12}>
+                            <Button onClick={() => addCard()} color="secondary" variant="contained" sx={{float:"right"}}>
+                                Confirm
+                            </Button>
+                        </Grid>
+                    </Grid>
+                </Box>
+            </Modal>
+
             
-            <Grid container spacing={2}>
+            <Grid container spacing={1}>
                
                 <Grid item xs={6}>
-                    <Card sx={{width: "45vh", height: "35vh", padding: "3vh", paddingTop:"2vh"}}>
+                    <Card sx={{width: "45vh", maxHeight: "35vh", padding: "3vh", paddingTop:"2vh"}}>
                         <CardContent variant="outlined">
                             <Grid container spacing={2}>
                                 <Grid item xs={8} md={8}>
@@ -142,10 +371,13 @@ export function CardSettings() {
                     <Typography variant="h6">
                         Credit Cards
                     </Typography>
+                    <Button variant="contained" color="secondary" sx={{float: "right"}} onClick={(e) => handleAddCard(e)}>
+                        Add Card
+                    </Button>
                 </Grid>
                 {cards.map((card) => (
                     <>
-                    <Grid item xs={12}>
+                    <Grid item xs={5}>
                         <Card sx={{width: "52vh", padding: "2vh", paddingTop:"2vh", backgroundColor: "#2c2e2d"}}>
                             <CardContent variant="outlined" sx={{paddingBottom:"0"}}>
                                 <Grid container spacing={1.2}>
@@ -153,14 +385,14 @@ export function CardSettings() {
                                         <CreditCardIcon fontSize="large" sx={{color:"white"}}/>
                                     </Grid>
                                     <Grid item xs={4} md={4} >
-                                        <IconButton aria-label="delete" size="large" sx={{float: "right", paddingTop: "0vh", paddingRight: "0vh"}}>
+                                        <IconButton aria-label="delete" size="large" onClick={(e) => handleDeleteCard(card.cardId, e)} sx={{float: "right", paddingTop: "0vh", paddingRight: "0vh"}}>
                                             <DeleteIcon fontSize="small" sx={{color: "#a1a6a2"}}/>
                                         </IconButton>
                                     </Grid>
                                     
                                     <Grid item xs={12} md={12}>
                                         <Typography variant="body1" sx={{fontWeight: "500", color: "white"}}>
-                                            {card.cardNum}
+                                            xxxx xxxx xxxx {card.cardNum.slice(card.cardNum.length - 4)}
                                         </Typography>
                                     </Grid>
                                     <br/>
@@ -186,7 +418,8 @@ export function CardSettings() {
                             <Collapse in={expanded} timeout="auto" unmountOnExit>
                                 <CardContent sx={{padding: "1vh", paddingLeft: "2vh", paddingTop: "0vh"}}>
                                     <Typography sx={{color: "#fff", fontWeight: "400"}}>
-                                        <b>Cvv:</b> {card.cvv} &nbsp; &nbsp; <b>Exp:</b> {card.expDate}
+                                        <b>Card Num: </b> {card.cardNum} <br/>
+                                        <b>Cvv:</b> {card.cvv} &nbsp; &nbsp; <b>Exp:</b> {moment(card.expDate, "YYYY-MM-DD").format('MM/YY')}
                                     </Typography>
                                    
                                 </CardContent>
@@ -196,9 +429,8 @@ export function CardSettings() {
                     </>
                 ))}
             </Grid> 
-
-             
         </Paper>
+        
     );
 }
 
@@ -249,7 +481,7 @@ export function ProfileSettings() {
     }
 
     return (
-        <Paper sx={{height: "80vh", padding: "4vh"}}>
+        <Paper sx={{height: "120vh", padding: "4vh"}}>
             <Typography variant="h6" sx={{ paddingLeft: "1vh", paddingBottom: "2vh" }}>
                 Profile Settings
             </Typography>
@@ -318,6 +550,9 @@ export function ProfileSettings() {
                                     setDob(dob);
                                 }}
                                 selected={dob}
+                                inputProps={{
+                                    readOnly: true,
+                                   }}
                                 renderInput={(params) => <TextField required {...params}/>}
                                 />
                         </Grid>

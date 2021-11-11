@@ -10,6 +10,7 @@ import error.AuthenticationException;
 import error.InsufficientFundsException;
 import error.NoResultException;
 import error.RequestExistException;
+import error.ReviewExistException;
 import java.util.List;
 import javax.ejb.Local;
 
@@ -61,7 +62,7 @@ public interface PostSessionBeanLocal {
 
     public void makePayment(Payment p, Long pId, Long userId) throws NoResultException;
 
-    public void createReview(Review rev, Long userId, Long partyId) throws NoResultException;
+    public void createReview(Review rev, Long userId, Long partyId) throws NoResultException, ReviewExistException;
 
     // Helper methods
     public User getUser(Long userId) throws NoResultException;

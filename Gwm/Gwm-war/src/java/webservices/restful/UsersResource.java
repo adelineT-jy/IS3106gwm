@@ -143,6 +143,21 @@ public class UsersResource {
             return Response.status(404).entity(exception).type(MediaType.APPLICATION_JSON).build();
         }
     }
+    
+    @GET
+    @Path("/{id}/cards")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getAllCards(@PathParam("id") Long uId) {
+        try {
+            List<User> results = userSessionLocal.getUserFollowers(uId);
+            GenericEntity<List<User>> entity = new GenericEntity<List<User>>(results) {
+            };
+            return Response.status(200).entity(entity).build();
+        } catch (Exception ex) {
+            JsonObject exception = Json.createObjectBuilder().add("error", "Not found").build();
+            return Response.status(404).entity(exception).type(MediaType.APPLICATION_JSON).build();
+        }
+    }
 
     @POST
     @Path("/{user_id}/cards")
@@ -150,6 +165,7 @@ public class UsersResource {
     @Produces(MediaType.APPLICATION_JSON)
     public User addCard(@PathParam("user_id") Long uId, Card c) {
         try {
+            System.out.println("add card");
             userSessionLocal.addCard(uId, c);
             User u = userSessionLocal.getUserById(uId);
             return u;
