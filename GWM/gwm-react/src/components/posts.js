@@ -80,14 +80,12 @@ export const Post = (post) => {
             requestOptions
         )
             .then((response) => {
-                if (response.ok) {
-                    return response.json();
-                } else {
-                    throw new Error("Request cannot be made");
+                handleClose();
+                if (!response.ok) {
+                    throw new Error(response.statusText);
                 }
             })
             .then(() => {
-                handleClose();
                 history.push("./requests");
             })
             .catch((error) => {

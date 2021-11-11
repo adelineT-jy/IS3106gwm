@@ -188,7 +188,13 @@ export const Party = (party) => {
             `http://localhost:8080/Gwm-war/webresources/party/${party.partyId}/user/${uId}/acceptRequest/${rId}`,
             { method: "PUT" }
         )
-            .then(() => party.setReload(party.reload + 1))
+            .then((response) => {
+                if (response.ok) {
+                party.setReload(party.reload + 1);
+                } else {
+                    throw new Error(response.statusText);
+                }
+            })
             .catch((error) => alert(error));
     };
 

@@ -11,6 +11,7 @@ import enumeration.RequestStatus;
 import error.AuthenticationException;
 import error.InsufficientFundsException;
 import error.NoResultException;
+import error.RequestExistException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
@@ -333,11 +334,15 @@ public class PostSessionBean implements PostSessionBeanLocal {
     }
 
     @Override
-    public void createRequest(Request r, Long pId, Long uId) throws NoResultException {
+    public void createRequest(Request r, Long pId, Long uId) throws NoResultException, RequestExistException {
         Post p = getPost(pId);
-
-        r.setStatus(RequestStatus.PENDING);
         User u = getUser(uId);
+        
+        if (u.getRequests().stream().anyMatch(x -> x.getPost().getPostId().equals(pId))) {
+            throw new RequestExistException("You have already made a request for this post");
+        }
+        
+        r.setStatus(RequestStatus.PENDING);
         r.setRequester(u);
         em.persist(r);
 

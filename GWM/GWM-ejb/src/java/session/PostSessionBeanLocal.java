@@ -9,6 +9,7 @@ import entity.User;
 import error.AuthenticationException;
 import error.InsufficientFundsException;
 import error.NoResultException;
+import error.RequestExistException;
 import java.util.List;
 import javax.ejb.Local;
 
@@ -52,7 +53,7 @@ public interface PostSessionBeanLocal {
 
     public void deletePost(Long pId, Long userId) throws NoResultException, AuthenticationException;
 
-    public void createRequest(Request r, Long pId, Long uId) throws NoResultException;
+    public void createRequest(Request r, Long pId, Long uId) throws NoResultException, RequestExistException;
 
     public Boolean checkRequestCreated(Long pId, Long uId) throws NoResultException;
 
