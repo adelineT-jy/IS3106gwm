@@ -62,7 +62,7 @@ public class PostSessionBean implements PostSessionBeanLocal {
     @Override
     public List<Post> searchPostsByUsername(String username) {
         Query q;
-        
+
         if (username != null) {
             q = em.createQuery("SELECT p FROM Post p INNER JOIN User u ON p.userId = u.userId WHERE LOWER(u.username) LIKE :username");
             q.setParameter("username", "%" + username.toLowerCase() + "%");
@@ -172,17 +172,16 @@ public class PostSessionBean implements PostSessionBeanLocal {
 
         party.getUsers().add(u);
         u.getParties().add(party);
-        
+
         try {
-        Post p = party.getPost();
-        p.setRequestQty(p.getRequestQty() - 1);
-        if (p.getRequestQty() == 0) {
-            p.setIsAvailable(false);
-        }
+            Post p = party.getPost();
+            p.setRequestQty(p.getRequestQty() - 1);
+            if (p.getRequestQty() == 0) {
+                p.setIsAvailable(false);
+            }
         } catch (NullPointerException ex) {
         }
     }
-        
 
     @Override
     public void acceptToParty(Long rId, Long partyId, Long userId) throws NoResultException, AuthenticationException, InsufficientFundsException { // userId is the one accepting, has to be party owner.
@@ -534,6 +533,10 @@ public class PostSessionBean implements PostSessionBeanLocal {
         Party party = getParty(partyId);
         if (!party.isHidden()) {
             party.setHidden(true);
+            try {
+                party.getPost().setHidden(true);
+            } catch (NullPointerException Ex) {
+            }
         } else {
             throw new NoResultException("Party is already hidden.");
         }
