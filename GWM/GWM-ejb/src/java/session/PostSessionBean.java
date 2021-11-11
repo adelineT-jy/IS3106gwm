@@ -531,6 +531,10 @@ public class PostSessionBean implements PostSessionBeanLocal {
         Party party = getParty(partyId);
         if (!party.isHidden()) {
             party.setHidden(true);
+            try {
+                party.getPost().setHidden(true);
+            } catch (NullPointerException Ex) {
+            }
         } else {
             throw new NoResultException("Party is already hidden.");
         }
