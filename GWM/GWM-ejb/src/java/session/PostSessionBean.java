@@ -190,7 +190,6 @@ public class PostSessionBean implements PostSessionBeanLocal {
             throw new AuthenticationException("User not authenticated to accept request.");
         }
 
-        System.out.println("SSS");
         Request r = getRequest(rId);
 
         BigDecimal price = r.getRequestPrice();
