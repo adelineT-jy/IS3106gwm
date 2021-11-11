@@ -34,7 +34,6 @@ export default function UserView(props) {
     useEffect(() => {
         fetch(`http://localhost:8080/Gwm-war/webresources/users/${uId}/`)
             .then((response) => response.json())
-            .then(e => {console.log(e); return e;})
             .then((tempUser) => setUser(tempUser))
             .catch((error) => alert(error));
     }, [uId]);

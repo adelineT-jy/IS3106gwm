@@ -44,7 +44,6 @@ const style = {
 
 //Profile Page
 export function Account() {
-    console.log("rendering");
     const uId = window.localStorage.user === undefined
         ? 0
         : JSON.parse(window.localStorage.user).userId;

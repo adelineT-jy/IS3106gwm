@@ -541,7 +541,7 @@ export default function Parties() {
                 handleClose();
                 setReload(reload + 1);
             })
-            .catch((error) => console.log(error));
+            .catch((error) => alert(error));
     };
 
     useEffect(() => {
@@ -572,7 +572,7 @@ export default function Parties() {
                 .then((data) => {
                     setParties(data.filter(filterMode));
                 })
-                .catch((error) => console.log(error));
+                .catch((error) => alert(error));
         }
     }, [reload, uId, mode]);
 
