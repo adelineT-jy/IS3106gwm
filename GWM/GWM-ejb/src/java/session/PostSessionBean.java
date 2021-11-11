@@ -64,7 +64,7 @@ public class PostSessionBean implements PostSessionBeanLocal {
         Query q;
 
         if (username != null) {
-            q = em.createQuery("SELECT p FROM Post p INNER JOIN User u ON p.username = u.username WHERE LOWER(u.username) LIKE :username");
+            q = em.createQuery("SELECT p FROM Post p INNER JOIN User u ON p.userId = u.userId WHERE LOWER(u.username) LIKE :username");
             q.setParameter("username", "%" + username.toLowerCase() + "%");
         } else {
             q = em.createQuery("SELECT p FROM Post p");
@@ -268,7 +268,7 @@ public class PostSessionBean implements PostSessionBeanLocal {
         p.setGame(game);
         p.setIsAvailable(true);
         p.setPostDate(new Date());
-        p.setUsername(user.getUsername());
+        p.setUserId(user.getUserId());
         p.setHidden(false);
 
         em.persist(p);
@@ -456,8 +456,8 @@ public class PostSessionBean implements PostSessionBeanLocal {
         try {
             return getPost(postId)
                     //.getUser()
-                    .getUsername()
-                    .equals(getUser(userId).getUsername());
+                    .getUserId()
+                    .equals(userId);
         } catch (NoResultException e) {
             return false;
         }

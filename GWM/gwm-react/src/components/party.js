@@ -29,18 +29,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 import { Post } from "./posts";
 import { Request } from "./requests";
-
-const modalStyle = {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    minWidth: 400,
-    boxShadow: 24,
-    bgcolor: "#ffffff",
-    padding: 4,
-    borderRadius: "3px",
-};
+import UserView, { modalStyle } from "./userView";
 
 const ExpandMore = styled((props) => {
     const { expand, ...other } = props;
@@ -60,7 +49,9 @@ const UserCard = (user) => {
                 <CardContent>
                     <Stack alignItems="center" spacing={1}>
                         <Avatar />
-                        <Typography variant="body1">{user.username}</Typography>
+                        <Typography variant="body1">
+                            <UserView uId={user.userId} />
+                        </Typography>
                         <Typography variant="body2">
                             User ID: {user.userId}
                         </Typography>
@@ -594,7 +585,13 @@ export default function Parties() {
                     md={3}
                     sx={{ alignItems: "left", justifyContent: "left" }}
                 >
-                    <Paper sx={{ height: "100%", minHeight: "80vh", padding: "4vh" }}>
+                    <Paper
+                        sx={{
+                            height: "100%",
+                            minHeight: "80vh",
+                            padding: "4vh",
+                        }}
+                    >
                         <Typography
                             variant="h6"
                             sx={{ paddingLeft: "1vh", paddingBottom: "2vh" }}
@@ -642,35 +639,41 @@ export default function Parties() {
                     </Paper>
                 </Grid>
                 <Grid item xs={8} md={9}>
-                    <Paper sx={{ height: "100%", minHeight: "80vh", padding: "4vh" }}>
-                    <Stack
-                        direction="row"
-                        spacing={2}
-                        justifyContent="left"
-                        sx={{ mb: 1 }}
+                    <Paper
+                        sx={{
+                            height: "100%",
+                            minHeight: "80vh",
+                            padding: "4vh",
+                        }}
                     >
-                        <Button
-                            variant="contained"
-                            color="success"
-                            onClick={handleOpen}
+                        <Stack
+                            direction="row"
+                            spacing={2}
+                            justifyContent="left"
+                            sx={{ mb: 1 }}
                         >
-                            Create Party
-                        </Button>
-                    </Stack>
-                    {parties.length === 0 ? (
-                        <Typography sx={{ mt: 2 }}>
-                            You have no {mode} parties
-                        </Typography>
-                    ) : (
-                        parties.map((party) => (
-                            <Party
-                                key={party.partyId}
-                                {...party}
-                                reload={reload}
-                                setReload={setReload}
-                            />
-                        ))
-                    )}
+                            <Button
+                                variant="contained"
+                                color="success"
+                                onClick={handleOpen}
+                            >
+                                Create Party
+                            </Button>
+                        </Stack>
+                        {parties.length === 0 ? (
+                            <Typography sx={{ mt: 2 }}>
+                                You have no {mode} parties
+                            </Typography>
+                        ) : (
+                            parties.map((party) => (
+                                <Party
+                                    key={party.partyId}
+                                    {...party}
+                                    reload={reload}
+                                    setReload={setReload}
+                                />
+                            ))
+                        )}
                     </Paper>
                 </Grid>
                 <Modal open={openModal} onClose={handleClose}>

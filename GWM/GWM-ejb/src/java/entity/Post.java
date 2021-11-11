@@ -53,7 +53,7 @@ public class Post implements Serializable {
     //Relationships
 //    @ManyToOne(fetch = FetchType.LAZY)
 //    private User user;
-    private String username;
+    private Long userId;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Payment payment;
@@ -149,12 +149,12 @@ public class Post implements Serializable {
 //    public void setUser(User user) {
 //        this.user = user;
 //    }
-    public String getUsername() {
-        return username;
+    public Long getUserId() {
+        return userId;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
     public Payment getPayment() {

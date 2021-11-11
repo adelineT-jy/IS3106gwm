@@ -21,17 +21,7 @@ import {
 } from "@mui/material";
 import { Check, Close, Search } from "@mui/icons-material";
 
-const modalStyle = {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    minWidth: 400,
-    boxShadow: 12,
-    bgcolor: "#eeeeee",
-    padding: 4,
-    borderRadius: "3px",
-};
+import UserView, { modalStyle } from "./userView";
 
 export const Post = (post) => {
     const uId =
@@ -100,7 +90,7 @@ export const Post = (post) => {
                 history.push("./requests");
             })
             .catch((error) => {
-                console.log(error);
+                alert(error);
             });
     }
 
@@ -167,7 +157,7 @@ export const Post = (post) => {
                         color="text.secondary"
                         gutterBottom
                     >
-                        Created by {post.username} on{" "}
+                        Created by <UserView uId={post.userId} /> on{" "}
                         {post.postDate.slice(0, 10)} at{" "}
                         {post.postDate.slice(11, 16)}
                     </Typography>
@@ -229,26 +219,20 @@ export default function Posts(props) {
     };
 
     useEffect(() => {
-        console.log(query);
-        const queryPath = mode === 0 ? `query?query=${query}` : `searchPost?username=${query}`
-        try {
-            fetch(
-                `http://localhost:8080/Gwm-war/webresources/posts/${queryPath}`
-            )
-                .then((response) => {
-                    if (response.ok) {
-                        return response.json();
-                    } else {
-                        throw new Error("Something went wrong");
-                    }
-                })
-                .then((data) => {
-                    console.log(data);
-                    setPosts(data.filter((post) => !post.hidden));
-                });
-        } catch (e) {
-            alert(e);
-        }
+        const queryPath =
+            mode === 0
+                ? `query?query=${query}`
+                : `searchPost?username=${query}`;
+        fetch(`http://localhost:8080/Gwm-war/webresources/posts/${queryPath}`)
+            .then((response) => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error("Something went wrong");
+                }
+            })
+            .then((data) => setPosts(data.filter((post) => !post.hidden)))
+            .catch((error) => alert(error));
     }, [reload, query, mode]);
 
     const handleKeyDown = (event) => {
@@ -264,8 +248,19 @@ export default function Posts(props) {
     return (
         <Box sx={{ bgcolor: "#e3f2fd", minHeight: "80vh", p: 1 }}>
             <Grid container spacing={3} sx={{ m: 0, width: "100%" }}>
-                <Grid item xs={4} md={3} sx={{ alignItems: "left", justifyContent: "left"}}>
-                    <Paper sx={{ height: "100%", minHeight: "80vh", padding: "4vh" }}>
+                <Grid
+                    item
+                    xs={4}
+                    md={3}
+                    sx={{ alignItems: "left", justifyContent: "left" }}
+                >
+                    <Paper
+                        sx={{
+                            height: "100%",
+                            minHeight: "80vh",
+                            padding: "4vh",
+                        }}
+                    >
                         <Typography
                             variant="h6"
                             sx={{ paddingLeft: "1vh", paddingBottom: "2vh" }}
