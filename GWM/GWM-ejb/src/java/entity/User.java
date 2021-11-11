@@ -33,6 +33,7 @@ public class User implements Serializable {
     @Column(length = 32, nullable = false, unique = true)
     private String username;
 
+    @JsonbTransient
     @Column(length = 32, nullable = false)
     private String password;
     

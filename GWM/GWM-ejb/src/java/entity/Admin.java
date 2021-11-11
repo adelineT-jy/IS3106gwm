@@ -1,6 +1,7 @@
 package entity;
 
 import java.io.Serializable;
+import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -18,6 +19,7 @@ public class Admin implements Serializable {
     @Column(length = 32, nullable = false, unique = true)
     private String email;
 
+    @JsonbTransient
     @Column(length = 32, nullable = false)
     private String password;
 
