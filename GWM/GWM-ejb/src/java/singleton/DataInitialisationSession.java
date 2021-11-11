@@ -6,6 +6,7 @@
 package singleton;
 
 import entity.Admin;
+import entity.Card;
 import entity.Chat;
 import entity.Experience;
 import entity.Game;
@@ -95,6 +96,12 @@ public class DataInitialisationSession {
             u.addExperience(e4);
             Experience e5 = new Experience(g2, "Pro", "link3.com");
             u.addExperience(e5);
+            Card c = new Card();
+            c.setCardNum("4411 1111 9411 4781");
+            c.setCvv("333");
+            c.setExpDate("22/11");
+            c.setName("Game With Me");
+            u.addCard(c);
             userSessionLocal.createUser(u);
 
             User u2 = new User();

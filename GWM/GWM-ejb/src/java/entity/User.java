@@ -62,7 +62,7 @@ public class User implements Serializable {
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH} )
     private List<Experience> experiences;
 
-    @OneToMany
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH})
     private List<Card> cards;
 
     @JsonbTransient
