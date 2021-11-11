@@ -8,6 +8,7 @@ package webservices.restful;
 import entity.Post;
 import entity.Request;
 import error.NoResultException;
+import error.RequestExistException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -131,13 +132,16 @@ public class PostResources {
     @Path("/{postId}/request/{uid}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Post createRequest(@PathParam("uid") Long uid, @PathParam("postId") Long pId, Request r) {
+    public Response createRequest(@PathParam("uid") Long uid, @PathParam("postId") Long pId, Request r) {
         try {
             postSessionBeanLocal.createRequest(r, pId, uid);
-            return postSessionBeanLocal.getPost(pId);
-        } catch (NoResultException ex) {
-            Logger.getLogger(PostResources.class.getName()).log(Level.SEVERE, null, ex);
-            return null;
+            return Response.status(201).build();
+        } catch (RequestExistException ex) {
+            JsonObject exception = Json.createObjectBuilder().add("error", ex.getMessage()).build();
+            return Response.status(404, ex.getMessage()).entity(exception).type(MediaType.APPLICATION_JSON).build();
+        } catch (NoResultException ex2) {
+            JsonObject exception = Json.createObjectBuilder().add("error", ex2.getMessage()).build();
+            return Response.status(404).entity(exception).type(MediaType.APPLICATION_JSON).build();
         }
     }
 

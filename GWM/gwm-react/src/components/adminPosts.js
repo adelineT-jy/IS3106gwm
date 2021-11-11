@@ -1,8 +1,7 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { Box, Button, IconButton, TextField, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TablePagination, TableSortLabel, Paper } from '@mui/material';
+import { Box, Button, TextField, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TablePagination, TableSortLabel, Paper } from '@mui/material';
 import { visuallyHidden } from '@mui/utils';
-import { Search } from '@mui/icons-material';
 
 export default function AdminPosts() {
     const [reload, setReload] = React.useState(0);
@@ -25,7 +24,7 @@ export default function AdminPosts() {
             .then((data) => {
                 setPosts(data);
             });
-    }, [reload]);
+    }, [reload, query]);
 
     const handleSubmit = () => {
         setReload(reload + 1);
@@ -147,12 +146,6 @@ export default function AdminPosts() {
         orderBy: PropTypes.string.isRequired,
     };
 
-    const handleKeyDown = (event) => {
-        if (event.key === 'Enter' || query.length === 0) {
-            handleSubmit();
-        }
-    }
-
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
         setOrder(isAsc ? 'desc' : 'asc');
@@ -167,8 +160,6 @@ export default function AdminPosts() {
         setRowsPerPage(parseInt(event.target.value, 10));
         setPage(0);
     };
-
-    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - posts.length) : 0;
 
     function HideUnhide(props) {
         const { postId, hidden } = props.post
@@ -230,16 +221,13 @@ export default function AdminPosts() {
     }
 
     return (
-        <Box sx={{ minHeight: '80vh' }}>
+        <Box sx={{ minHeight: '81vh' }}>
             <div className="container">
                 <div style={{ display: 'flex', justifyContent: 'center' }}>
                     <h1>Post Manager</h1>
                 </div>
-                <TextField id="outlined-basic" placeholder="Search Username" variant="filled" value={query}
-                    onChange={(e) => setQuery(e.target.value)} onKeyDown={handleKeyDown} sx={{ minWidth: '95%' }} />
-                <IconButton color='default' component="span" onClick={handleSubmit} sx={{ height: '60px', width: '60px' }}>
-                    <Search />
-                </IconButton>
+                <TextField id="outlined-basic" placeholder="Search Title / Description" variant="filled" value={query}
+                    onChange={(e) => setQuery(e.target.value)} sx={{ minWidth: '100%' }} margin='normal' autoFocus />
                 <Paper sx={{ width: '100%', mb: 2 }}>
                     <TableContainer>
                         <Table sx={{ minWidth: 650 }} size="small">
@@ -254,16 +242,8 @@ export default function AdminPosts() {
                                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                     .map((post) => {
                                         return (
-                                            <TableRow
-                                                hover
-                                                key={post.postId}
-                                            >
-                                                <TableCell
-                                                    component="th"
-                                                    scope="row"
-                                                >
-                                                    {post.postId}
-                                                </TableCell>
+                                            <TableRow hover key={post.postId}>
+                                                <TableCell component="th" scope="row">{post.postId}</TableCell>
                                                 <TableCell align="right">{post.game.gameName}</TableCell>
                                                 <TableCell align="right">{post.userId}</TableCell>
                                                 <TableCell align="right">{post.title}</TableCell>
@@ -275,11 +255,6 @@ export default function AdminPosts() {
                                             </TableRow>
                                         );
                                     })}
-                                {emptyRows > 0 && (
-                                    <TableRow style={{ height: 53 * emptyRows, }}>
-                                        <TableCell colSpan={10} />
-                                    </TableRow>
-                                )}
                             </TableBody>
                         </Table>
                     </TableContainer>

@@ -6,6 +6,7 @@
 package singleton;
 
 import entity.Admin;
+import entity.Card;
 import entity.Chat;
 import entity.ChatMessage;
 import entity.Experience;
@@ -82,6 +83,7 @@ public class DataInitialisationSession {
             g3.setGameDescription("Every day, millions of players worldwide enter battle as one of over a hundred Dota heroes. And no matter if it's their 10th hour of play or 1,000th, there's always something new to discover.");
             g3.setGameDownloadLink("https://store.steampowered.com/app/570/Dota_2/");
             adminSessionLocal.createGame(g3);
+            
 
             User u = new User();
             u.setEmail("first@gmail.com");
@@ -89,6 +91,18 @@ public class DataInitialisationSession {
             u.setPassword("password");
             u.setGender((byte) 0);
             u.setDob(new Date());
+            Experience e3 = new Experience(g3, "Level 100", "link2.com");
+            u.addExperience(e3);
+            Experience e4 = new Experience(g1, "Platinum", "link2.com");
+            u.addExperience(e4);
+            Experience e5 = new Experience(g2, "Pro", "link3.com");
+            u.addExperience(e5);
+            Card c = new Card();
+            c.setCardNum("4411 1111 9411 4781");
+            c.setCvv("333");
+            c.setExpDate("22/11");
+            c.setName("Game With Me");
+            u.addCard(c);
             userSessionLocal.createUser(u);
 
             User u2 = new User();
@@ -304,62 +318,80 @@ public class DataInitialisationSession {
             u31.setPassword("password");
             u31.setGender((byte) 1);
             userSessionLocal.createUser(u31);
+            
+            User badUser = new User();
+            badUser.setEmail("Naughty@gmail.com");
+            badUser.setUsername("NaughtyUser");
+            badUser.setPassword("password");
+            badUser.setGender((byte) 1);
+            userSessionLocal.createUser(badUser);
+
 
             Party p = new Party();
-            p.setInviteLink("xxxLOLshhaicnru.djannic.lol");
+            p.setInviteLink("https://discord.gg/WnD7mCpw");
             p.setPartyStartTime(new Date());
             postSessionBeanLocal.createParty(p, 1L);
 
             Party p1 = new Party();
-            p1.setInviteLink("inviteLink1");
+            p1.setInviteLink("https://discord.gg/WnD7mCpw");
             p1.setPartyStartTime(new Date());
             postSessionBeanLocal.createParty(p1, 3L);
 
             Party p2 = new Party();
-            p2.setInviteLink("inviteLink2");
+            p2.setInviteLink("https://discord.gg/WnD7mCpw");
             p2.setPartyStartTime(new Date());
             postSessionBeanLocal.createParty(p2, 5L);
 
             Party p3 = new Party();
-            p3.setInviteLink("inviteLink3");
+            p3.setInviteLink("https://discord.gg/WnD7mCpw");
             p3.setPartyStartTime(new Date());
             postSessionBeanLocal.createParty(p3, 7L);
 
             Party p4 = new Party();
-            p4.setInviteLink("inviteLink4");
+            p4.setInviteLink("https://discord.gg/WnD7mCpw");
             p4.setPartyStartTime(new Date());
             postSessionBeanLocal.createParty(p4, 9L);
 
             Party p5 = new Party();
-            p5.setInviteLink("inviteLink5");
+            p5.setInviteLink("https://discord.gg/WnD7mCpw");
             p5.setPartyStartTime(new Date());
             postSessionBeanLocal.createParty(p5, 11L);
 
             Party p6 = new Party();
-            p6.setInviteLink("inviteLink6");
+            p6.setInviteLink("https://discord.gg/WnD7mCpw");
             p6.setPartyStartTime(new SimpleDateFormat("yyyy-MM-dd").parse("2021-11-9"));
             p6.setPartyEndTime(new SimpleDateFormat("yyyy-MM-dd").parse("2021-11-11"));
             postSessionBeanLocal.createParty(p6, 13L);
 
             Party p7 = new Party();
-            p7.setInviteLink("inviteLink7");
+            p7.setInviteLink("https://discord.gg/WnD7mCpw");
             p7.setPartyStartTime(new Date());
             postSessionBeanLocal.createParty(p7, 15L);
 
             Party p8 = new Party();
-            p8.setInviteLink("inviteLink8");
+            p8.setInviteLink("https://discord.gg/WnD7mCpw");
             p8.setPartyStartTime(new Date());
             postSessionBeanLocal.createParty(p8, 17L);
 
             Party p9 = new Party();
-            p9.setInviteLink("inviteLink9");
+            p9.setInviteLink("https://discord.gg/WnD7mCpw");
             p9.setPartyStartTime(new Date());
             postSessionBeanLocal.createParty(p9, 19L);
 
             Party p10 = new Party();
-            p10.setInviteLink("inviteLink10");
+            p10.setInviteLink("https://discord.gg/WnD7mCpw");
             p10.setPartyStartTime(new Date());
             postSessionBeanLocal.createParty(p10, 21L);
+            
+            Party p11 = new Party();
+            p11.setInviteLink("inviteLink110");
+            p11.setPartyStartTime(new Date());
+            postSessionBeanLocal.createParty(p11, 23L);
+            
+            Party badParty = new Party();
+            badParty.setInviteLink("badLink");
+            badParty.setPartyStartTime(new Date());
+            postSessionBeanLocal.createParty(badParty, 32L);
 
             postSessionBeanLocal.joinParty(1L, 2L);
             postSessionBeanLocal.joinParty(1L, 3L);
@@ -420,10 +452,10 @@ public class DataInitialisationSession {
             r4.setRating(1);
             r4.setNote("Throw game, report this party lmao");
 
-            postSessionBeanLocal.createReview(r1, 25L, 13L, 7L);
-            postSessionBeanLocal.createReview(r2, 26L, 13L, 7L);
-            postSessionBeanLocal.createReview(r3, 27L, 13L, 7L);
-            postSessionBeanLocal.createReview(r4, 28L, 13L, 7L);
+            postSessionBeanLocal.createReview(r1, 25L, 7L);
+            postSessionBeanLocal.createReview(r2, 26L, 7L);
+            postSessionBeanLocal.createReview(r3, 27L, 7L);
+            postSessionBeanLocal.createReview(r4, 28L, 7L);
 
             Post o1 = new Post();
             o1.setTitle("Bringing your LOL rank up to the max");
@@ -472,6 +504,22 @@ public class DataInitialisationSession {
             o6.setRequestPrice(BigDecimal.valueOf(50));
             o6.setGame(g2);
             postSessionBeanLocal.createPost(o6, 4L, 7L, 2L);
+            
+            Post o7 = new Post();
+            o7.setTitle("Hello everyone!");
+            o7.setDescription("Testing testing");
+            o7.setRequestQty(1);
+            o7.setRequestPrice(BigDecimal.valueOf(0));
+            o7.setGame(g1);
+            postSessionBeanLocal.createPost(o7, 12L, 23L, 1L);
+            
+            Post badPost = new Post();
+            badPost.setTitle("Accepting Bets");
+            badPost.setDescription("Random 1v1 game, odds 1:1, no gimmicks, Paypal fast cash, no scams");
+            badPost.setRequestQty(100);
+            badPost.setRequestPrice(BigDecimal.valueOf(10));
+            badPost.setGame(g2);
+            postSessionBeanLocal.createPost(badPost, 13L, 32L, 2L);
 
             Chat c1 = new Chat();
             c1.setName("party p1");

@@ -43,7 +43,7 @@ export default function Chat() {
     if (uId > 0) {
       fetch(`http://localhost:8080/Gwm-war/webresources/chats/${uId}`)
         .then((response) => response.json())
-        .then((data) => setDataChat(data))
+        .then((data) => {setDataChat(data); console.log(data)})
         .catch((error) => console.log(error));
     }
   }, [reload, uId]);

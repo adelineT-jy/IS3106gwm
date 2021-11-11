@@ -11,6 +11,7 @@ import enumeration.RequestStatus;
 import error.AuthenticationException;
 import error.InsufficientFundsException;
 import error.NoResultException;
+import error.RequestExistException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
@@ -62,7 +63,7 @@ public class PostSessionBean implements PostSessionBeanLocal {
     @Override
     public List<Post> searchPostsByUsername(String username) {
         Query q;
-        
+
         if (username != null) {
             q = em.createQuery("SELECT p FROM Post p INNER JOIN User u ON p.userId = u.userId WHERE LOWER(u.username) LIKE :username");
             q.setParameter("username", "%" + username.toLowerCase() + "%");
@@ -172,17 +173,16 @@ public class PostSessionBean implements PostSessionBeanLocal {
 
         party.getUsers().add(u);
         u.getParties().add(party);
-        
+
         try {
-        Post p = party.getPost();
-        p.setRequestQty(p.getRequestQty() - 1);
-        if (p.getRequestQty() == 0) {
-            p.setIsAvailable(false);
-        }
+            Post p = party.getPost();
+            p.setRequestQty(p.getRequestQty() - 1);
+            if (p.getRequestQty() == 0) {
+                p.setIsAvailable(false);
+            }
         } catch (NullPointerException ex) {
         }
     }
-        
 
     @Override
     public void acceptToParty(Long rId, Long partyId, Long userId) throws NoResultException, AuthenticationException, InsufficientFundsException { // userId is the one accepting, has to be party owner.
@@ -191,7 +191,6 @@ public class PostSessionBean implements PostSessionBeanLocal {
             throw new AuthenticationException("User not authenticated to accept request.");
         }
 
-        System.out.println("SSS");
         Request r = getRequest(rId);
 
         BigDecimal price = r.getRequestPrice();
@@ -335,11 +334,15 @@ public class PostSessionBean implements PostSessionBeanLocal {
     }
 
     @Override
-    public void createRequest(Request r, Long pId, Long uId) throws NoResultException {
+    public void createRequest(Request r, Long pId, Long uId) throws NoResultException, RequestExistException {
         Post p = getPost(pId);
-
-        r.setStatus(RequestStatus.PENDING);
         User u = getUser(uId);
+        
+        if (u.getRequests().stream().anyMatch(x -> x.getPost().getPostId().equals(pId))) {
+            throw new RequestExistException("You have already made a request for this post");
+        }
+        
+        r.setStatus(RequestStatus.PENDING);
         r.setRequester(u);
         em.persist(r);
 
@@ -389,7 +392,7 @@ public class PostSessionBean implements PostSessionBeanLocal {
     }
 
     @Override
-    public void createReview(Review rev, Long userId, Long forUserId, Long partyId) throws NoResultException {
+    public void createReview(Review rev, Long userId, Long partyId) throws NoResultException {
         rev.setUserId(userId);
         Party p = getParty(partyId);
         if (!checkPartyUser(partyId, userId)) {
@@ -397,8 +400,6 @@ public class PostSessionBean implements PostSessionBeanLocal {
         }
         em.persist(rev);
         p.getReviews().add(rev);
-        User forUser = userSessionLocal.getUserById(forUserId);
-        forUser.getReviews().add(rev);
         em.flush();
     }
 
@@ -534,6 +535,10 @@ public class PostSessionBean implements PostSessionBeanLocal {
         Party party = getParty(partyId);
         if (!party.isHidden()) {
             party.setHidden(true);
+            try {
+                party.getPost().setHidden(true);
+            } catch (NullPointerException Ex) {
+            }
         } else {
             throw new NoResultException("Party is already hidden.");
         }

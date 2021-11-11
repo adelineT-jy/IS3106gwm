@@ -9,6 +9,7 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import error.NoResultException;
+import javax.persistence.NonUniqueResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
@@ -36,17 +37,21 @@ public class AdminSession implements AdminSessionLocal {
         Query q = em.createQuery("SELECT a FROM Admin a WHERE a.email = :email");
         q.setParameter("email", email);
 
-        Admin admin = (Admin) q.getSingleResult();
-        return admin;
+        try {
+            Admin admin = (Admin) q.getSingleResult();
+            return admin;
+        } catch (javax.persistence.NoResultException | NonUniqueResultException ex) {
+            throw new NoResultException("Email does not exist");
+        }
     }
 
     @Override
-    public Long loginAdmin(String email, String password) throws InvalidLoginException {
+    public Admin loginAdmin(String email, String password) throws InvalidLoginException {
         try {
             Admin admin = getAdminByEmail(email);
 
             if (admin.getPassword().equals(password)) {
-                return admin.getUserId();
+                return admin;
             } else {
                 throw new InvalidLoginException("Login details are invalid.");
             }
@@ -112,7 +117,7 @@ public class AdminSession implements AdminSessionLocal {
             return game;
         }
     }
-    
+
     @Override
     public List<Game> searchGame(String name) throws NoResultException {
         Query q;
@@ -137,7 +142,7 @@ public class AdminSession implements AdminSessionLocal {
 
         em.merge(oldGame);
     }
-    
+
     @Override
     public void hideGame(Long gameId) throws NoResultException {
         Game game = getGame(gameId);
@@ -147,7 +152,7 @@ public class AdminSession implements AdminSessionLocal {
             throw new NoResultException("Game is already hidden.");
         }
     }
-    
+
     @Override
     public void unhideGame(Long gameId) throws NoResultException {
         Game game = getGame(gameId);

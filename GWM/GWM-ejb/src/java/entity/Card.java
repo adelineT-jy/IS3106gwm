@@ -15,7 +15,7 @@ public class Card implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long cardId;
 
-    @Column(length = 16, nullable = false)
+    @Column(length = 19, nullable = false)
     private String cardNum;
     
     @Column(length = 5, nullable = false)

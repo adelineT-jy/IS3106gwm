@@ -126,41 +126,58 @@ public class UserSession implements UserSessionLocal {
         //should check if there is any ongoing transactions before deleting
         u.getCards().remove(em.find(Card.class, cardId));
     }
+    
+    @Override
+    public List<Experience> getUserExperiences(Long userId)throws NoResultException {
+        User u  = getUserById(userId);
+        if (u != null) {
+            return u.getExperiences();
+        } else {
+            throw new NoResultException("No Exceperiences");
+        }
+    }
 
     @Override
     public void addExperience(Long userId, Experience exp, Long gameId) throws NoResultException, ExperienceExistException {
         User u = getUserById(userId);
         Game game = em.find(Game.class, gameId);
-
+//        System.out.println("game found");
+//        System.out.println("Adding for" + gameId);
+//        System.out.println("Adding for" + game.getGameName());
         if (game != null) {
             //check if game experience has already been added
-            Query q = em.createQuery("SELECT DISTINCT u FROM User u WHERE u.userId = :userId AND u.experiences.game.gameId = :gameId");
+            Query q = em.createQuery("SELECT DISTINCT exp FROM User u, IN (u.experiences) exp WHERE u.userId = :userId AND exp.game.gameId = :gameId");
             q.setParameter("userId", userId);
             q.setParameter("gameId", gameId);
-            try {
-                q.getSingleResult();
-
+            List<Experience> test = (List<Experience>) q.getResultList();
+            if (test.size() > 0) {
+//                System.out.println(test.get(0).getExperienceId());
+//                System.out.println("exp found");
+                throw new ExperienceExistException("Experience for game exists already");
+            } else {
                 exp.setGame(game);
                 em.persist(exp);
                 u.addExperience(exp);
-            } catch (Exception e) {
-                throw new ExperienceExistException("Experience for game exists already");
+//                System.out.println("exp not found");
+                em.flush();
             }
         } else {
             throw new NoResultException("Game cannot be found");
         }
 
     }
+    
+    @Override
+    public List<Game> getAllGames() throws NoResultException {
+        Query q;
+            q = em.createQuery("SELECT g from Game g WHERE !isHidden ORDER BY g.gameId");
+
+        return q.getResultList();
+    }
 
     @Override
-    public void updateExperience(Experience exp, Long gameId) throws NoResultException {
+    public void updateExperience(Experience exp) throws NoResultException {
         Experience oldExp = em.find(Experience.class, exp.getExperienceId());
-
-        if (gameId != oldExp.getGame().getGameId() && gameId != null) {
-            Game updatedGame = em.find(Game.class, gameId);
-            oldExp.setGame(updatedGame);
-        }
-
         oldExp.setProfileLink(exp.getProfileLink());
         oldExp.setRanking(exp.getRanking());
     }
@@ -171,6 +188,7 @@ public class UserSession implements UserSessionLocal {
         Experience exp = em.find(Experience.class, expId);
         if (exp != null) {
             u.getExperiences().remove(exp);
+            em.flush();
         } else {
             throw new NoResultException("Experience cannot be deleted");
         }
