@@ -1,9 +1,11 @@
 import React, {useState, useEffect} from "react"; 
-import {Box, IconButton, Card, Grid, Paper, Typography, TextField, FormControl, InputLabel, Select, MenuItem, Button, Tabs, Tab, CardContent, CardHeader} from "@mui/material";
+import {Box, IconButton, Card, Collapse, Grid, Paper, Typography, TextField, FormControl, InputLabel, Select, MenuItem, Button, Tabs, Tab, CardContent, CardHeader, CardActions} from "@mui/material";
 import {Switch, Route, useRouteMatch, Link} from "react-router-dom";
+import { styled } from '@mui/material/styles';
 import {DatePicker} from "@mui/lab";
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import CreditCardIcon from '@mui/icons-material/CreditCard';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import DeleteIcon from '@mui/icons-material/Delete';
 import moment from "moment";
 
@@ -22,7 +24,7 @@ export default function Settings() {
     };
 
     return (
-        <Box display="flex" justifyContent="center" sx={{ height: "100vh", padding: "5vh" }}>
+        <Box display="flex" justifyContent="center" sx={{ height: "200vh", padding: "5vh" }}>
             <Grid container spacing={1}>
                 <Grid item xs={12}>
                     <Grid container spacing={2}>
@@ -52,11 +54,23 @@ export default function Settings() {
     );
 }
 
+const ExpandMore = styled((props) => {
+    const { expand, ...other } = props;
+    return <IconButton {...other} />;
+  })(({ theme, expand }) => ({
+    transform: !expand ? 'rotate(0deg)' : 'rotate(180deg)',
+    marginLeft: 'auto',
+    transition: theme.transitions.create('transform', {
+      duration: theme.transitions.duration.shortest,
+    }),
+  }));
+
 export function CardSettings() {
     const [user, setUser] = useState([]);
     const [balance, setBalance] = useState("");
     const [reloadWallet, reloadCard] = useState("");
     const [cards, setCards] = useState([]);
+    const [expanded, setExpanded] = useState(false);
 
     const uId =
       window.localStorage.user === undefined
@@ -78,12 +92,13 @@ export function CardSettings() {
 
     }, [reloadWallet]);
 
-    
-
-
+    //card expand more
+    const handleExpandClick = () => {
+        setExpanded(!expanded);
+      };
 
     return (
-        <Paper sx={{height: "95vh", padding: "5vh"}}>
+        <Paper sx={{height: "150vh", padding: "5vh"}}>
             <Typography variant="h6" sx={{ paddingLeft: "1vh", paddingBottom: "2vh" }}>
                 Finance
             </Typography>
@@ -131,8 +146,8 @@ export function CardSettings() {
                 {cards.map((card) => (
                     <>
                     <Grid item xs={12}>
-                        <Card sx={{width: "54vh", height: "30vh", padding: "3vh", paddingTop:"2vh", backgroundColor: "#2c2e2d"}}>
-                            <CardContent variant="outlined" >
+                        <Card sx={{width: "52vh", padding: "2vh", paddingTop:"2vh", backgroundColor: "#2c2e2d"}}>
+                            <CardContent variant="outlined" sx={{paddingBottom:"0"}}>
                                 <Grid container spacing={1.2}>
                                     <Grid item xs={8} md={8}>
                                         <CreditCardIcon fontSize="large" sx={{color:"white"}}/>
@@ -142,8 +157,7 @@ export function CardSettings() {
                                             <DeleteIcon fontSize="small" sx={{color: "#a1a6a2"}}/>
                                         </IconButton>
                                     </Grid>
-                                    <br/>
-                                    <br/>
+                                    
                                     <Grid item xs={12} md={12}>
                                         <Typography variant="body1" sx={{fontWeight: "500", color: "white"}}>
                                             {card.cardNum}
@@ -161,43 +175,26 @@ export function CardSettings() {
                                     </Grid>
                                 </Grid>
                             </CardContent>
+                            <CardActions sx={{paddingTop: "0vh"}}>
+                                <ExpandMore expand={expanded}
+                                            onClick={handleExpandClick}
+                                            aria-expanded={expanded}
+                                            aria-label="show more">
+                                    <ExpandMoreIcon size="large" sx={{color: "#fff"}}/>
+                                </ExpandMore>
+                            </CardActions>
+                            <Collapse in={expanded} timeout="auto" unmountOnExit>
+                                <CardContent sx={{padding: "1vh", paddingLeft: "2vh", paddingTop: "0vh"}}>
+                                    <Typography sx={{color: "#fff", fontWeight: "400"}}>
+                                        <b>Cvv:</b> {card.cvv} &nbsp; &nbsp; <b>Exp:</b> {card.expDate}
+                                    </Typography>
+                                   
+                                </CardContent>
+                            </Collapse>
                         </Card>
                     </Grid>
                     </>
                 ))}
-                {/* <Grid item xs={12}>
-                    <Card sx={{width: "54vh", height: "30vh", padding: "3vh", paddingTop:"2vh", backgroundColor: "#2c2e2d"}}>
-                        <CardContent variant="outlined" >
-                            <Grid container spacing={1.2}>
-                                <Grid item xs={8} md={8}>
-                                    <CreditCardIcon fontSize="large" sx={{color:"white"}}/>
-                                </Grid>
-                                <Grid item xs={4} md={4} >
-                                    <IconButton aria-label="delete" size="large" sx={{float: "right", paddingTop: "0vh", paddingRight: "0vh"}}>
-                                        <DeleteIcon fontSize="small" sx={{color: "#a1a6a2"}}/>
-                                    </IconButton>
-                                </Grid>
-                                <br/>
-                                <br/>
-                                <Grid item xs={12} md={12}>
-                                    <Typography variant="body1" sx={{fontWeight: "500", color: "white"}}>
-                                        xxxx xxxx xxxx 4781
-                                    </Typography>
-                                </Grid>
-                                <br/>
-                                <br/>
-                                <Grid item xs={8} md={8}>
-                                    <Typography variant="body1" sx={{fontWeight: "400", color: "white"}}>
-                                        Name name name name
-                                    </Typography>
-                                </Grid>
-                                <Grid item xs={4} md={4}>
-                                   <img src={MasterCard}  width="50" style={{float: "right"}}/>
-                                </Grid>
-                            </Grid>
-                        </CardContent>
-                    </Card>
-                </Grid>*/}
             </Grid> 
 
              
