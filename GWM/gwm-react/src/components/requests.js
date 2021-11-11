@@ -79,6 +79,7 @@ export default function Requests() {
     }, [reload, uId, mode]);
 
     const deleteRequest = (rId) => {
+        if (!window.confirm('Are you sure you want to delete this request?')) return;
         const requestOptions = {
             method: "DELETE",
         };

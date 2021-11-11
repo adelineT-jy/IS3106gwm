@@ -143,6 +143,7 @@ export const Party = (party) => {
     };
 
     const savePost = () => {
+        if (!window.confirm('Are you sure you want to save this post?')) return;
         const post = {
             title: title,
             userId: uId,
@@ -169,6 +170,7 @@ export const Party = (party) => {
     };
 
     const deletePost = () => {
+        if (!window.confirm('Are you sure you want to delete this post?')) return;
         fetch(
             `http://localhost:8080/Gwm-war/webresources/party/${party.partyId}/post/${party.post.postId}/deleteBy/${uId}`,
             { method: "DELETE" }
@@ -181,6 +183,7 @@ export const Party = (party) => {
     };
 
     const acceptRequest = (rId) => {
+        if (!window.confirm('Are you sure you want to accept this request?')) return;
         fetch(
             `http://localhost:8080/Gwm-war/webresources/party/${party.partyId}/user/${uId}/acceptRequest/${rId}`,
             { method: "PUT" }
@@ -190,6 +193,7 @@ export const Party = (party) => {
     };
 
     const rejectRequest = (rId) => {
+        if (!window.confirm('Are you sure you want to reject this request?')) return;
         fetch(
             `http://localhost:8080/Gwm-war/webresources/party/${party.partyId}/user/${uId}/rejectRequest/${rId}`,
             { method: "PUT" }
@@ -199,6 +203,7 @@ export const Party = (party) => {
     };
 
     const endParty = () => {
+        if (!window.confirm('Are you sure you want to end this party?')) return;
         fetch(
             `http://localhost:8080/Gwm-war/webresources/party/${party.partyId}/user/${uId}/end`,
             { method: "PUT" }
@@ -208,6 +213,7 @@ export const Party = (party) => {
     };
 
     const deleteParty = () => {
+        if (!window.confirm('Are you sure you want to delete this party?')) return;
         fetch(
             `http://localhost:8080/Gwm-war/webresources/party/${party.partyId}/user/${uId}/delete`,
             { method: "DELETE" }
@@ -316,13 +322,7 @@ export const Party = (party) => {
                             startAdornment: (
                                 <InputAdornment position="start">
                                     You will{" "}
-                                    {requestSign >= 0 ? "earn" : "offer"}
-                                </InputAdornment>
-                            ),
-                            endAdornment: (
-                                <InputAdornment position="start">
-                                    {" "}
-                                    Gratitude
+                                    {requestSign >= 0 ? "earn $ " : "offer $ "}
                                 </InputAdornment>
                             ),
                         }}
@@ -554,6 +554,7 @@ export default function Parties() {
     const handleClose = () => setOpenModal(false);
 
     const createParty = () => {
+        if (!window.confirm('Are you sure you want to create this party?')) return;
         const requestOptions = {
             crossDomain: true,
             method: "POST",
@@ -707,7 +708,7 @@ export default function Parties() {
                 <Modal open={openModal} onClose={handleClose}>
                     <Box sx={modalStyle} centered>
                         <Typography variant="h6">
-                            Are you sure you want to create a party?
+                            Create a party and add your party invite link here.
                         </Typography>
                         <TextField
                             sx={{ width: "100%", mt: 1 }}

@@ -150,9 +150,6 @@ function AdminMenu() {
     return (
         <Toolbar>
             <Logo />
-            <Typography id="title" sx={{ flexGrow: 1 }}>
-                Game With Me
-            </Typography>
             <AdminTabs />
             <Typography
                 variant="h6"
