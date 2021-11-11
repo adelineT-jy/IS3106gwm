@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
     Switch,
     Route,
@@ -13,7 +13,6 @@ import {
     Box,
     Button,
     IconButton,
-    Stack,
     Tab,
     Tabs,
     Toolbar,
@@ -51,6 +50,7 @@ export function NavTabs() {
         "/account",
         "/",
     ]);
+
     const currentTab = routeMatch?.path;
 
     return (
@@ -150,9 +150,6 @@ function AdminMenu() {
     return (
         <Toolbar>
             <Logo />
-            <Typography id="title" sx={{ flexGrow: 1 }}>
-                Game With Me
-            </Typography>
             <AdminTabs />
             <Typography
                 variant="h6"
@@ -166,7 +163,7 @@ function AdminMenu() {
                     JSON.parse(window.localStorage.admin).userId}
                 ) &nbsp;
             </Typography>
-            <Button variant="text" href="/logout">
+            <Button variant="text" href="/logout" startIcon={<Logout/>}>
                 Sign out
             </Button>
         </Toolbar>
@@ -194,7 +191,7 @@ function UserMenu() {
                 {window.localStorage.user !== undefined &&
                     JSON.parse(window.localStorage.user).username}
             </Typography>
-            <Button variant="text" href="/logout">
+            <Button variant="text" href="/logout" startIcon={<Logout/>}>
                 Sign out
             </Button>
         </Toolbar>

@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Box, Button, TextField, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TablePagination, TableSortLabel, Paper } from '@mui/material';
-import { visuallyHidden } from '@mui/utils';
 
 export default function AdminPosts() {
     const [reload, setReload] = React.useState(0);
@@ -13,17 +12,16 @@ export default function AdminPosts() {
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
     useEffect(() => {
-        fetch(`http://localhost:8080/Gwm-war/webresources/posts/query?query=${query}`, { crossDomain: true }) //Search for post using owner Username (To amend)
+        fetch(`http://localhost:8080/Gwm-war/webresources/posts/query?query=${query}`)
             .then((response) => {
                 if (response.ok) {
                     return response.json();
                 } else {
-                    throw new Error('Something went wrong when creating Game');
+                    throw new Error('Something went wrong while searching for posts');
                 }
             })
-            .then((data) => {
-                setPosts(data);
-            });
+            .then((data) => {setPosts(data);})
+            .catch((error) => alert(error));
     }, [reload, query]);
 
     const handleSubmit = () => {
@@ -80,7 +78,7 @@ export default function AdminPosts() {
             label: 'Title',
         },
         {
-            id: 'desc',
+            id: 'description',
             numeric: true,
             label: 'Description',
         },
@@ -127,11 +125,6 @@ export default function AdminPosts() {
                                 onClick={createSortHandler(headCell.id)}
                             >
                                 {headCell.label}
-                                {orderBy === headCell.id ? (
-                                    <Box component="span" sx={visuallyHidden}>
-                                        {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                                    </Box>
-                                ) : null}
                             </TableSortLabel>
                         </TableCell>
                     ))}
@@ -165,25 +158,11 @@ export default function AdminPosts() {
         const { postId, hidden } = props.post
 
         function hidePost(postId) {
-            const requestOptions = {
-                crossDomain: true,
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ title: 'Hide Post' })
-            };
-            fetch(`http://localhost:8080/Gwm-war/webresources/posts/hide/${postId}`, requestOptions)
-                .then(handleSubmit)
+            fetch(`http://localhost:8080/Gwm-war/webresources/posts/hide/${postId}`, {method: 'PUT'}).then(handleSubmit)
         }
 
         function unhidePost(postId) {
-            const requestOptions = {
-                crossDomain: true,
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ title: 'Unhide Post' })
-            };
-            fetch(`http://localhost:8080/Gwm-war/webresources/posts/unhide/${postId}`, requestOptions)
-                .then(handleSubmit)
+            fetch(`http://localhost:8080/Gwm-war/webresources/posts/unhide/${postId}`, {method: 'PUT'}).then(handleSubmit)
         }
 
         if (!hidden) {

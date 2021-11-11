@@ -11,6 +11,8 @@ import enumeration.RequestStatus;
 import error.AuthenticationException;
 import error.InsufficientFundsException;
 import error.NoResultException;
+import error.RequestExistException;
+import error.ReviewExistException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
@@ -190,7 +192,6 @@ public class PostSessionBean implements PostSessionBeanLocal {
             throw new AuthenticationException("User not authenticated to accept request.");
         }
 
-        System.out.println("SSS");
         Request r = getRequest(rId);
 
         BigDecimal price = r.getRequestPrice();
@@ -334,11 +335,15 @@ public class PostSessionBean implements PostSessionBeanLocal {
     }
 
     @Override
-    public void createRequest(Request r, Long pId, Long uId) throws NoResultException {
+    public void createRequest(Request r, Long pId, Long uId) throws NoResultException, RequestExistException {
         Post p = getPost(pId);
-
-        r.setStatus(RequestStatus.PENDING);
         User u = getUser(uId);
+        
+        if (u.getRequests().stream().anyMatch(x -> x.getPost().getPostId().equals(pId))) {
+            throw new RequestExistException("You have already made a request for this post");
+        }
+        
+        r.setStatus(RequestStatus.PENDING);
         r.setRequester(u);
         em.persist(r);
 
@@ -388,14 +393,18 @@ public class PostSessionBean implements PostSessionBeanLocal {
     }
 
     @Override
-    public void createReview(Review rev, Long userId, Long partyId) throws NoResultException {
+    public void createReview(Review rev, Long userId, Long partyId) throws NoResultException, ReviewExistException {
         rev.setUserId(userId);
         Party p = getParty(partyId);
         if (!checkPartyUser(partyId, userId)) {
             throw new NoResultException("You were not in this party.");
         }
+        if (p.getReviews().stream().anyMatch(x -> x.getUserId().equals(userId))) {
+            throw new ReviewExistException("You have already left a review");
+        }
         em.persist(rev);
         p.getReviews().add(rev);
+        getUser(userId).getReviews().add(rev);
         em.flush();
     }
 

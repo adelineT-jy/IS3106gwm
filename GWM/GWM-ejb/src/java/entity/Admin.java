@@ -19,7 +19,6 @@ public class Admin implements Serializable {
     @Column(length = 32, nullable = false, unique = true)
     private String email;
 
-    @JsonbTransient
     @Column(length = 32, nullable = false)
     private String password;
 

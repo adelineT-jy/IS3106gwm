@@ -66,6 +66,7 @@ class App extends Component {
                         {/* users */}
                         <RedirectUnauthorised path={`/account/settings`} component={Settings} />
                         {/* <RedirectUnauthorised exact path={`/account/settings/cards`} component={Settings} /> */}
+                        <RedirectUnauthorised path={`/account/chats/message`} component={Settings} />
                         <RedirectUnauthorised exact path={`/account/chats`} component={Chat} />
                         <RedirectUnauthorised exact path={`/account`} component={Account} />
 

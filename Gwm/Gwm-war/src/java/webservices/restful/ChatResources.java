@@ -84,9 +84,9 @@ public class ChatResources {
     }
 
     @GET
-    @Path("/{chat_id}/user/{user_id}")
+    @Path("/message/{chat_id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getChatMessage(@PathParam("user_id") Long userId, @PathParam("chat_id") Long chatId) {
+    public Response getChatMessage(@PathParam("chat_id") Long chatId) {
         try {
             List<ChatMessage> results = chatSessionLocal.getAllMessage(chatId);
             GenericEntity<List<ChatMessage>> entity = new GenericEntity<List<ChatMessage>>(results) {

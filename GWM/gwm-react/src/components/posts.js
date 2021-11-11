@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, useHistory, useRouteMatch } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 
 import Box from "@mui/material/Box";
 import {
@@ -68,6 +68,7 @@ export const Post = (post) => {
     }
 
     function submitRequest(post) {
+        if (!window.confirm('Are you sure you want to create this request?')) return;
         const req = { text: text };
         const requestOptions = {
             method: "POST",
@@ -79,14 +80,12 @@ export const Post = (post) => {
             requestOptions
         )
             .then((response) => {
-                if (response.ok) {
-                    return response.json();
-                } else {
-                    throw new Error("Request cannot be made");
+                handleClose();
+                if (!response.ok) {
+                    throw new Error(response.statusText);
                 }
             })
             .then(() => {
-                handleClose();
                 history.push("./requests");
             })
             .catch((error) => {
@@ -109,8 +108,6 @@ export const Post = (post) => {
             <Modal
                 open={openModal}
                 onClose={handleClose}
-                aria-labelledby="modal-modal-title"
-                aria-describedby="modal-modal-description"
             >
                 <Box sx={modalStyle} centered>
                     <Typography variant="h6">
@@ -188,8 +185,8 @@ export const Post = (post) => {
                             post.requestPrice === 0
                                 ? "Free"
                                 : post.requestPrice > 0
-                                ? `Costs G${post.requestPrice}`
-                                : `Pays  G${-post.requestPrice}`
+                                ? `Costs $${post.requestPrice}`
+                                : `Pays  $${-post.requestPrice}`
                         }
                         color={post.requestPrice === 0 ? "info" : "warning"}
                     />
