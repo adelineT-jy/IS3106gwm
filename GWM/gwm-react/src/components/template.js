@@ -48,6 +48,7 @@ export function NavTabs() {
         "/party",
         "/requests",
         "/account",
+        "/chats",
         "/",
     ]);
 
@@ -85,6 +86,14 @@ export function NavTabs() {
                     label="Account"
                     value="/account"
                     to="/account"
+                    component={Link}
+                    sx={{ color: "primary.main" }}
+                />
+                <Tab
+                    icon={<Chat />}
+                    label="Chats"
+                    value="/chats"
+                    to="/chats"
                     component={Link}
                     sx={{ color: "primary.main" }}
                 />
@@ -226,6 +235,8 @@ export function Header() {
                         <CheckUnauthorised exact path="/party" />
                         <CheckUnauthorised exact path="/requests" />
                         <CheckUnauthorised path="/account" />
+                        <CheckUnauthorised exact path="/chats" />
+
 
                         <CheckUnauthorisedAdmin exact path="/admin/posts" />
                         <CheckUnauthorisedAdmin exact path="/admin/tools" />
@@ -254,7 +265,7 @@ export function Footer() {
                     bottom: 0,
                     left: 0,
                     right: 0,
-                    mt: 1,
+                    mt: 0,
                 }}
             >
                 <p>

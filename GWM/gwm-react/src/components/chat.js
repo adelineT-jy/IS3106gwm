@@ -1,7 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import { Switch, Route, useRouteMatch, Link } from "react-router-dom";
-import { palette, styled } from "@mui/system";
-import ChatMessages from "./chatMessages";
+import { padding, styled } from "@mui/system";
 import moment from "moment";
 
 import {
@@ -13,10 +11,10 @@ import {
   ListItemText,
   Paper,
   Card,
-  CardActions,
   CardContent,
   Button,
   Stack,
+  TextField,
 } from "@mui/material";
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -33,6 +31,9 @@ export default function Chat() {
   const [reload, setReload] = React.useState(0);
   const [dataChatMsg, setDataChatMsg] = React.useState([]);
   const [iChatIndex, setiChatIndex] = React.useState(0);
+  const [selected, setSelected] = React.useState(0);
+  const [oId, setoId] = React.useState(0);
+  const [ownerName, setOwnerName] = React.useState(0);
 
   const uId =
     window.localStorage.user === undefined
@@ -43,16 +44,10 @@ export default function Chat() {
     if (uId > 0) {
       fetch(`http://localhost:8080/Gwm-war/webresources/chats/${uId}`)
         .then((response) => response.json())
-        .then((data) => {setDataChat(data); console.log(data)})
+        .then((data) => setDataChat(data))
         .catch((error) => console.log(error));
     }
   }, [reload, uId]);
-
-  function FilterUser(chat) {
-    var person = chat.filter((u) => u.userId !== uId);
-    console.log(iChatIndex);
-    return person[0].username;
-  }
 
   useEffect(() => {
     if (iChatIndex > 0) {
@@ -65,36 +60,114 @@ export default function Chat() {
     }
   }, [reload, iChatIndex]);
 
-  function OutlinedCard() {
+/*  useEffect(() => {
+    if (oId > 0) {
+      fetch(`http://localhost:8080/Gwm-war/webresources/users/${oId}`)
+        .then((response) => response.json())
+        .then((data) => setOwnerName(data))
+        .catch((error) => console.log(error));
+    }
+  }, [oId]);*/
+
+  const card = (
+    <React.Fragment>
+      <Card>
+        <CardContent xs={8} md={10} sx={{ bgcolor: "#1e1e1e", height: "80%" }}>
+          {dataChatMsg.map((msg) =>
+            msg.msgOwnerId === uId
+              ? msgRight(msg.message, msg.dateTime)
+              : msgLeft(msg.message, msg.dateTime)
+          )}
+        </CardContent>
+      </Card>
+      <Card>
+        <CardContent sx={{ bottom: "20px" }}>
+          {fullWidthTextField()}
+        </CardContent>
+      </Card>
+    </React.Fragment>
+  );
+
+  function fullWidthTextField() {
     return (
-      <Box sx={{ minWidth: 275 }}>
-        <Card variant="outlined">{card}</Card>
+      <Box
+        sx={{
+          maxWidth: "100%",
+          float: "bottom",
+        }}
+      >
+        <TextField fullWidth label="New Message" id="fullWidth" />
       </Box>
     );
   }
 
-  const card = (
-    <React.Fragment>
-      <CardContent xs={8} md={10} sx={{ bgcolor: "#1e1e1e", height: "100%" }}>
-        {dataChatMsg.map((msg) => (
-          <Stack
-            direction="column"
-            justifyContent="flex start"
-            alignItems="flex-start"
-            padding={1}
-          >
+  function msgLeft(mes, date) {
+    return (
+      <div>
+        <Stack
+          direction="column"
+          justifyContent="flex start"
+          alignItems="flex-start"
+          padding={1.5}
+          xs={3}
+          md={5}
+        >
+          {concatMessage(mes, date)}
+        </Stack>
+        <div style={{alignContent: "float-right"}}>{ownerName}</div>
+      </div>
+    );
+  }
 
-              <Item>{msg.message}
-                {moment(msg.dateTime, "YYYY-MM-DD HH:mm:ss").format("hh:mm a")}
-            </Item>
-          </Stack>
-        ))}
-      </CardContent>
-      <CardActions>
-        <Button size="small">Learn More</Button>
-      </CardActions>
-    </React.Fragment>
-  );
+  function msgRight(mes, date) {
+    return (
+      <Stack
+        direction="column"
+        justifyContent="flex start"
+        alignItems="flex-end"
+        colour="#ffb6c1"
+        padding={1.5}
+        xs={3}
+        md={5}
+      >
+        {concatMessage(mes, date)}
+      </Stack>
+    );
+  }
+
+  function concatMessage(mes, date) {
+    var time = moment(date, "YYYY-MM-DD HH:mm:ss").format("hh:mm a");
+    return (
+      <Item>
+        <div>
+          <div style={{ fontWeight: "bold" }}>{mes}</div>
+          <div style={{ float: "right" }}>{time}</div>
+        </div>
+      </Item>
+    );
+  }
+
+  function concatHeader(name, date) {
+    var time =
+      date === undefined
+        ? `no message`
+        : moment(date, "YYYY-MM-DD HH:mm:ss").format("L");
+    return (
+      <div>
+        <div style={{ fontWeight: "bold" }}> &nbsp;&nbsp; {name}</div>
+        <div
+          style={{ float: "right", fontWeight: "lighter", fontSize: "small" }}
+        >
+          {time} &nbsp;&nbsp;
+        </div>
+      </div>
+    );
+  }
+
+  function filterUser(chat, date) {
+    var person = chat.filter((u) => u.userId !== uId);
+    return concatHeader(person[0].username, date);
+  }
 
   return (
     <Grid container>
@@ -104,30 +177,29 @@ export default function Chat() {
             sx={{
               width: "100%",
               maxWidth: 360,
-              bgcolor: "#EBEBEBr",
+              bgcolor: "#EBEBEB",
               position: "relative",
               overflow: "auto",
-              maxHeight: 800,
+              maxHeight: "100%",
             }}
           >
             <List>
-              {dataChat.map((chat) => (
+              {dataChat.map((chat, index) => (
                 <ListItem key={chat.chatId} disablePadding>
                   <ListItemButton
                     type="button"
                     className="flex-grow-1 p-2 border-bottom"
-                    onClick={() => setiChatIndex(chat.chatId)}
+                    sx={{ "&.Mui-selected": { color: "red" } }}
+                    onClick={() => {
+                      setiChatIndex(chat.chatId);
+                      setSelected(index);
+                    }}
                   >
                     <ListItemText
                       primary={
                         chat.party === 1
-                          ? `${chat.name}`
-                          : `${FilterUser(chat.users)}`
-                      }
-                      seconday={
-                        chat.lastMsgTime === undefined
-                          ? ``
-                          : `${chat.lastMsgTime}`
+                          ? concatHeader(chat.name, chat.lastMsgTime)
+                          : filterUser(chat.users, chat.lastMsgTime)
                       }
                     />
                   </ListItemButton>
