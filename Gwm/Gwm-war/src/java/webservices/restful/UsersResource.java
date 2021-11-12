@@ -12,6 +12,7 @@ import entity.Party;
 import entity.Review;
 import entity.User;
 import error.NoResultException;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -32,6 +33,7 @@ import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import session.ChatSessionLocal;
+import session.PaymentSessionLocal;
 import session.PostSessionBeanLocal;
 import session.UserSessionLocal;
 
@@ -52,6 +54,9 @@ public class UsersResource {
 
     @EJB
     private ChatSessionLocal chatSessionLocal;
+    
+    @EJB
+    private PaymentSessionLocal paymentSessionLocal;
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -307,6 +312,21 @@ JsonObject exception = Json.createObjectBuilder().add("error", "Failed").build()
         } catch (Exception ex) {
             System.out.println("delete following error");
             return null;
+        }
+    }
+    
+    @POST
+    @Path("/{id}/wallet/{amt}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response topupWallet(@PathParam("id") Long uId, @PathParam("amt") BigDecimal amount) {
+        try {
+            paymentSessionLocal.topupWallet(uId, amount);
+            JsonObject s = Json.createObjectBuilder().add("Success", "Top up successful").build();
+            return Response.status(200).entity(s).build();
+        } catch (Exception ex) {
+            JsonObject exception = Json.createObjectBuilder().add("error", "Not found").build();
+            return Response.status(404).entity(exception).type(MediaType.APPLICATION_JSON).build();
         }
     }
 

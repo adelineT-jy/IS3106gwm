@@ -19,7 +19,7 @@ const style = {
     left: '50%',
     transform: 'translate(-50%, -50%)',
     width: 400,
-    height: 240,
+    minHeight: 240,
     bgcolor: 'background.paper',
     border: '1px solid #000',
     boxShadow: 24,
@@ -32,52 +32,13 @@ const style2 = {
     left: '50%',
     transform: 'translate(-50%, -50%)',
     width: 400,
-    height: 380,
+    minHeight: 400,
     bgcolor: 'background.paper',
     border: '1px solid #000',
     boxShadow: 24,
     p: 4,
   };
 
-  const months = [
-    {
-        value: "01",
-        label: "01",
-    }, {
-        value: "02",
-        label: "02",
-    }, {
-        value: "03",
-        label: "03",
-    }, {
-        value: "04",
-        label: "04",
-    }, {
-        value: "05",
-        label: "05",
-    }, {
-        value: "06",
-        label: "06",
-    }, {
-        value: "07",
-        label: "07",
-    }, {
-        value: "08",
-        label: "08",
-    }, {
-        value: "09",
-        label: "09",
-    }, {
-        value: "10",
-        label: "10",
-    }, {
-        value: "11",
-        label: "11",
-    }, {
-        value: "12",
-        label: "12",
-    }
-]
 
 export default function Settings() {
 
@@ -89,7 +50,7 @@ export default function Settings() {
     };
 
     return (
-        <Box display="flex" justifyContent="center" sx={{ height: "130vh", padding: "5vh" }}>
+        <Box display="flex" justifyContent="center" sx={{ minHeight: "130vh", padding: "5vh" }}>
             <Grid container spacing={1}>
                 <Grid item xs={12}>
                     <Grid container spacing={2}>
@@ -143,6 +104,11 @@ export function CardSettings() {
     const [exp, setExp] = useState(moment("1990-01-01 00:00:00").toDate());
     const [cvv, setCvv] = useState("");
 
+    //top up
+    const [openTopupModal, setOpenTopupModal] = useState("false");
+    const [topupAmt, setTopupAmt] = useState(0);
+    const [topupWithCard, setTopupWithCard] = useState("");
+
     
     const [expanded, setExpanded] = useState(false);
     const [openDeleteCard, setOpenDeleteCard] = useState(false);
@@ -178,10 +144,13 @@ export function CardSettings() {
     const handleClose = () => {
         setOpenDeleteCard(false);
         setOpenAddCard(false);
+        setOpenTopupModal(false);
         setCardNum("");
         setCardName("");
         setExp("");
         setCvv("");
+        setTopupAmt(0);
+        setTopupWithCard("")
     };
 
     function handleDeleteCard(cardId, e) {
@@ -229,14 +198,89 @@ export function CardSettings() {
         }).then((temp) => {
             setReload(reload + 1);
             handleClose();
+        }).catch((error) =>  {
+            alert("Add card failed, ensure that all fields are filled");
         });
     }
 
+    const topupWallet = () => {
+        if (topupWithCard === "") {
+            alert("Please select a card");
+        } else {
+            Api.topupWallet(uId, topupAmt)
+            .then((response) => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    alert("Top up wallet failed");
+                }
+            }).then((temp) => {
+                setReload(reload + 1);
+                handleClose();
+            }).catch((error) =>  {
+                alert("Top up wallet failed");
+            });
+        }
+    }
+
     return (
-        <Paper sx={{height: "120vh", padding: "5vh"}}>
+        <Paper sx={{minHeight: "120vh", padding: "5vh"}}>
             <Typography variant="h6" sx={{ paddingLeft: "1vh", paddingBottom: "2vh" }}>
                 Finance
             </Typography>
+
+            <Modal open={openTopupModal} onClose={handleClose}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description">
+                <Box sx={style} display="flex">
+                    <Grid container spacing={2}>
+                        <Grid item xs={12} md={12}>
+                            <IconButton onClick={handleClose} sx={{float:"right"}}>
+                                <CloseRoundedIcon/>
+                            </IconButton>
+                            <Typography variant="h6">Top up</Typography>
+                        </Grid>
+                        <Grid item xs={12} sx={{paddingLeft: "3vh", paddingRight: "3vh"}}>
+                            <TextField
+                                    id="outlined-basic"
+                                    type="number"
+                                    label="Top Up amount"
+                                    value={topupAmt}
+                                    size="small"
+                                    fullWidth
+                                    required="true"
+                                    error={topupAmt === 0}
+                                    onChange={(event) => setTopupAmt(event.target.value)}
+                                    />
+                        </Grid>
+                        <Grid item xs={12} md={12}>
+                            <FormControl size="small" sx={{ width: "35vh"}}>
+                                <InputLabel id="demo-simple-select-helper-label">
+                                    Card
+                                </InputLabel>
+                                <Select
+                                    labelId="demo-simple-select-helper-label"
+                                    id="demo-simple-select-helper"
+                                    value={topupWithCard.cardNum}
+                                    label="Game"
+                                    onChange={(event) => {
+                                        setTopupWithCard(event.target.value);
+                                    }}
+                                >
+                                    {cards.map((card) => (
+                                        <MenuItem key={card.cardId} value={card.cardNum}>{card.cardNum}</MenuItem>
+                                    ))}
+                                </Select>
+                            </FormControl>
+                        </Grid>
+                        <Grid item xs={12}>
+                            <Button onClick={() => topupWallet()} color="secondary" variant="contained" sx={{float:"right"}}>
+                                Confirm
+                            </Button>
+                        </Grid>
+                    </Grid>
+                </Box>
+            </Modal>
 
             <Modal open={openDeleteCard} onClose={handleClose}
                 aria-labelledby="modal-modal-title"
@@ -275,13 +319,18 @@ export function CardSettings() {
                         <Grid item xs={12} md={12}>
                             <TextField
                                 id="outlined-basic"
+                                type="number"
                                 label="Card Number"
                                 value={cardNum}
                                 size="small"
                                 fullWidth
-                                required
-                                inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
-                                onChange={(event) => setCardNum(event.target.value)}
+                                required="true"
+                                error={cardNum.length < 16}
+                                onChange={(event) => {
+                                    if (event.target.value.length <= 16) {
+                                        setCardNum(event.target.value);
+                                    }
+                                }}
                                 />
                         </Grid>
                         <Grid item xs={12} md={12}>
@@ -291,19 +340,25 @@ export function CardSettings() {
                                 value={cardName}
                                 size="small"
                                 fullWidth
-                                required
+                                required="true"
+                                error={cardName === ""}
                                 onChange={(event) => setCardName(event.target.value)}
                                 />
                         </Grid>
                         <Grid item xs={12} md={12}>
                             <TextField
                                 id="outlined-basic"
+                                type="number"
                                 label="cvv"
                                 value={cvv}
                                 size="small"
-                                required
-                                inputProps={{ maxLength: 3, pattern: "[0-9]*" }}
-                                onChange={(event) => setCvv(event.target.value)}
+                                required="true"
+                                error={cvv.length < 3}
+                                onChange={(event) => {
+                                        if (event.target.value.length <= 3) {
+                                            setCvv(event.target.value);
+                                        }
+                                    }}
                                 />
                         </Grid>
                         <Grid item xs={12}>
@@ -318,6 +373,8 @@ export function CardSettings() {
                             inputProps={{
                                 readOnly: true,
                                }}
+                            error={exp === ""}
+                            helperText="Enter exp date"
                             renderInput={(params) => <TextField {...params} />}
                             />
                         </Grid>
@@ -359,7 +416,9 @@ export function CardSettings() {
                                 <Grid item xs={7} md={7}>
                                 </Grid>
                                 <Grid item xs={5} md={5}>
-                                    <Button variant="outlined" color="error" size="small" sx={{float:"right"}}>
+                                    <Button variant="outlined" color="error" 
+                                            size="small" sx={{float:"right"}}
+                                            onClick={() => setOpenTopupModal(true)}>
                                         Top up
                                     </Button>
                                 </Grid>
@@ -368,6 +427,7 @@ export function CardSettings() {
                     </Card>
                 </Grid>
                 <Grid item xs={12}>
+                    <br/>
                     <Typography variant="h6">
                         Credit Cards
                     </Typography>
