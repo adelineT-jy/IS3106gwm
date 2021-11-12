@@ -94,6 +94,8 @@ export default function UserView(props) {
         isUserFollowing();
       }, [reload]);
 
+      
+
     const handleOpen = (event) => {
         event.preventDefault();
         console.log(isFollowing);

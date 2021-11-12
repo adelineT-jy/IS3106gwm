@@ -32,7 +32,7 @@ const style2 = {
     left: '50%',
     transform: 'translate(-50%, -50%)',
     width: 400,
-    height: 380,
+    minHeight: 400,
     bgcolor: 'background.paper',
     border: '1px solid #000',
     boxShadow: 24,
@@ -89,7 +89,7 @@ export default function Settings() {
     };
 
     return (
-        <Box display="flex" justifyContent="center" sx={{ height: "130vh", padding: "5vh" }}>
+        <Box display="flex" justifyContent="center" sx={{ minHeight: "130vh", padding: "5vh" }}>
             <Grid container spacing={1}>
                 <Grid item xs={12}>
                     <Grid container spacing={2}>
@@ -229,11 +229,13 @@ export function CardSettings() {
         }).then((temp) => {
             setReload(reload + 1);
             handleClose();
+        }).catch((error) =>  {
+            alert("Add card failed, ensure that all fields are filled");
         });
     }
 
     return (
-        <Paper sx={{height: "120vh", padding: "5vh"}}>
+        <Paper sx={{minHeight: "120vh", padding: "5vh"}}>
             <Typography variant="h6" sx={{ paddingLeft: "1vh", paddingBottom: "2vh" }}>
                 Finance
             </Typography>
@@ -275,13 +277,18 @@ export function CardSettings() {
                         <Grid item xs={12} md={12}>
                             <TextField
                                 id="outlined-basic"
+                                type="number"
                                 label="Card Number"
                                 value={cardNum}
                                 size="small"
                                 fullWidth
-                                required
-                                inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
-                                onChange={(event) => setCardNum(event.target.value)}
+                                required="true"
+                                error={cardNum.length < 16}
+                                onChange={(event) => {
+                                    if (event.target.value.length <= 16) {
+                                        setCardNum(event.target.value);
+                                    }
+                                }}
                                 />
                         </Grid>
                         <Grid item xs={12} md={12}>
@@ -291,19 +298,25 @@ export function CardSettings() {
                                 value={cardName}
                                 size="small"
                                 fullWidth
-                                required
+                                required="true"
+                                error={cardName === ""}
                                 onChange={(event) => setCardName(event.target.value)}
                                 />
                         </Grid>
                         <Grid item xs={12} md={12}>
                             <TextField
                                 id="outlined-basic"
+                                type="number"
                                 label="cvv"
                                 value={cvv}
                                 size="small"
-                                required
-                                inputProps={{ maxLength: 3, pattern: "[0-9]*" }}
-                                onChange={(event) => setCvv(event.target.value)}
+                                required="true"
+                                error={cvv.length < 3}
+                                onChange={(event) => {
+                                        if (event.target.value.length <= 3) {
+                                            setCvv(event.target.value);
+                                        }
+                                    }}
                                 />
                         </Grid>
                         <Grid item xs={12}>
@@ -318,6 +331,8 @@ export function CardSettings() {
                             inputProps={{
                                 readOnly: true,
                                }}
+                            error={exp === ""}
+                            helperText="Enter exp date"
                             renderInput={(params) => <TextField {...params} />}
                             />
                         </Grid>
@@ -368,6 +383,7 @@ export function CardSettings() {
                     </Card>
                 </Grid>
                 <Grid item xs={12}>
+                    <br/>
                     <Typography variant="h6">
                         Credit Cards
                     </Typography>
