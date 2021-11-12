@@ -250,7 +250,7 @@ export function Logout() {
     });
 
     return (
-        <Box sx={{ minHeight: "80vh" }}>
+        <Box sx={{ minHeight: "83vh" }}>
             <Container>
                 <h1>You have logged out.</h1>
                 <p>You will be redirected in 3 seconds</p>
