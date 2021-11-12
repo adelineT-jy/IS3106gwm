@@ -50,13 +50,7 @@ export default function UserView(props) {
     const [followers, setFollowers] = useState([]);
     const [exp, setExp] = useState([]);
     const [reload, setReload] = useState(0);
-
-    // useEffect(() => {
-    //     fetch(`http://localhost:8080/Gwm-war/webresources/users/${uId}/`)
-    //         .then((response) => response.json())
-    //         .then((tempUser) => setUser(tempUser))
-    //         .catch((error) => alert(error));
-    // }, [uId]);
+    const [isFollowing, setIsFollowing] = useState(false);
 
     const currentUId = window.localStorage.user === undefined
         ? 0
@@ -68,35 +62,43 @@ export default function UserView(props) {
         .then((response) => response.json())
         .then((tempUser) => {
             setUser(tempUser);
-            console.log(user);
         });
 
         Api.getUserFollowers(uId)
         .then((response) => response.json())
         .then((tempUsers) => {
-            console.log("followers:")
             setFollowers(tempUsers);
-            console.log(followers);
         });
 
         Api.getUserFollowings(uId)
         .then((response) => response.json())
         .then((tempUsers) => {
-            console.log("followings:")
             setFollowing(tempUsers);
-            console.log(followers);
         });
 
         Api.getUserExperiences(uId)
         .then((response) => response.json())
         .then((tempExp) => {
-            console.log(tempExp);
             setExp(tempExp);
         });
+        function isUserFollowing() {
+            var result = followers.filter(function (u) {
+                return u.userId === currentUId;
+            });
+            if (result.length > 0) {
+                setIsFollowing(true);
+            }
+            console.log(isFollowing);
+        }
+
+        isUserFollowing();
       }, [reload]);
+
+      
 
     const handleOpen = (event) => {
         event.preventDefault();
+        console.log(isFollowing);
         setOpenModal(true);
     };
 
@@ -105,7 +107,6 @@ export default function UserView(props) {
     };
 
     const submitFollow = () => {
-        console.log("Unsupported currently.");
         Api.addFollowing(currentUId, uId)
         .then((response) => {
             if (response.ok) {
@@ -115,9 +116,25 @@ export default function UserView(props) {
             }
         })
         .then((response) => {
+            setIsFollowing(true);
             setReload(reload + 1);
         });
     };
+
+    const submitUnfollow = () => {
+        Api.unfollow(currentUId, uId)
+        .then((response) => {
+            if (response.ok) {
+                return response.json;
+            } else {
+                alert("Cannot unfollow");
+            }
+        })
+        .then((response) => {
+            setIsFollowing(false);
+            setReload(reload + 1);
+        });
+    }
 
     return (
         <>
@@ -173,12 +190,21 @@ export default function UserView(props) {
                                                 sx={{width: "10vh", height: "10vh"}}/>
                                     </Grid>
                                     <Grid item xs={10} md={10}>
-                                        <Button variant="contained" size="small" 
+                                        {!isFollowing ? 
+                                            (<Button variant="contained" size="small" 
                                                 endIcon={<AddIcon/>} color="secondary" 
                                                 sx={{float: "right"}}
+                                                rendered={!isFollowing}
                                                 onClick={() => submitFollow()}>
-                                            Follow
-                                        </Button>
+                                                Follow
+                                            </Button>) :
+                                            (<Button variant="contained" size="small" 
+                                                endIcon={<AddIcon/>} color="secondary" 
+                                                sx={{float: "right"}}
+                                                rendered={isFollowing}
+                                                onClick={() => submitUnfollow()}>
+                                                Unfollow
+                                            </Button>)}
                                         <Typography variant="h6" sx={{fontWeight: "500"}}>
                                         {user.username}
                                         </Typography>
@@ -226,6 +252,7 @@ export default function UserView(props) {
                                 </Grid>
                              </>
                             ))}
+                            {exp.length == 0 ? <Typography variant="body1" sx={{paddingLeft: "1vh"}}> No Experiences added</Typography>: null}
                             </Grid>
                         </Paper>
                     </Grid>
