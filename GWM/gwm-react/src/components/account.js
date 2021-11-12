@@ -26,7 +26,6 @@ export function Register() {
   const [password, setPassword] = useState("");
   const [gender, setGender] = useState("");
   const [dob, setDob] = useState("");
-  const [error, setError] = useState("");
   let history = useHistory();
 
   const handleRegister = (event) => {
@@ -52,7 +51,6 @@ export function Register() {
           } else {
             response.json().then(function (e) {
               alert(e.error);
-              setError(e.error);
             });
           }
         })
@@ -153,7 +151,6 @@ export function Register() {
 export function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
   let history = useHistory();
 
   const handleLogin = (event) => {
@@ -174,13 +171,12 @@ export function Login() {
           } else {
             response.json().then(function (e) {
               alert(e.error);
-              setError(e.error);
             });
           }
         })
         .then((data) => {
           console.log(data);
-          if (data != null || data != undefined) {
+          if (data != null || data !== undefined) {
               window.localStorage.setItem("user", JSON.stringify(data));
               history.push("/posts");
           }

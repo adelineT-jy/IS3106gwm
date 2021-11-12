@@ -252,7 +252,7 @@ export default function UserView(props) {
                                 </Grid>
                              </>
                             ))}
-                            {exp.length == 0 ? <Typography variant="body1" sx={{paddingLeft: "1vh"}}> No Experiences added</Typography>: null}
+                            {exp.length === 0 ? <Typography variant="body1" sx={{paddingLeft: "1vh"}}> No Experiences added</Typography>: null}
                             </Grid>
                         </Paper>
                     </Grid>
