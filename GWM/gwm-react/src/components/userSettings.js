@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from "react"; 
-import {Box, IconButton, Card, Collapse, Modal, Grid, Paper, Typography, TextField, FormControl, InputLabel, Select, MenuItem, Button, Tabs, Tab, CardContent, CardHeader, CardActions} from "@mui/material";
+import {Box, IconButton, Card, Collapse, Modal, Grid, Paper, Typography, TextField, FormControl, InputLabel, Select, MenuItem, Button, Tabs, Tab, CardContent, CardActions} from "@mui/material";
 import {Switch, Route, useRouteMatch, Link} from "react-router-dom";
 import { styled } from '@mui/material/styles';
 import {DatePicker} from "@mui/lab";
@@ -42,7 +42,7 @@ const style2 = {
 
 export default function Settings() {
 
-    let { path, url } = useRouteMatch(); 
+    let { path } = useRouteMatch(); 
     const [value, setValue] = useState(`${path}`);
 
     const handleChange = (event, newValue) => {
@@ -92,7 +92,6 @@ const ExpandMore = styled((props) => {
   }));
 
 export function CardSettings() {
-    const [user, setUser] = useState([]);
     const [balance, setBalance] = useState("");
     const [reload, setReload] = useState("");
     const [cards, setCards] = useState([]);
@@ -133,7 +132,7 @@ export function CardSettings() {
                 setCards(tempUser.cards);
         });
 
-    }, [reload]);
+    }, [reload, uId]);
 
     //card expand more
     const handleExpandClick = () => {
@@ -465,7 +464,7 @@ export function CardSettings() {
                                         </Typography>
                                     </Grid>
                                     <Grid item xs={4} md={4}>
-                                    <img src={MasterCard}  width="50" style={{float: "right"}}/>
+                                    <img alt="Mastercard" src={MasterCard}  width="50" style={{float: "right"}}/>
                                     </Grid>
                                 </Grid>
                             </CardContent>
@@ -500,13 +499,11 @@ export function ProfileSettings() {
     const uId =
       window.localStorage.user === undefined
         ? 0 : JSON.parse(window.localStorage.user).userId;
-    const [user, setUser] = useState([]);
     const [username, setUsername] = useState(""); 
     const [email, setEmail] = useState("");
     const [dob, setDob] = useState(moment("1990-01-01 00:00:00").toDate());
     const [gender, setGender] = useState(1);
     const [reload, setReload] = useState(0);
-    const [error, setError] = useState("");
 
     useEffect(() => {
         Api.getUser(uId)
@@ -517,10 +514,9 @@ export function ProfileSettings() {
             setEmail(email);
             setDob(moment(dob, "YYYY-MM-DDTHH:mm:ssZ[UTC]").toDate());
             setGender(gender);
-            setUser(tempUser);
-            console.log(user);
+            // setUser(tempUser);
         })
-    },[reload]);
+    },[reload, uId]);
 
     const handleEdit = (event) => {
         event.preventDefault();
@@ -536,9 +532,10 @@ export function ProfileSettings() {
                     alert("Edit cannot be made");
                 }
             }).then((tempUser) => {
-                console.log(tempUser);
-                setUser(tempUser);
-            });
+                // console.log(tempUser);
+                // setUser(tempUser);
+                setReload(reload + 1)
+;            });
 
     }
 
@@ -548,7 +545,7 @@ export function ProfileSettings() {
                 Profile Settings
             </Typography>
             <Grid container spacing={1}>
-                <Grid xs={2} md={2} sx={{padding: "5vh", paddingLeft: "5vh"}}>
+                <Grid item xs={2} md={2} sx={{padding: "5vh", paddingLeft: "5vh"}}>
                     <Grid container spacing={2}>
                         <Grid item xs={12} xm={12}>
                             <Typography variant="body1" sx={{ fontWeight: "500", paddingTop: "1vh", paddingLeft: "1vh", paddingBottom: "2vh" }}>
@@ -572,7 +569,7 @@ export function ProfileSettings() {
                         </Grid>
                     </Grid>
                 </Grid>
-                <Grid xs={10} md={10} sx={{padding: "5vh"}}>
+                <Grid item xs={10} md={10} sx={{padding: "5vh"}}>
                     <Grid container spacing={3}>
                         <Grid item xs={8} xm={8}>
                             <TextField id="outlined-basic" size="small" label="Email"

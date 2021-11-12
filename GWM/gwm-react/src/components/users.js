@@ -1,4 +1,4 @@
-import React, { useEffect, useState} from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import { useHistory } from "react-router-dom";
 import { Box, FormControl, Link, InputLabel, Select, MenuItem, Typography, Paper, Grid, Avatar, Button, IconButton, Card, CardMedia, CardContent, CardActions, Modal, TextField} from '@mui/material';
 import SettingsIcon from '@mui/icons-material/Settings';
@@ -121,7 +121,7 @@ export function Account() {
             setFollowing(tempUsers);
             // console.log(followers);
         });
-      }, [reload]);
+      }, [reload, uId]);
 
       //load experience
       useEffect(() => {
@@ -131,7 +131,7 @@ export function Account() {
             // console.log(tempExp);
             setExp(tempExp);
         })
-      }, [reloadExp]);
+      }, [reloadExp, uId]);
 
       //load games
       useEffect(() => {
@@ -151,7 +151,7 @@ export function Account() {
       //handle selectedGame
       useEffect(() => {
          setSelectedGame(games.filter((game => game.gameId === selectedGameId)));
-      }, [selectedGameId])
+      }, [selectedGameId, games])
 
 
     function handleEditExp(exp) {
@@ -373,7 +373,7 @@ export function Account() {
                     </Grid>
                     <Grid item xs={12} sx={{padding: "2vh"}}>
                         {(following.map((user) => (
-                            <>
+                            <Fragment key={user.userId}>
                             <Grid container spacing={1} display="flex-end" justifyContent="center" alignItems="flex-end">
                                 <Grid item xs={3} md={3}>
                                     <Avatar alt={user.username}/>
@@ -389,7 +389,7 @@ export function Account() {
                                 </Grid>
                             </Grid>
                             <hr/>
-                            </>
+                            </Fragment>
                         )))}
                     </Grid>
                 </Grid>
@@ -410,7 +410,7 @@ export function Account() {
                     </Grid>
                     <Grid item xs={12} sx={{padding: "2vh"}}>
                         {(followers.map((user) => (
-                            <>
+                            <Fragment key={user.userId}>
                             <Grid key={user.username} container spacing={1} display="flex-end" justifyContent="center" alignItems="flex-end">
                                 <Grid item xs={3} md={3}>
                                     <Avatar alt={user.username}/>
@@ -436,7 +436,7 @@ export function Account() {
                                 </Grid>
                             </Grid>
                             <hr/>
-                            </>
+                            </Fragment>
                         )))}
                     </Grid>
                 </Grid>
@@ -509,7 +509,7 @@ export function Account() {
                     </Grid>
                     <Grid container spacing={1} sx={{paddingLeft: "9vh"}}>
                             {exp.map((eachExp) => (
-                                <>
+                                <Fragment key={eachExp.game.gameId}>
                                 <Grid item xs={4} md={4} key={eachExp.experienceId}>
                                     <Card sx={{maxWidth: "53vh"}}>
                                     <CardMedia
@@ -535,9 +535,9 @@ export function Account() {
                                     </CardActions>
                                     </Card>
                                 </Grid>
-                             </>
+                             </Fragment>
                             ))}
-                            {exp.length == 0 ? 
+                            {exp.length === 0 ? 
                                 <Typography variant="body1" sx={{paddingLeft: "0vh"}}> 
                                     Add experiences now to show others how pro you are!
                                 </Typography> : null}

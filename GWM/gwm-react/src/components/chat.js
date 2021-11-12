@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { padding, styled } from "@mui/system";
 import moment from "moment";
+import { useHistory } from "react-router-dom";
 
 import {
   List,
@@ -31,9 +32,9 @@ export default function Chat() {
   const [reload, setReload] = React.useState(0);
   const [dataChatMsg, setDataChatMsg] = React.useState([]);
   const [iChatIndex, setiChatIndex] = React.useState(0);
-  const [selected, setSelected] = React.useState(0);
-  const [oId, setoId] = React.useState(0);
+  const [text, setText] = React.useState("");
   const [ownerName, setOwnerName] = React.useState(0);
+  let history = useHistory();
 
   const uId =
     window.localStorage.user === undefined
@@ -60,50 +61,99 @@ export default function Chat() {
     }
   }, [reload, iChatIndex]);
 
-/*  useEffect(() => {
-    if (oId > 0) {
-      fetch(`http://localhost:8080/Gwm-war/webresources/users/${oId}`)
-        .then((response) => response.json())
-        .then((data) => setOwnerName(data))
-        .catch((error) => console.log(error));
-    }
-  }, [oId]);*/
+  function submitRequest() {
+    console.log({ text });
+    const req = { message: text };
+    const requestOptions = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      crossDomain: true,
+      body: JSON.stringify(req),
+    };
+    fetch(
+      `http://localhost:8080/Gwm-war/webresources/chats/${iChatIndex}/user/${uId}`,
+      requestOptions
+    )
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(response.statusText);
+        }
+      })
+      .catch((error) => {
+        alert(error);
+      });
+  }
+
+  const handleSubmit = () => {
+    submitRequest();
+    setReload(reload + 1);
+  };
 
   const card = (
     <React.Fragment>
-      <Card>
-        <CardContent xs={8} md={10} sx={{ bgcolor: "#1e1e1e", height: "80%" }}>
-          {dataChatMsg.map((msg) =>
-            msg.msgOwnerId === uId
-              ? msgRight(msg.message, msg.dateTime)
-              : msgLeft(msg.message, msg.dateTime)
-          )}
-        </CardContent>
-      </Card>
-      <Card>
-        <CardContent sx={{ bottom: "20px" }}>
-          {fullWidthTextField()}
-        </CardContent>
-      </Card>
+      {iChatIndex === 0 ? (
+        <Card sx={{ bgcolor: "#1e1e1e", height: "100%" }}>
+          <CardContent xs={8} md={10} className="d-flex flex-column">
+            {dataChatMsg.map((msg) =>
+              msg.msgOwnerId === uId
+                ? msgRight(msg.message, msg.dateTime, msg.msgId)
+                : msgLeft(msg.message, msg.dateTime, msg.msgId)
+            )}
+          </CardContent>
+        </Card>
+      ) : (
+        <Card sx={{ bgcolor: "#1e1e1e", height: "100%" }}>
+          <Card sx={{ bgcolor: "#1e1e1e", height: "86%" }}>
+            <CardContent xs={8} md={10} className="d-flex flex-column">
+              {dataChatMsg.map((msg) =>
+                msg.msgOwnerId === uId
+                  ? msgRight(msg.message, msg.dateTime, msg.msgId)
+                  : msgLeft(msg.message, msg.dateTime, msg.msgId)
+              )}
+            </CardContent>
+          </Card>
+          <Card sx={{ height: "14%" }}>
+            <CardContent>
+              <Stack
+                justifyContent="center"
+                alignItems="center"
+                spacing={2}
+                direction="row"
+                width="98%"
+              >
+                {fullWidthTextField()}
+                <Button
+                  type="submit"
+                  color="secondary"
+                  variant="contained"
+                  onClick={handleSubmit}
+                >
+                  Send
+                </Button>
+              </Stack>
+            </CardContent>
+          </Card>
+        </Card>
+      )}
     </React.Fragment>
   );
 
   function fullWidthTextField() {
     return (
-      <Box
-        sx={{
-          maxWidth: "100%",
-          float: "bottom",
-        }}
-      >
-        <TextField fullWidth label="New Message" id="fullWidth" />
-      </Box>
+      <TextField
+        fullWidth
+        label="message"
+        id="fullWidth"
+        required
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+      />
     );
   }
 
-  function msgLeft(mes, date) {
+  function msgLeft(mes, date, id) {
     return (
-      <div>
+      <div key={id}>
         <Stack
           direction="column"
           justifyContent="flex start"
@@ -114,14 +164,15 @@ export default function Chat() {
         >
           {concatMessage(mes, date)}
         </Stack>
-        <div style={{alignContent: "float-right"}}>{ownerName}</div>
+        <div style={{ alignContent: "float-right" }}>{ownerName}</div>
       </div>
     );
   }
 
-  function msgRight(mes, date) {
+  function msgRight(mes, date, id) {
     return (
       <Stack
+        key={id}
         direction="column"
         justifyContent="flex start"
         alignItems="flex-end"
@@ -183,21 +234,21 @@ export default function Chat() {
               maxHeight: "100%",
             }}
           >
-            <List>
+            <List key="dataKey">
               {dataChat.map((chat, index) => (
                 <ListItem key={chat.chatId} disablePadding>
                   <ListItemButton
+                    key={chat.chatId}
                     type="button"
                     className="flex-grow-1 p-2 border-bottom"
-                    sx={{ "&.Mui-selected": { color: "red" } }}
                     onClick={() => {
                       setiChatIndex(chat.chatId);
-                      setSelected(index);
                     }}
                   >
                     <ListItemText
+                      key={chat.chatId}
                       primary={
-                        chat.party === 1
+                        chat.party === true
                           ? concatHeader(chat.name, chat.lastMsgTime)
                           : filterUser(chat.users, chat.lastMsgTime)
                       }

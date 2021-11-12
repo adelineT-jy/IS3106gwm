@@ -53,10 +53,10 @@ public class AdminSession implements AdminSessionLocal {
             if (admin.getPassword().equals(password)) {
                 return admin;
             } else {
-                throw new InvalidLoginException("Login details are invalid.");
+                throw new InvalidLoginException("Incorrect password");
             }
         } catch (NoResultException ex) {
-            throw new InvalidLoginException("Login details are invalid.");
+            throw new InvalidLoginException("Username cannot be found");
         }
     }
 

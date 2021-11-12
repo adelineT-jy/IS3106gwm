@@ -1,27 +1,19 @@
-import React, { useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import StarIcon from '@mui/icons-material/Star';
 import AddIcon from '@mui/icons-material/Add';
-import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
+// import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import {
     Avatar,
     Box,
     Button,
-    Chip,
     Card,
     CardMedia,
     CardContent,
-    CardActions,
     Grid,
-    IconButton,
     Typography,
     Paper,
     Link,
-    List,
-    ListItem,
-    ListItemAvatar,
-    ListItemText,
     Modal,
-    Stack,
 } from "@mui/material";
 import Api from "../helpers/Api.js";
 import lol from "../images/lol.jpeg"
@@ -56,7 +48,6 @@ export default function UserView(props) {
         ? 0
         : JSON.parse(window.localStorage.user).userId;
 
-
     useEffect(() => {
         Api.getUser(uId)
         .then((response) => response.json())
@@ -68,6 +59,9 @@ export default function UserView(props) {
         .then((response) => response.json())
         .then((tempUsers) => {
             setFollowers(tempUsers);
+            if (tempUsers.filter(u => u.userId === currentUId).length > 0) {
+                setIsFollowing(true);
+            }
         });
 
         Api.getUserFollowings(uId)
@@ -81,24 +75,12 @@ export default function UserView(props) {
         .then((tempExp) => {
             setExp(tempExp);
         });
-        function isUserFollowing() {
-            var result = followers.filter(function (u) {
-                return u.userId === currentUId;
-            });
-            if (result.length > 0) {
-                setIsFollowing(true);
-            }
-            console.log(isFollowing);
-        }
-
-        isUserFollowing();
-      }, [reload]);
+      }, [reload, currentUId, uId]);
 
       
 
     const handleOpen = (event) => {
         event.preventDefault();
-        console.log(isFollowing);
         setOpenModal(true);
     };
 
@@ -110,7 +92,7 @@ export default function UserView(props) {
         Api.addFollowing(currentUId, uId)
         .then((response) => {
             if (response.ok) {
-                return response.json;
+                return response.json();
             } else {
                 alert("Follow failed");
             }
@@ -125,7 +107,7 @@ export default function UserView(props) {
         Api.unfollow(currentUId, uId)
         .then((response) => {
             if (response.ok) {
-                return response.json;
+                return response.json();
             } else {
                 alert("Cannot unfollow");
             }
@@ -138,7 +120,7 @@ export default function UserView(props) {
 
     return (
         <>
-            <Link color="secondary" underline="hover" onClick={handleOpen}>
+            <Link color="secondary" underline="hover" component="button" onClick={handleOpen}>
                 {user.username}
             </Link>
             <Modal
@@ -194,14 +176,12 @@ export default function UserView(props) {
                                             (<Button variant="contained" size="small" 
                                                 endIcon={<AddIcon/>} color="secondary" 
                                                 sx={{float: "right"}}
-                                                rendered={!isFollowing}
                                                 onClick={() => submitFollow()}>
                                                 Follow
                                             </Button>) :
                                             (<Button variant="contained" size="small" 
                                                 endIcon={<AddIcon/>} color="secondary" 
                                                 sx={{float: "right"}}
-                                                rendered={isFollowing}
                                                 onClick={() => submitUnfollow()}>
                                                 Unfollow
                                             </Button>)}
@@ -229,7 +209,7 @@ export default function UserView(props) {
                                 </Typography>
 
                                 {exp.map((eachExp) => (
-                                <>
+                                <Fragment key={eachExp.game.gameId}>
                                 <Grid item xs={12} md={12} key={eachExp.experienceId}>
                                     <Card sx={{maxWidth: "40vh"}}>
                                     <CardMedia
@@ -250,9 +230,9 @@ export default function UserView(props) {
                                     </CardContent>
                                     </Card>
                                 </Grid>
-                             </>
+                             </Fragment>
                             ))}
-                            {exp.length == 0 ? <Typography variant="body1" sx={{paddingLeft: "1vh"}}> No Experiences added</Typography>: null}
+                            {exp.length === 0 ? <Typography variant="body1" sx={{paddingLeft: "1vh"}}> No Experiences added</Typography>: null}
                             </Grid>
                         </Paper>
                     </Grid>

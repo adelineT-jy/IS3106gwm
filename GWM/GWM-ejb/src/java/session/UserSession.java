@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package session; 
+package session;
 
 import entity.Card;
 import entity.Experience;
@@ -31,23 +31,23 @@ public class UserSession implements UserSessionLocal {
 
     @PersistenceContext
     private EntityManager em;
-    
 
     @Override
     public User doLogin(String username, String password) throws InvalidLoginException {
         try {
-            System.out.println("EJB: login");
             User user = getUserByUsername(username);
-            if (user.getPassword().equals(password) && user.isIsAvailable()) {
-                return user;
+            if (!user.isIsAvailable()) {
+                throw new InvalidLoginException("You have no access.");
+            } else if (!user.getPassword().equals(password)) {
+                throw new InvalidLoginException("Incorrect password");
             } else {
-                throw new InvalidLoginException("Password Incorrect");
+                return user;
             }
         } catch (NoResultException ex) {
-            throw new InvalidLoginException("Username not found"); 
+            throw new InvalidLoginException("Username cannot be found");
         }
     }
-    
+
     private User getUserByUsername(String username) throws NoResultException {
         Query query = em.createQuery("SELECT u FROM User u WHERE u.username = :username");
         query.setParameter("username", username);
@@ -98,7 +98,7 @@ public class UserSession implements UserSessionLocal {
 
     @Override
     public User getUserById(Long userId) throws NoResultException {
-        try {    
+        try {
             User u = em.find(User.class, userId);
             if (u != null) {
                 return u;
@@ -126,15 +126,15 @@ public class UserSession implements UserSessionLocal {
     @Override
     public void updateUserProfile(User u) throws NoResultException {
         User oldU = getUserById(u.getUserId());
-        if (u.getEmail() == null || u.getEmail().equals("")){
+        if (u.getEmail() == null || u.getEmail().equals("")) {
             throw new NoResultException("Email is required");
         } else {
             oldU.setEmail(u.getEmail());
         }
-        if (u.getUsername() == null || u.getUsername().equals("")){
-            throw new NoResultException("Username is required"); 
+        if (u.getUsername() == null || u.getUsername().equals("")) {
+            throw new NoResultException("Username is required");
         } else {
-            oldU.setUsername(u.getUsername());           
+            oldU.setUsername(u.getUsername());
         }
         oldU.setGender(u.getGender());
         oldU.setDob(u.getDob());
@@ -143,13 +143,13 @@ public class UserSession implements UserSessionLocal {
     @Override
     public void addCard(Long userId, Card c) throws NoResultException {
         User u = getUserById(userId);
-        
-        if (c.getCardNum().equals("") || c.getCvv().equals("") 
+
+        if (c.getCardNum().equals("") || c.getCvv().equals("")
                 || c.getName().equals("") || c.getExpDate() == null) {
             throw new NoResultException("Missing values");
         } else {
-        em.persist(c);
-        u.addCard(c);
+            em.persist(c);
+            u.addCard(c);
         }
     }
 
@@ -159,10 +159,10 @@ public class UserSession implements UserSessionLocal {
         //should check if there is any ongoing transactions before deleting
         u.getCards().remove(em.find(Card.class, cardId));
     }
-    
+
     @Override
-    public List<Experience> getUserExperiences(Long userId)throws NoResultException {
-        User u  = getUserById(userId);
+    public List<Experience> getUserExperiences(Long userId) throws NoResultException {
+        User u = getUserById(userId);
         if (u != null) {
             return u.getExperiences();
         } else {
@@ -199,11 +199,11 @@ public class UserSession implements UserSessionLocal {
         }
 
     }
-    
+
     @Override
     public List<Game> getAllGames() throws NoResultException {
         Query q;
-            q = em.createQuery("SELECT g from Game g WHERE !isHidden ORDER BY g.gameId");
+        q = em.createQuery("SELECT g from Game g WHERE !isHidden ORDER BY g.gameId");
 
         return q.getResultList();
     }
@@ -226,7 +226,7 @@ public class UserSession implements UserSessionLocal {
             throw new NoResultException("Experience cannot be deleted");
         }
     }
-    
+
     @Override
     public List<User> getUserFollowers(Long userId) throws NoResultException {
         Query q = em.createQuery("SELECT DISTINCT u FROM User u, u.following f WHERE f.userId = :userId");
