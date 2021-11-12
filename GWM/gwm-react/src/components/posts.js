@@ -175,9 +175,9 @@ export const Post = (post) => {
                     />
                     <Chip
                         sx={{ margin: "2px" }}
-                        label={post.isAvailable ? "Available" : "Busy"}
-                        color={post.isAvailable ? "success" : "error"}
-                        icon={post.isAvailable ? <Check /> : <Close />}
+                        label={post.hidden ? "Hidden" : post.isAvailable ? "Available" : "Busy"}
+                        color={post.hidden ? "error" : post.isAvailable ? "success" : "warning"}
+                        icon={post.isAvailable && !post.hidden ? <Check /> : <Close />}
                     />
                     <Chip
                         sx={{ margin: "2px" }}
