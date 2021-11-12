@@ -155,36 +155,27 @@ export function Login() {
 
   const handleLogin = (event) => {
     event.preventDefault();
-    try {
-      fetch(
-        `http://localhost:8080/Gwm-war/webresources/users/login/${username}/${password}`,
-        {
-          method: "GET",
-          headers: { "Content-Type": "application/json" },
-          crossDomain: true,
+    fetch(
+      `http://localhost:8080/Gwm-war/webresources/users/login/${username}/${password}`,
+      {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+        crossDomain: true,
+      }
+    )
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error(response.statusText);
         }
-      )
-        .then((response) => {
-          if (response.status === 200) {
-            console.log("login success");
-            return response.json();
-          } else {
-            response.json().then(function (e) {
-              alert(e.error);
-            });
-          }
-        })
-        .then((data) => {
-          console.log(data);
-          if (data != null || data !== undefined) {
-              window.localStorage.setItem("user", JSON.stringify(data));
-              history.push("/posts");
-          }
-        });
-    } catch (e) {
-      console.log(e.message);
-    }
-  };
+      })
+      .then((data) => {
+        window.localStorage.setItem("user", JSON.stringify(data));
+        history.push("/posts");
+      })
+      .catch((error) => alert(error));
+  }
 
   return (
     <Box
