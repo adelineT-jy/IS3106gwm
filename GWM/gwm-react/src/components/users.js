@@ -2,12 +2,12 @@ import React, { Fragment, useEffect, useState } from 'react';
 import { useHistory } from "react-router-dom";
 import { Box, FormControl, Link, InputLabel, Select, MenuItem, Typography, Paper, Grid, Avatar, Button, IconButton, Card, CardMedia, CardContent, CardActions, Modal, TextField} from '@mui/material';
 import SettingsIcon from '@mui/icons-material/Settings';
-import StarIcon from '@mui/icons-material/Star';
+// import StarIcon from '@mui/icons-material/Star';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 
 import Api from "../helpers/Api.js";
-import UserView, { modalStyle } from "./userView";
+import UserView from "./userView";
 
 import lol from "../images/lol.jpeg"
 import dota from "../images/dota.jpeg"
@@ -217,7 +217,7 @@ export function Account() {
     
 
     const submitFollow = (followId) => {
-        console.log(uId + "" + followId);
+        // console.log(uId + "" + followId);
         Api.addFollowing(uId, followId)
         .then((response) => {
             if (response.ok) {

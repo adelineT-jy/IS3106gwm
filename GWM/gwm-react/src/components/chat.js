@@ -1,5 +1,5 @@
-import React, { useEffect, useRef } from "react";
-import { padding, styled } from "@mui/system";
+import React, { useEffect, useState } from "react";
+import { styled } from "@mui/system";
 import moment from "moment";
 import { useHistory } from "react-router-dom";
 
@@ -28,12 +28,12 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 export default function Chat() {
-  const [dataChat, setDataChat] = React.useState([]);
-  const [reload, setReload] = React.useState(0);
-  const [dataChatMsg, setDataChatMsg] = React.useState([]);
-  const [iChatIndex, setiChatIndex] = React.useState(0);
-  const [text, setText] = React.useState("");
-  const [ownerName, setOwnerName] = React.useState(0);
+  const [dataChat, setDataChat] = useState([]);
+  const [reload, setReload] = useState(0);
+  const [dataChatMsg, setDataChatMsg] = useState([]);
+  const [iChatIndex, setiChatIndex] = useState(0);
+  const [text, setText] = useState("");
+  const [ownerName, setOwnerName] = useState(0);
   let history = useHistory();
 
   const uId =
