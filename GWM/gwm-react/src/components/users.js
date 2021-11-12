@@ -1,11 +1,13 @@
-import React, { useEffect, useState} from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import { useHistory } from "react-router-dom";
 import { Box, FormControl, Link, InputLabel, Select, MenuItem, Typography, Paper, Grid, Avatar, Button, IconButton, Card, CardMedia, CardContent, CardActions, Modal, TextField} from '@mui/material';
 import SettingsIcon from '@mui/icons-material/Settings';
-import StarIcon from '@mui/icons-material/Star';
+// import StarIcon from '@mui/icons-material/Star';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
+
 import Api from "../helpers/Api.js";
+import UserView from "./userView";
 
 import lol from "../images/lol.jpeg"
 import dota from "../images/dota.jpeg"
@@ -64,7 +66,7 @@ export function Account() {
 
     //add exp
     const [openAddExpModal, setOpenAddExpModal] = useState(false); 
-    const [selectedGameId, setSelectedGameId] = useState("");
+    const [selectedGameId, setSelectedGameId] = useState(0);
     const [selectedGame, setSelectedGame] = useState("");
     const [games, setGames] = useState([]);
 
@@ -121,7 +123,7 @@ export function Account() {
             setFollowing(tempUsers);
             // console.log(followers);
         });
-      }, [reload]);
+      }, [reload, uId]);
 
       //load experience
       useEffect(() => {
@@ -131,7 +133,7 @@ export function Account() {
             // console.log(tempExp);
             setExp(tempExp);
         })
-      }, [reloadExp]);
+      }, [reloadExp, uId]);
 
       //load games
       useEffect(() => {
@@ -151,7 +153,7 @@ export function Account() {
       //handle selectedGame
       useEffect(() => {
          setSelectedGame(games.filter((game => game.gameId === selectedGameId)));
-      }, [selectedGameId])
+      }, [selectedGameId, games])
 
 
     function handleEditExp(exp) {
@@ -215,7 +217,7 @@ export function Account() {
     
 
     const submitFollow = (followId) => {
-        console.log(uId + "" + followId);
+        // console.log(uId + "" + followId);
         Api.addFollowing(uId, followId)
         .then((response) => {
             if (response.ok) {
@@ -373,13 +375,15 @@ export function Account() {
                     </Grid>
                     <Grid item xs={12} sx={{padding: "2vh"}}>
                         {(following.map((user) => (
-                            <>
+                            <Fragment key={user.userId}>
                             <Grid container spacing={1} display="flex-end" justifyContent="center" alignItems="flex-end">
                                 <Grid item xs={3} md={3}>
                                     <Avatar alt={user.username}/>
                                 </Grid>
                                 <Grid item xs={5} md={5}>
-                                    <Typography variant="body1" sx={{fontWeight:500}}>{user.username}</Typography>
+                                    <Typography variant="body1" sx={{fontWeight:500, color: "black"}}>
+                                        <UserView uId={user.userId}/>
+                                    </Typography>
                                 </Grid>
                                 <Grid item xs={4} md={4}>
                                     <Button size="small" color="secondary" 
@@ -389,7 +393,7 @@ export function Account() {
                                 </Grid>
                             </Grid>
                             <hr/>
-                            </>
+                            </Fragment>
                         )))}
                     </Grid>
                 </Grid>
@@ -410,13 +414,15 @@ export function Account() {
                     </Grid>
                     <Grid item xs={12} sx={{padding: "2vh"}}>
                         {(followers.map((user) => (
-                            <>
+                            <Fragment key={user.userId}>
                             <Grid key={user.username} container spacing={1} display="flex-end" justifyContent="center" alignItems="flex-end">
                                 <Grid item xs={3} md={3}>
                                     <Avatar alt={user.username}/>
                                 </Grid>
                                 <Grid item xs={5} md={5}>
-                                    <Typography variant="body1" sx={{fontWeight:500}}>{user.username}</Typography>
+                                    <Typography variant="body1" sx={{fontWeight:500}}>
+                                        <UserView uId={user.userId}/>
+                                    </Typography>
                                 </Grid>
                                 <Grid item xs={4} md={4}>
                                  {!isUserFollowing(user.userId) ? 
@@ -436,7 +442,7 @@ export function Account() {
                                 </Grid>
                             </Grid>
                             <hr/>
-                            </>
+                            </Fragment>
                         )))}
                     </Grid>
                 </Grid>
@@ -485,10 +491,10 @@ export function Account() {
                         </Link>
 
 
-                        <Typography variant="body1" sx={{ paddingTop: "2vh"}}>
+                        {/* <Typography variant="body1" sx={{ paddingTop: "2vh"}}>
                             Ratings: <b>5 coming soon</b>
                             <StarIcon sx={{color: "#f2bd0c", paddingBottom:"0.5vh"}} />
-                        </Typography>
+                        </Typography> */}
                     </Grid>
                     </Grid>
                 </Paper>
@@ -509,7 +515,7 @@ export function Account() {
                     </Grid>
                     <Grid container spacing={1} sx={{paddingLeft: "9vh"}}>
                             {exp.map((eachExp) => (
-                                <>
+                                <Fragment key={eachExp.game.gameId}>
                                 <Grid item xs={4} md={4} key={eachExp.experienceId}>
                                     <Card sx={{maxWidth: "53vh"}}>
                                     <CardMedia
@@ -535,12 +541,13 @@ export function Account() {
                                     </CardActions>
                                     </Card>
                                 </Grid>
-                             </>
+                             </Fragment>
                             ))}
-                            {exp.length == 0 ? 
+                            {exp.length === 0 ? 
                                 <Typography variant="body1" sx={{paddingLeft: "0vh"}}> 
                                     Add experiences now to show others how pro you are!
-                                </Typography> : null}
+                                </Typography> 
+                                : null}
                     </Grid>
                 </Paper>
             </Grid>

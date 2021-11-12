@@ -123,17 +123,17 @@ export const Post = (post) => {
                         Request Text
                     </TextField>
                     <Button
-                        sx={{ width: "50%" }}
+                        sx={{float: "left" }}
                         onClick={handleClose}
-                        color="error"
+                        color="primary"
                         variant="contained"
                     >
                         Cancel
                     </Button>
                     <Button
-                        sx={{ width: "50%" }}
+                        sx={{float: "right"}}
                         onClick={() => submitRequest(post)}
-                        color="success"
+                        color="secondary"
                         variant="contained"
                     >
                         Request to Join
@@ -175,9 +175,9 @@ export const Post = (post) => {
                     />
                     <Chip
                         sx={{ margin: "2px" }}
-                        label={post.isAvailable ? "Available" : "Busy"}
-                        color={post.isAvailable ? "success" : "error"}
-                        icon={post.isAvailable ? <Check /> : <Close />}
+                        label={post.hidden ? "Hidden" : post.isAvailable ? "Available" : "Busy"}
+                        color={post.hidden ? "error" : post.isAvailable ? "success" : "warning"}
+                        icon={post.isAvailable && !post.hidden ? <Check /> : <Close />}
                     />
                     <Chip
                         sx={{ margin: "2px" }}
@@ -243,7 +243,7 @@ export default function Posts(props) {
     };
 
     return (
-        <Box sx={{ bgcolor: "#e3f2fd", minHeight: "80vh", p: 1 }}>
+        <Box sx={{minHeight: "80vh", p: 1 }}>
             <Grid container spacing={3} sx={{ m: 0, width: "100%" }}>
                 <Grid
                     item

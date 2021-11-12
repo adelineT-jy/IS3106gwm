@@ -350,7 +350,6 @@ function GameManager() {
 
     function createGame() {
         const requestOptions = {
-            crossDomain: true,
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -364,12 +363,14 @@ function GameManager() {
         fetch(`http://localhost:8080/Gwm-war/webresources/admin/game`, requestOptions)
             .then((response) => {
                 if (response.ok) {
+                    setReload(reload + 1);
                     return response.json();
                 } else {
-                    throw new Error('Something went wrong when creating Game');
+                    throw new Error(response.statusText);
                 }
             })
             .then(handleClose())
+            .catch((error) => alert(error))
     }
 
     function openEditGameModal(game) {
@@ -397,13 +398,12 @@ function GameManager() {
         };
         fetch(`http://localhost:8080/Gwm-war/webresources/admin/game/${gameId}`, requestOptions)
             .then((response) => {
-                if (response.ok) {
-                    return response.json();
-                } else {
-                    throw new Error('Something went wrong when editing Game');
+                if (!response.ok) {
+                    throw new Error(response.statusText);
                 }
             })
             .then(handleClose())
+            .catch((error) => alert(error))
     }
 
     return (

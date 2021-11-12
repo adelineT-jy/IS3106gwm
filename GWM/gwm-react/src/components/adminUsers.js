@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Box, Button, TextField, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TablePagination, TableSortLabel, Paper } from '@mui/material';
-import { visuallyHidden } from '@mui/utils';
 
 export default function AdminUsers() {
     const [reload, setReload] = React.useState(0);
@@ -191,7 +190,7 @@ export default function AdminUsers() {
     };
 
     return (
-        <Box sx={{ minHeight: '81vh', width: '100%' }}>
+        <Box sx={{ minHeight: '82vh', width: '100%' }}>
             <div className="container">
                 <div style={{ display: 'flex', justifyContent: 'center' }}>
                     <h1>User Manager</h1>

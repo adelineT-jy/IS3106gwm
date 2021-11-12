@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 
 import {
+    Card,
+    CardContent,
     Grid,
     IconButton,
     ListItem,
@@ -22,39 +24,42 @@ const statusToColour = {
 
 export const Request = (request) => {
     return (
-        <ListItem
-            sx={{
-                border: "solid 1px black",
-                bgcolor: statusToColour[request.status],
-            }}
-            secondaryAction={
-                request.status === "PENDING" ? (
-                    <Stack spacing={1} direction="row">
-                        {request.acceptRequest === undefined ? null : (
-                            <IconButton
-                                edge="end"
-                                onClick={request.acceptRequest}
-                            >
-                                <Check />
-                            </IconButton>
-                        )}
-                        {request.cancelRequest === undefined ? null : (
-                            <IconButton
-                                edge="end"
-                                onClick={request.cancelRequest}
-                            >
-                                <Close />
-                            </IconButton>
-                        )}
-                    </Stack>
-                ) : null
-            }
-        >
-            <ListItemText
-                primary={`Request ${request.requestId} (${request.status})`}
-                secondary={request.text}
-            />
-        </ListItem>
+        <Card sx={{ bgcolor: statusToColour[request.status]}}> 
+            <CardContent>
+                <ListItem
+                    sx={{
+                        bgcolor: statusToColour[request.status],
+                    }}
+                    secondaryAction={
+                        request.status === "PENDING" ? (
+                            <Stack spacing={1} direction="row">
+                                {request.acceptRequest === undefined ? null : (
+                                    <IconButton
+                                        edge="end"
+                                        onClick={request.acceptRequest}
+                                    >
+                                        <Check />
+                                    </IconButton>
+                                )}
+                                {request.cancelRequest === undefined ? null : (
+                                    <IconButton
+                                        edge="end"
+                                        onClick={request.cancelRequest}
+                                    >
+                                        <Close />
+                                    </IconButton>
+                                )}
+                            </Stack>
+                        ) : null
+                    }
+                >
+                    <ListItemText
+                        primary={`Request ${request.requestId} (${request.status})`}
+                        secondary={request.text}
+                    />
+                </ListItem>
+            </CardContent>
+        </Card>
     );
 };
 
@@ -92,7 +97,7 @@ export default function Requests() {
     };
 
     return (
-        <Box sx={{ bgcolor: "#e3f2fd", minHeight: "80vh", p: 1 }}>
+        <Box sx={{minHeight: "80vh", p: 1 }}>
             <Grid container spacing={3} sx={{ m: 0, width: "100%" }}>
                 <Grid
                     item

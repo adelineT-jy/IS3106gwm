@@ -6,37 +6,33 @@ import { Box, Button, Paper, TextField, Typography, Stack, } from "@mui/material
 export function AdminLogin() {
     const [email, setEmail] = React.useState("");
     const [password, setPassword] = React.useState("");
-    const [error, setError] = React.useState("");
     let history = useHistory();
 
     const handleLogin = (event) => {
         event.preventDefault();
-        try {
-            fetch(
-                `http://localhost:8080/Gwm-war/webresources/admin/login/${email}/${password}`,
-                {
-                    method: "GET",
-                    headers: { "Content-Type": "application/json" },
-                    crossDomain: true,
+        fetch(
+            `http://localhost:8080/Gwm-war/webresources/admin/login/${email}/${password}`,
+            {
+                method: "GET",
+                headers: { "Content-Type": "application/json" },
+                crossDomain: true,
+            }
+        )
+            .then((response) => {
+                if (response.status === 200) {
+                    return response.json();
+                } else {
+                    throw new Error(response.statusText);
                 }
-            )
-                .then((response) => {
-                    if (response.status === 200) {
-                        setError("");
-                        return response.json();
-                    } else {
-                        throw new Error('Login details are invalid');
-                    }
-                })
-                .then((data) => {
-                    window.localStorage.setItem("admin", JSON.stringify(data));
-                    history.push("/admin/posts");
-                })
-                .catch((error) => alert(error));
-        } catch (Error) {
-            alert('Login details are invalid');
-        }
-    };
+            })
+            .then((data) => {
+                window.localStorage.setItem("admin", JSON.stringify(data));
+                history.push("/admin/posts");
+            })
+            .catch((error) => {
+                alert(error)
+            });
+    }
 
     return (
         <Box

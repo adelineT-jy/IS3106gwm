@@ -200,7 +200,7 @@ export default function AdminPosts() {
     }
 
     return (
-        <Box sx={{ minHeight: '81vh' }}>
+        <Box sx={{ minHeight: '82vh' }}>
             <div className="container">
                 <div style={{ display: 'flex', justifyContent: 'center' }}>
                     <h1>Post Manager</h1>

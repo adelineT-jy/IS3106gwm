@@ -92,12 +92,14 @@ public class UsersResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public User createUser(User u) {
+    public Response createUser(User u) {
         try {
             userSessionLocal.createUser(u);
-            return u;
+            return Response.status(200).entity(u).type(MediaType.APPLICATION_JSON).build();
         } catch (Exception ex) {
-            return null;
+            System.out.println(ex.getMessage());
+            JsonObject exception = Json.createObjectBuilder().add("error", ex.getMessage()).build();
+            return Response.status(404, ex.getMessage()).entity(exception).type(MediaType.APPLICATION_JSON).build();
         }
 
     }
@@ -127,7 +129,7 @@ public class UsersResource {
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
             JsonObject exception = Json.createObjectBuilder().add("error", ex.getMessage()).build();
-            return Response.status(404).entity(exception).type(MediaType.APPLICATION_JSON).build();
+            return Response.status(404, ex.getMessage()).entity(exception).type(MediaType.APPLICATION_JSON).build();
         }
         
     }
@@ -144,7 +146,7 @@ public class UsersResource {
             return Response.status(200).entity(u).type(MediaType.APPLICATION_JSON).build();
         } catch (Exception ex) {
             System.out.println("editUser failed");
-            JsonObject exception = Json.createObjectBuilder().add("error", "Not found ha").build();
+            JsonObject exception = Json.createObjectBuilder().add("error", "Not found").build();
             return Response.status(404).entity(exception).type(MediaType.APPLICATION_JSON).build();
         }
     }

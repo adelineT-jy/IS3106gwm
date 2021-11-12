@@ -1,5 +1,5 @@
-import React, { useEffect, useRef } from "react";
-import { padding, styled } from "@mui/system";
+import React, { useEffect, useState } from "react";
+import { styled } from "@mui/system";
 import moment from "moment";
 import { useHistory } from "react-router-dom";
 
@@ -28,12 +28,12 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 export default function Chat() {
-  const [dataChat, setDataChat] = React.useState([]);
-  const [reload, setReload] = React.useState(0);
-  const [dataChatMsg, setDataChatMsg] = React.useState([]);
-  const [iChatIndex, setiChatIndex] = React.useState(0);
-  const [text, setText] = React.useState("");
-  const [ownerName, setOwnerName] = React.useState(0);
+  const [dataChat, setDataChat] = useState([]);
+  const [reload, setReload] = useState(0);
+  const [dataChatMsg, setDataChatMsg] = useState([]);
+  const [iChatIndex, setiChatIndex] = useState(0);
+  const [text, setText] = useState("");
+  const [ownerName, setOwnerName] = useState(0);
   let history = useHistory();
 
   const uId =
@@ -97,8 +97,9 @@ export default function Chat() {
           <CardContent xs={8} md={10} className="d-flex flex-column">
             {dataChatMsg.map((msg) =>
               msg.msgOwnerId === uId
-                ? msgRight(msg.message, msg.dateTime)
-                : msgLeft(msg.message, msg.dateTime, msg.msgOwnerId)
+
+                ? msgRight(msg.message, msg.dateTime, msg.msgId)
+                : msgLeft(msg.message, msg.dateTime, msg.msgId)
             )}
           </CardContent>
         </Card>
@@ -108,8 +109,8 @@ export default function Chat() {
             <CardContent xs={8} md={10} className="d-flex flex-column">
               {dataChatMsg.map((msg) =>
                 msg.msgOwnerId === uId
-                  ? msgRight(msg.message, msg.dateTime)
-                  : msgLeft(msg.message, msg.dateTime)
+                  ? msgRight(msg.message, msg.dateTime, msg.msgId)
+                  : msgLeft(msg.message, msg.dateTime, msg.msgId)
               )}
             </CardContent>
           </Card>
@@ -152,9 +153,9 @@ export default function Chat() {
     );
   }
 
-  function msgLeft(mes, date) {
+  function msgLeft(mes, date, id) {
     return (
-      <div>
+      <div key={id}>
         <Stack
           direction="column"
           justifyContent="flex start"
@@ -170,9 +171,10 @@ export default function Chat() {
     );
   }
 
-  function msgRight(mes, date) {
+  function msgRight(mes, date, id) {
     return (
       <Stack
+        key={id}
         direction="column"
         justifyContent="flex start"
         alignItems="flex-end"
