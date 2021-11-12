@@ -116,7 +116,7 @@ export function CardSettings() {
     const [openDeleteCard, setOpenDeleteCard] = useState(false);
     const [openAddCard, setOpenAddCard] = useState(false);
 
-    console.log("rendering");
+    // console.log("rendering");
 
     const uId =
       window.localStorage.user === undefined
