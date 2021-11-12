@@ -15,6 +15,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -56,8 +57,13 @@ public class User implements Serializable {
     private List<Notification> notify;
 
     @JsonbTransient
-    @OneToMany
+    @ManyToMany
     private List<User> following;
+    
+//    @JsonbTransient
+//    @ManyToOne
+//    private List<User> followers;
+
 
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH} )
     private List<Experience> experiences;
@@ -87,6 +93,7 @@ public class User implements Serializable {
         isAvailable = true;
         notify = new ArrayList<>();
         following = new ArrayList<>();
+//        followers = new ArrayList<>();
         experiences = new ArrayList<>();
         cards = new ArrayList<>();
         chats = new ArrayList<>();
@@ -203,6 +210,22 @@ public class User implements Serializable {
     public void removeFollowing(User user) {
         this.following.remove(user);
     }
+
+//    public List<User> getFollowers() {
+//        return followers;
+//    }
+//
+//    public void setFollowers(List<User> followers) {
+//        this.followers = followers;
+//    }
+//    
+//    public void addFollower(User user) {
+//        this.followers.add(user);
+//    }
+//    
+//    public void removeFollower(User user) {
+//        this.followers.remove(user);
+//    }
 
     public List<Experience> getExperiences() {
         return experiences;

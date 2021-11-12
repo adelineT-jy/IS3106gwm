@@ -1,6 +1,6 @@
 import React, { useEffect, useState} from 'react';
 import { useHistory } from "react-router-dom";
-import { Box, FormControl, InputLabel, Select, MenuItem, Typography, Paper, Grid, Avatar, Button, IconButton, Card, CardMedia, CardContent, CardActions, Modal, TextField} from '@mui/material';
+import { Box, FormControl, Link, InputLabel, Select, MenuItem, Typography, Paper, Grid, Avatar, Button, IconButton, Card, CardMedia, CardContent, CardActions, Modal, TextField} from '@mui/material';
 import SettingsIcon from '@mui/icons-material/Settings';
 import StarIcon from '@mui/icons-material/Star';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -23,19 +23,20 @@ export default function Users() {
 //current profile
 export function UserProfile() {
     return ( 
-        <Box sx={{ height: "80vh" }}>
+        <Box sx={{ minHeight: "80vh" }}>
         <Typography variant="h1">Home</Typography>
       </Box>
     );
 }
+
 
 const style = {
     position: 'absolute',
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: 400,
-    height: 350,
+    minWidth: 400,
+    minHeight: 350,
     bgcolor: 'background.paper',
     border: '1px solid #000',
     boxShadow: 24,
@@ -67,12 +68,32 @@ export function Account() {
     const [selectedGame, setSelectedGame] = useState("");
     const [games, setGames] = useState([]);
 
+    //view followings 
+    const [openFollowingModal, setOpenFollowingModal] = useState(false); 
+    const [openFollowersModal, setOpenFollowersModal] = useState(false); 
+    const [isFollowing, setIsFollowing] = useState(false);
+
     const [reload, setReload] = useState(0);
     let history = useHistory();
     
+    function isUserFollowing(userId) {
+            var result = following.filter(function (u) {
+                return u.userId === userId;
+            });
+            if (result.length > 0) {
+                // setIsFollowing(true);
+                return true;
+            }
+            console.log("isFollowing:" + userId + isFollowing);
+            return false;
+        }
+
+
     const handleClose = () => {
         setOpenModal(false);
         setOpenAddExpModal(false);
+        setOpenFollowingModal(false);
+        setOpenFollowersModal(false);
         setRanking("");
         setProfileLink("");
         setSelectedGame("");
@@ -91,17 +112,17 @@ export function Account() {
         Api.getUserFollowers(uId)
         .then((response) => response.json())
         .then((tempUsers) => {
-            console.log("followers:")
+            // console.log("followers:")
             setFollowers(tempUsers);
-            console.log(followers);
+            // console.log(followers);
         });
 
         Api.getUserFollowings(uId)
         .then((response) => response.json())
         .then((tempUsers) => {
-            console.log("followings:")
+            // console.log("followings:")
             setFollowing(tempUsers);
-            console.log(followers);
+            // console.log(followers);
         });
       }, [reload]);
 
@@ -110,7 +131,7 @@ export function Account() {
         Api.getUserExperiences(uId)
         .then((response) => response.json())
         .then((tempExp) => {
-            console.log(tempExp);
+            // console.log(tempExp);
             setExp(tempExp);
         })
       }, [reloadExp]);
@@ -126,7 +147,7 @@ export function Account() {
               }
           }).then((tempGames) => {
                 setGames(tempGames);
-                console.log(games);
+                // console.log(games);
           }) 
       }, [openAddExpModal])
       
@@ -160,7 +181,7 @@ export function Account() {
 
     const submitDeleteExp = (event) => {
         event.preventDefault();
-        console.log("delete" + expId);
+        // console.log("delete" + expId);
         Api.deleteUserExperience(uId, expId)
         .then((response) => {
             if (response.ok) {
@@ -177,7 +198,7 @@ export function Account() {
 
     const submitAddExp = (event) => {
         event.preventDefault();
-        console.log("adding to game" + selectedGameId);
+        // console.log("adding to game" + selectedGameId);
         const addExp = {
             ranking: ranking,
             profileLink: profileLink
@@ -194,9 +215,40 @@ export function Account() {
             setReloadExp(reloadExp + 1);
         });
     }
+    
+
+    const submitFollow = (followId) => {
+        console.log(uId + "" + followId);
+        Api.addFollowing(uId, followId)
+        .then((response) => {
+            if (response.ok) {
+                return response.json;
+            } else {
+                alert("Cannot follow");
+            }
+        })
+        .then((response) => {
+            isUserFollowing(followId);
+            setReload(reload + 1);
+        });
+    }
+
+    const submitUnfollow = (unfollowId) => {
+        Api.unfollow(uId, unfollowId)
+        .then((response) => {
+            if (response.ok) {
+                return response.json;
+            } else {
+                alert("Cannot unfollow");
+            }
+        })
+        .then((response) => {
+            setReload(reload + 1);
+        });
+    }
 
     return (
-      <Box justifyContent="center" sx={{ height: "130vh", padding: "5vh" }}>
+      <Box justifyContent="center" sx={{ minHeight: "110vh", padding: "5vh" }}>
 
         <Modal open={openModal} onClose={handleClose}
             aria-labelledby="modal-modal-title"
@@ -266,11 +318,10 @@ export function Account() {
                                 value={selectedGame.gameName}
                                 label="Game"
                                 onChange={(event) => {
-                                    console.log("chosengame:" + event.target.value);
+                                    // console.log("chosengame:" + event.target.value);
                                     setSelectedGameId(event.target.value);
                                 }}
                             >
-                                {console.log(games)}
                                 {games.map((game) => (
                                      <MenuItem key={game.gameName} value={game.gameId}>{game.gameName}</MenuItem>
                                 ))}
@@ -311,6 +362,93 @@ export function Account() {
             </Box>
         </Modal>
 
+        <Modal open={openFollowingModal} onClose={handleClose}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description">
+            <Box sx={style}>
+                <Grid container spacing={2}>
+                    <Grid item xs={12} md={12}>
+                        <IconButton onClick={handleClose} sx={{float:"right"}}>
+                            <CloseRoundedIcon/>
+                        </IconButton>
+                        <Typography variant="h6">Following</Typography>
+                        <hr/>
+                    </Grid>
+                    <Grid item xs={12} sx={{padding: "2vh"}}>
+                        {(following.map((user) => (
+                            <>
+                            <Grid container spacing={1} display="flex-end" justifyContent="center" alignItems="flex-end">
+                                <Grid item xs={3} md={3}>
+                                    <Avatar alt={user.username}/>
+                                </Grid>
+                                <Grid item xs={5} md={5}>
+                                    <Typography variant="body1" sx={{fontWeight:500}}>{user.username}</Typography>
+                                </Grid>
+                                <Grid item xs={4} md={4}>
+                                    <Button size="small" color="secondary" 
+                                        variant="contained" onClick={() => submitUnfollow(user.userId)}>
+                                        Unfollow
+                                    </Button>
+                                </Grid>
+                            </Grid>
+                            <hr/>
+                            </>
+                        )))}
+                    </Grid>
+                </Grid>
+            </Box>
+        </Modal>
+
+        <Modal open={openFollowersModal} onClose={handleClose}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description">
+            <Box sx={style}>
+                <Grid container spacing={2}>
+                    <Grid item xs={12} md={12}>
+                        <IconButton onClick={handleClose} sx={{float:"right"}}>
+                            <CloseRoundedIcon/>
+                        </IconButton>
+                        <Typography variant="h6">Followers</Typography>
+                        <hr/>
+                    </Grid>
+                    <Grid item xs={12} sx={{padding: "2vh"}}>
+                        {(followers.map((user) => (
+                            <>
+                            <Grid key={user.username} container spacing={1} display="flex-end" justifyContent="center" alignItems="flex-end">
+                                <Grid item xs={3} md={3}>
+                                    <Avatar alt={user.username}/>
+                                </Grid>
+                                <Grid item xs={5} md={5}>
+                                    <Typography variant="body1" sx={{fontWeight:500}}>{user.username}</Typography>
+                                </Grid>
+                                <Grid item xs={4} md={4}>
+                                 {!isUserFollowing(user.userId) ? 
+                                    (<Button variant="contained" size="small" 
+                                            color="secondary" 
+                                            sx={{float: "right"}}
+                                            onClick={() => submitFollow(user.userId)}>
+                                            Follow
+                                        </Button>)
+                                 
+                                    :( <Button variant="contained" size="small" 
+                                            color="secondary" 
+                                            sx={{float: "right"}}
+                                            onClick={() => submitUnfollow(user.userId)}>
+                                            Unfollow
+                                        </Button>) }
+                                </Grid>
+                            </Grid>
+                            <hr/>
+                            </>
+                        )))}
+                    </Grid>
+                </Grid>
+            </Box>
+        </Modal>
+
+
+
+
         <Grid container spacing={2}>
             <Grid item xs={12}>
                 <Typography variant="h5" sx={{fontWeight: "500", paddingLeft: "1vh", paddingBottom: "2vh" }}>
@@ -335,9 +473,21 @@ export function Account() {
                         <Typography variant="body1" sx={{ paddingTop: "2vh"}}>
                             Gender: <b>{user.gender === 0 ? "F" : "M"}</b>
                         </Typography>
-                        <Typography variant="body1" sx={{ paddingTop: "2vh"}}>
-                            Followers: <b>{followers.length}</b> &nbsp; Following: <b>{following.length}</b>
-                        </Typography>
+                        
+
+                        <Link component="button" variant="body1" onClick={() => {setReload(reload + 1); setOpenFollowersModal(true);}}>
+                            <Typography sx={{ paddingTop: "2vh", color: "black"}}>
+                                Followers: <b>{followers.length}</b> &nbsp; 
+                            </Typography>
+                        </Link>
+
+                        <Link component="button" variant="body1" onClick={() => {setReload(reload + 1); setOpenFollowingModal(true);}}>
+                            <Typography sx={{ paddingTop: "2vh", color: "black"}}>
+                                Following: <b>{following.length}</b>
+                            </Typography>
+                        </Link>
+
+
                         <Typography variant="body1" sx={{ paddingTop: "2vh"}}>
                             Ratings: <b>5 coming soon</b>
                             <StarIcon sx={{color: "#f2bd0c", paddingBottom:"0.5vh"}} />
@@ -347,7 +497,7 @@ export function Account() {
                 </Paper>
             </Grid>
             <Grid item xs={12}>
-                <Paper sx={{height: "78vh", padding: "5vh"}}>
+                <Paper sx={{padding: "5vh"}}>
                     <Grid container spacing={1}>
                         <Grid item xs={8} md={8}>
                             <Typography variant="h5" sx={{ fontWeight:"500", paddingBottom: "4vh", paddingLeft: "1vh"}}>
@@ -390,6 +540,10 @@ export function Account() {
                                 </Grid>
                              </>
                             ))}
+                            {exp.length == 0 ? 
+                                <Typography variant="body1" sx={{paddingLeft: "0vh"}}> 
+                                    Add experiences now to show others how pro you are!
+                                </Typography> : null}
                     </Grid>
                 </Paper>
             </Grid>

@@ -205,6 +205,8 @@ public class UserSession implements UserSessionLocal {
         Query q = em.createQuery("SELECT DISTINCT u FROM User u, u.following f WHERE f.userId = :userId");
         q.setParameter("userId", userId);
         return (List<User>) q.getResultList();
+//          User u = getUserById(userId);
+//          return u.getFollowers();
     }
 
     @Override
@@ -220,6 +222,7 @@ public class UserSession implements UserSessionLocal {
             User u = getUserById(userId);
             User toFollow = getUserById(followingUserId);
             u.addFollowing(toFollow);
+//            toFollow.addFollower(u);
         } else {
             throw new NoResultException("User cannot follow yourself");
         }
@@ -230,6 +233,7 @@ public class UserSession implements UserSessionLocal {
         User u = getUserById(userId);
         User unfollow = getUserById(followingUserId);
         u.getFollowing().remove(unfollow);
+//        unfollow.removeFollower(u);
     }
 
     @Override

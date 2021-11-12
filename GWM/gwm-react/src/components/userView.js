@@ -203,21 +203,6 @@ export default function UserView(props) {
                                                 onClick={() => submitUnfollow()}>
                                                 Unfollow
                                             </Button>)}
-
-                                        {/* <Button variant="contained" size="small" 
-                                                endIcon={<AddIcon/>} color="secondary" 
-                                                sx={{float: "right"}}
-                                                rendered={!isFollowing}
-                                                onClick={() => submitFollow()}>
-                                            Follow
-                                        </Button>
-                                        <Button variant="contained" size="small" 
-                                                endIcon={<AddIcon/>} color="secondary" 
-                                                sx={{float: "right"}}
-                                                rendered={isFollowing}
-                                                onClick={() => submitUnfollow()}>
-                                            Unfollow
-                                        </Button> */}
                                         <Typography variant="h6" sx={{fontWeight: "500"}}>
                                         {user.username}
                                         </Typography>
@@ -265,6 +250,7 @@ export default function UserView(props) {
                                 </Grid>
                              </>
                             ))}
+                            {exp.length == 0 ? <Typography variant="body1" sx={{paddingLeft: "1vh"}}> No Experiences added</Typography>: null}
                             </Grid>
                         </Paper>
                     </Grid>
