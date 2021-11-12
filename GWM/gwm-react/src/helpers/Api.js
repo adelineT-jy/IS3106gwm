@@ -104,7 +104,7 @@ const Api = {
 
     //GAMES
     getAllGames() {
-        return fetch(`${SERVER_PREFIX}/admin/game`);
+        return fetch(`${SERVER_PREFIX}/users/game`);
     }
     // const addCard = () => {
     //   const card = {

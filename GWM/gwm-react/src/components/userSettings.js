@@ -116,7 +116,6 @@ export function CardSettings() {
     const [openDeleteCard, setOpenDeleteCard] = useState(false);
     const [openAddCard, setOpenAddCard] = useState(false);
 
-    // console.log("rendering");
 
     const uId =
       window.localStorage.user === undefined
@@ -530,6 +529,7 @@ export function ProfileSettings() {
             .then((response) => {
                 if(response.ok) {
                     console.log("ok");
+                    alert("Edit Profile Successful");
                     return response.json();
                 } else {
                     alert("Edit cannot be made");

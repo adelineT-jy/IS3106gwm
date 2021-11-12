@@ -203,8 +203,8 @@ public class UserSession implements UserSessionLocal {
     @Override
     public List<Game> getAllGames() throws NoResultException {
         Query q;
-        q = em.createQuery("SELECT g from Game g WHERE !isHidden ORDER BY g.gameId");
-
+        q = em.createQuery("SELECT g from Game g WHERE g.hidden = :inBoolean ORDER BY g.gameId");
+        q.setParameter("inBoolean", false);
         return q.getResultList();
     }
 

@@ -135,6 +135,9 @@ export function Register() {
                             onChange={(newDob) => {
                                 setDob(newDob);
                             }}
+                            inputProps={{
+                              readOnly: true,
+                             }}
                             renderInput={(params) => <TextField {...params} />}
                         />
                     </Grid>
