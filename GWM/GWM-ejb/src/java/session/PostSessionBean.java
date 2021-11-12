@@ -34,6 +34,9 @@ public class PostSessionBean implements PostSessionBeanLocal {
     private GameSessionLocal gameSessionLocal;
 
     @EJB
+    private ChatSessionLocal chatSessionLocal;
+
+    @EJB
     private UserSessionLocal userSessionLocal;
 
     @EJB
@@ -214,6 +217,10 @@ public class PostSessionBean implements PostSessionBeanLocal {
             transferSessionLocal.transferFunds(toAdd.getUserId(), userId, price);
             r.setStatus(RequestStatus.ACCEPTED);
             joinParty(partyId, toAdd.getUserId());
+            Chat c = getParty(partyId).getChat();
+            Chat cc = chatSessionLocal.getChat(c.getChatId());
+            cc.getUsers().add(toAdd);
+
         } catch (InsufficientFundsException ex1) {
             throw new InsufficientFundsException("Requester does not have enough funds to join.");
         } catch (NoResultException ex2) {

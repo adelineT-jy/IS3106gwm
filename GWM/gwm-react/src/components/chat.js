@@ -93,7 +93,7 @@ export default function Chat() {
   const card = (
     <React.Fragment>
       {iChatIndex === 0 ? (
-        <Card sx={{ bgcolor: "#1e1e1e", height: "100%" }}>
+        <Card sx={{ bgcolor: "#1e1e1e", maxHeight: "100vh" }} className="d-flex flex-column">
           <CardContent xs={8} md={10} className="d-flex flex-column">
             {dataChatMsg.map((msg) =>
               msg.msgOwnerId === uId
@@ -104,14 +104,14 @@ export default function Chat() {
           </CardContent>
         </Card>
       ) : (
-        <Card sx={{ bgcolor: "#1e1e1e", height: "100%" }}>
-          <Card sx={{ bgcolor: "#1e1e1e", height: "86%" }}>
-            <CardContent xs={8} md={10} className="d-flex flex-column">
+        <Card sx={{ bgcolor: "#1e1e1e",  maxHeight: "100vh" }} className="d-flex flex-column">
+          <Card sx={{ bgcolor: "#1e1e1e", height: "86vh"}}>
+            <CardContent xs={8} md={10} >
               {dataChatMsg.map((msg) =>
                 msg.msgOwnerId === uId
-                  ? msgRight(msg.message, msg.dateTime, msg.msgId)
-                  : msgLeft(msg.message, msg.dateTime, msg.msgId)
-              )}
+                ? msgRight(msg.message, msg.dateTime, msg.msgId)
+                : msgLeft(msg.message, msg.dateTime, msg.msgId)
+                )}
             </CardContent>
           </Card>
           <Card sx={{ height: "14%" }}>
@@ -122,14 +122,14 @@ export default function Chat() {
                 spacing={2}
                 direction="row"
                 width="98%"
-              >
+                >
                 {fullWidthTextField()}
                 <Button
                   type="submit"
                   color="secondary"
                   variant="contained"
                   onClick={handleSubmit}
-                >
+                  >
                   Send
                 </Button>
               </Stack>
