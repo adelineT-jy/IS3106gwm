@@ -732,7 +732,7 @@ export default function Parties() {
     }, [reload, uId, mode]);
 
     return (
-        <Box sx={{ bgcolor: "#e3f2fd", minHeight: "80vh", padding: 1 }}>
+        <Box sx={{minHeight: "80vh", padding: 1 }}>
             <Grid container spacing={3} sx={{ m: 0, width: "100%" }}>
                 <Grid
                     item

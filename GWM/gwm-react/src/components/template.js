@@ -266,6 +266,8 @@ export function Footer() {
                     left: 0,
                     right: 0,
                     mt: 0,
+                    paddingLeft: "2vh",
+                    paddingTop: "2vh"
                 }}
             >
                 <p>
