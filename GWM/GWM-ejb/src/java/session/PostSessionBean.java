@@ -1,5 +1,6 @@
 package session;
 
+import entity.Chat;
 import entity.Game;
 import entity.Party;
 import entity.Payment;
@@ -143,6 +144,17 @@ public class PostSessionBean implements PostSessionBeanLocal {
         em.persist(party);
         u.getParties().add(party);
         em.flush();
+
+        Chat c = new Chat();
+        c.setParty(Boolean.TRUE);
+        c.setName("Party" + party.getPartyId());
+        c.setUsers(users);
+        em.persist(c);
+        party.setChat(c);
+        for (User uu : users) {
+            User uuu = getUser(uu.getUserId());
+            uuu.getChats().add(c);
+        }
     }
 
     /*@Override
@@ -338,11 +350,11 @@ public class PostSessionBean implements PostSessionBeanLocal {
     public void createRequest(Request r, Long pId, Long uId) throws NoResultException, RequestExistException {
         Post p = getPost(pId);
         User u = getUser(uId);
-        
+
         if (u.getRequests().stream().anyMatch(x -> x.getPost().getPostId().equals(pId))) {
             throw new RequestExistException("You have already made a request for this post");
         }
-        
+
         r.setStatus(RequestStatus.PENDING);
         r.setRequester(u);
         em.persist(r);
