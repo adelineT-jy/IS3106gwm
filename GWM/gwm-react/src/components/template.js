@@ -187,8 +187,8 @@ function UserMenu() {
             <Logo />
             <NavTabs />
             <Typography
-                variant="h6"
-                sx={{ flexGrow: 1, color: "white" }}
+                variant="body1"
+                sx={{fontWeight: 450,flexGrow: 1, color: "white" }}
                 align="center"
             >
                 <Tooltip title="Account Settings">

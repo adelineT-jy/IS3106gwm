@@ -170,6 +170,7 @@ export function Account() {
             }
         })
         .then((response) => {
+            handleClose();
             setReloadExp(reloadExp + 1);
         });
     }

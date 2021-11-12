@@ -87,6 +87,14 @@ const Api = {
         });
     },
 
+    unfollow(uId, followId) {
+        return fetch(`${SERVER_PREFIX}/users/${uId}/following/${followId}`, {
+            method: "DELETE",
+            crossDomain: true,
+        });
+    },
+
+
     //GAMES
     getAllGames() {
         return fetch(`${SERVER_PREFIX}/admin/game`);
