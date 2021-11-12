@@ -123,17 +123,17 @@ export const Post = (post) => {
                         Request Text
                     </TextField>
                     <Button
-                        sx={{ width: "50%" }}
+                        sx={{float: "left" }}
                         onClick={handleClose}
-                        color="error"
+                        color="primary"
                         variant="contained"
                     >
                         Cancel
                     </Button>
                     <Button
-                        sx={{ width: "50%" }}
+                        sx={{float: "right"}}
                         onClick={() => submitRequest(post)}
-                        color="success"
+                        color="secondary"
                         variant="contained"
                     >
                         Request to Join
