@@ -102,9 +102,17 @@ public class AdminSession implements AdminSessionLocal {
     }
 
     @Override
-    public void createGame(Game game) {
-        game.setHidden(false);
-        em.persist(game);
+    public void createGame(Game game) throws NoResultException {
+        Query q = em.createQuery("SELECT g FROM Game g WHERE g.gameName = :gameName");
+        q.setParameter("gameName", game.getGameName());
+
+        try {
+            Game g1 = (Game) q.getSingleResult();
+            throw new NoResultException("Game already exist!");
+        } catch (javax.persistence.NoResultException | NonUniqueResultException ex) {
+            game.setHidden(false);
+            em.persist(game);
+        }
     }
 
     @Override
@@ -133,14 +141,33 @@ public class AdminSession implements AdminSessionLocal {
 
     @Override
     public void updateGame(Game game) throws NoResultException {
-        Game oldGame = getGame(game.getGameId());
+        Query q = em.createQuery("SELECT g FROM Game g WHERE g.gameName = :gameName");
+        q.setParameter("gameName", game.getGameName());
 
-        oldGame.setGameDescription(game.getGameDescription());
-        oldGame.setGameDownloadLink(game.getGameDownloadLink());
-        oldGame.setGameName(game.getGameName());
-        oldGame.setHidden(game.isHidden());
+        try {
+            Game g1 = (Game) q.getSingleResult();
+            if (!g1.getGameName().equals(game.getGameName())) {
+                throw new NoResultException("Game already exist!");
+            } else {
+                Game oldGame = getGame(game.getGameId());
 
-        em.merge(oldGame);
+                oldGame.setGameDescription(game.getGameDescription());
+                oldGame.setGameDownloadLink(game.getGameDownloadLink());
+                oldGame.setGameName(game.getGameName());
+                oldGame.setHidden(game.isHidden());
+
+                em.merge(oldGame);
+            }
+        } catch (javax.persistence.NoResultException | NonUniqueResultException ex) {
+            Game oldGame = getGame(game.getGameId());
+
+            oldGame.setGameDescription(game.getGameDescription());
+            oldGame.setGameDownloadLink(game.getGameDownloadLink());
+            oldGame.setGameName(game.getGameName());
+            oldGame.setHidden(game.isHidden());
+
+            em.merge(oldGame);
+        }
     }
 
     @Override

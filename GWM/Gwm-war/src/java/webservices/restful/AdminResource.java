@@ -32,13 +32,13 @@ public class AdminResource {
     @GET
     @Path("/login/{email}/{password}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response login(@PathParam("email") String email, 
+    public Response login(@PathParam("email") String email,
             @PathParam("password") String password) {
         try {
             Admin admin = adminSessionLocal.loginAdmin(email, password);
             return Response.status(200).entity(admin).type(MediaType.APPLICATION_JSON).build();
         } catch (Exception ex) {
-            JsonObject exception = Json.createObjectBuilder().add("error",  ex.getMessage()).build();
+            JsonObject exception = Json.createObjectBuilder().add("error", ex.getMessage()).build();
             return Response.status(404, ex.getMessage()).entity(exception).type(MediaType.APPLICATION_JSON).build();
         }
     }
@@ -75,9 +75,14 @@ public class AdminResource {
     @Path("/game")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Game createGame(Game game) {
-        adminSessionLocal.createGame(game);
-        return game;
+    public Response createGame(Game game) {
+        try {
+            adminSessionLocal.createGame(game);
+            return Response.status(200).entity(game).type(MediaType.APPLICATION_JSON).build();
+        } catch (Exception ex) {
+            JsonObject exception = Json.createObjectBuilder().add("error", ex.getMessage()).build();
+            return Response.status(404, ex.getMessage()).entity(exception).type(MediaType.APPLICATION_JSON).build();
+        }
     }
 
     @GET
@@ -112,7 +117,7 @@ public class AdminResource {
             return Response.status(400).entity(exception).build();
         }
     }
-    
+
     @GET
     @Path("/game")
     @Produces(MediaType.APPLICATION_JSON)
@@ -139,10 +144,10 @@ public class AdminResource {
             return Response.status(200).build();
         } catch (Exception ex) {
             JsonObject exception = Json.createObjectBuilder().add("error", ex.getMessage()).build();
-            return Response.status(404).entity(exception).type(MediaType.APPLICATION_JSON).build();
+            return Response.status(404, ex.getMessage()).entity(exception).type(MediaType.APPLICATION_JSON).build();
         }
     }
-    
+
     @PUT
     @Path("/hideGame/{gameId}")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -156,7 +161,7 @@ public class AdminResource {
             return Response.status(404).entity(exception).type(MediaType.APPLICATION_JSON).build();
         }
     }
-    
+
     @PUT
     @Path("/unhideGame/{gameId}")
     @Consumes(MediaType.APPLICATION_JSON)
