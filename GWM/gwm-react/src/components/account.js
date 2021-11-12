@@ -60,7 +60,7 @@ export function Register() {
           alert(error);
         })
     } catch (e) {
-        alert(error);
+        alert(e);
     }
   };
   return (
