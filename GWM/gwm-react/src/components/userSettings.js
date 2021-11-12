@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react"; 
+import React, {Fragment, useState, useEffect} from "react"; 
 import {Box, IconButton, Card, Collapse, Modal, Grid, Paper, Typography, TextField, FormControl, InputLabel, Select, MenuItem, Button, Tabs, Tab, CardContent, CardActions} from "@mui/material";
 import {Switch, Route, useRouteMatch, Link} from "react-router-dom";
 import { styled } from '@mui/material/styles';
@@ -440,7 +440,7 @@ export function CardSettings() {
                     </Button>
                 </Grid>
                 {cards.map((card) => (
-                    <>
+                    <Fragment key={card.id}>
                     <Grid item xs={5}>
                         <Card sx={{width: "52vh", padding: "2vh", paddingTop:"2vh", backgroundColor: "#2c2e2d"}}>
                             <CardContent variant="outlined" sx={{paddingBottom:"0"}}>
@@ -490,7 +490,7 @@ export function CardSettings() {
                             </Collapse>
                         </Card>
                     </Grid>
-                    </>
+                    </Fragment>
                 ))}
             </Grid> 
         </Paper>
