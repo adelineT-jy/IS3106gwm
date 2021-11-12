@@ -44,6 +44,8 @@ export function Register() {
             .then((response) => {
                 if (!response.ok) {
                     throw new Error(response.statusText);
+                } else {
+                  return response.json();
                 }
             })
             .then((data) => {
