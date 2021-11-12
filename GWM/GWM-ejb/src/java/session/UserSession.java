@@ -20,6 +20,7 @@ import error.NoResultException;
 import javax.persistence.NonUniqueResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 
 /**
  *
@@ -58,15 +59,41 @@ public class UserSession implements UserSessionLocal {
             throw new NoResultException("Username does not exist");
         }
     }
+    
+    private boolean doesUsernameExist(String username) throws CreateUserException {
+        Query query = em.createQuery("SELECT u FROM User u WHERE u.username = :username");
+        query.setParameter("username", username);
+
+        List<User> u = query.getResultList();
+        if (u != null && u.size() == 1) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
+    private boolean doesEmailExist(String email) throws CreateUserException {
+        TypedQuery<Long> query = em.createQuery("SELECT COUNT(u) FROM User u WHERE u.email = :email", Long.class);
+        query.setParameter("email", email);
+        Long count = query.getSingleResult();
+
+        if (count >= 1) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     @Override
     public void createUser(User u) throws CreateUserException {
-        try {
-            em.persist(u);
-            em.flush();
-        } catch (Exception ex) {
-            throw new CreateUserException(ex.getMessage());
+        if (doesUsernameExist(u.getUsername())) {
+            throw new CreateUserException("Username exists");
         }
+        if (doesEmailExist(u.getEmail())) {
+            throw new CreateUserException("Email exists");
+        }
+        em.persist(u);
+        em.flush();
     }
 
     @Override

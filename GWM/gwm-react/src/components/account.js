@@ -46,23 +46,22 @@ export function Register() {
         crossDomain: true,
       })
         .then((response) => {
-          if (response.status === 200) {
-            console.log("login success");
-            return response.json();
-          } else {
-            response.json().then(function (e) {
-              alert(e.error);
-              setError(e.error);
-            });
+          if (!response.ok) {
+            throw new Error(response.statusText);
           }
         })
         .then((data) => {
-          console.log(data);
-          window.localStorage.setItem("user", JSON.stringify(data));
-          history.push("/posts");
-        });
+          if (data != undefined) {
+            console.log(data);
+            window.localStorage.setItem("user", JSON.stringify(data));
+            history.push("/posts");
+          }
+        })
+        .catch((error) => {
+          alert(error);
+        })
     } catch (e) {
-      console.log(e.message);
+        alert(error);
     }
   };
   return (

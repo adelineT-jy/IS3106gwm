@@ -249,6 +249,7 @@ export function CardSettings() {
                                     size="small"
                                     fullWidth
                                     required="true"
+                                    autofocus
                                     error={topupAmt === 0}
                                     onChange={(event) => setTopupAmt(event.target.value)}
                                     />
@@ -324,6 +325,7 @@ export function CardSettings() {
                                 value={cardNum}
                                 size="small"
                                 fullWidth
+                                autofocus
                                 required="true"
                                 error={cardNum.length < 16}
                                 onChange={(event) => {
