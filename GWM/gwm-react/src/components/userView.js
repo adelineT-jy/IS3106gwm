@@ -186,31 +186,30 @@ export default function UserView(props) {
                                 <Typography variant="body1" sx={{ fontWeight:"500", paddingBottom: "4vh", paddingLeft: "1vh"}}>
                                     Experiences
                                 </Typography>
-
-                                {exp.map((eachExp) => (
-                                <Fragment key={eachExp.game.gameId}>
-                                <Grid item xs={12} md={12} key={eachExp.experienceId}>
-                                    <Card sx={{maxWidth: "40vh"}}>
-                                    <CardMedia
-                                        component="img"
-                                        height="120"
-                                        image={eachExp.game.gameName === "Dota 2" ? dota : (eachExp.game.gameName === "League of Legends" ? lol : cs)}
-                                        alt="Game"/>
-                                    <CardContent sx={{paddingLeft: "4vh", paddingBottom: "1vh"}}>
-                                        <Typography gutterBottom variant="body1" component="div">
-                                            <b>{eachExp.game.gameName}</b>
-                                        </Typography>
-                                        <Typography variant="body1">
-                                            <b>Ranking:</b> {eachExp.ranking}
-                                        </Typography>
-                                        <Typography variant="body1">
-                                            <b>Profile Link:</b> {eachExp.profileLink}
-                                        </Typography>
-                                    </CardContent>
-                                    </Card>
+                                <Grid container spacing={1}>
+                                    {exp.map((eachExp) => (
+                                    <Grid item xs={4} md={4} key={eachExp.experienceId}>
+                                        <Card sx={{maxWidth: "40vh"}}>
+                                        <CardMedia
+                                            component="img"
+                                            height="120"
+                                            image={eachExp.game.gameName === "Dota 2" ? dota : (eachExp.game.gameName === "League of Legends" ? lol : cs)}
+                                            alt="Game"/>
+                                        <CardContent sx={{paddingLeft: "4vh", paddingBottom: "1vh"}}>
+                                            <Typography gutterBottom variant="body1" component="div">
+                                                <b>{eachExp.game.gameName}</b>
+                                            </Typography>
+                                            <Typography variant="body1">
+                                                <b>Ranking:</b> {eachExp.ranking}
+                                            </Typography>
+                                            <Typography variant="body1">
+                                                <b>Profile Link:</b> {eachExp.profileLink}
+                                            </Typography>
+                                        </CardContent>
+                                        </Card>
+                                    </Grid>
+                                ))}
                                 </Grid>
-                             </Fragment>
-                            ))}
                             {exp.length === 0 ? <Typography variant="body1" sx={{paddingLeft: "1vh"}}> No Experiences added</Typography>: null}
                             </Grid>
                         </Paper>
