@@ -5,7 +5,9 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import StarIcon from '@mui/icons-material/Star';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
+
 import Api from "../helpers/Api.js";
+import UserView, { modalStyle } from "./userView";
 
 import lol from "../images/lol.jpeg"
 import dota from "../images/dota.jpeg"
@@ -379,7 +381,9 @@ export function Account() {
                                     <Avatar alt={user.username}/>
                                 </Grid>
                                 <Grid item xs={5} md={5}>
-                                    <Typography variant="body1" sx={{fontWeight:500}}>{user.username}</Typography>
+                                    <Typography variant="body1" sx={{fontWeight:500, color: "black"}}>
+                                        <UserView uId={user.userId}/>
+                                    </Typography>
                                 </Grid>
                                 <Grid item xs={4} md={4}>
                                     <Button size="small" color="secondary" 
@@ -416,7 +420,9 @@ export function Account() {
                                     <Avatar alt={user.username}/>
                                 </Grid>
                                 <Grid item xs={5} md={5}>
-                                    <Typography variant="body1" sx={{fontWeight:500}}>{user.username}</Typography>
+                                    <Typography variant="body1" sx={{fontWeight:500}}>
+                                        <UserView uId={user.userId}/>
+                                    </Typography>
                                 </Grid>
                                 <Grid item xs={4} md={4}>
                                  {!isUserFollowing(user.userId) ? 
@@ -485,10 +491,10 @@ export function Account() {
                         </Link>
 
 
-                        <Typography variant="body1" sx={{ paddingTop: "2vh"}}>
+                        {/* <Typography variant="body1" sx={{ paddingTop: "2vh"}}>
                             Ratings: <b>5 coming soon</b>
                             <StarIcon sx={{color: "#f2bd0c", paddingBottom:"0.5vh"}} />
-                        </Typography>
+                        </Typography> */}
                     </Grid>
                     </Grid>
                 </Paper>
@@ -540,7 +546,8 @@ export function Account() {
                             {exp.length === 0 ? 
                                 <Typography variant="body1" sx={{paddingLeft: "0vh"}}> 
                                     Add experiences now to show others how pro you are!
-                                </Typography> : null}
+                                </Typography> 
+                                : null}
                     </Grid>
                 </Paper>
             </Grid>

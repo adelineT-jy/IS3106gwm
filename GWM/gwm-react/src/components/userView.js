@@ -128,7 +128,7 @@ export default function UserView(props) {
 
     return (
         <>
-            <Link color="secondary" underline="hover" component="button" onClick={handleOpen}>
+            <Link color="secondary" underline="hover" component="button" onClick={handleOpen} sx={{fontWeight: 500}}>
                 {user.username}
             </Link>
             <Modal

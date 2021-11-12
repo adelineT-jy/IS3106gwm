@@ -61,7 +61,10 @@ export default function Settings() {
                                 </Typography>
                                 <Tabs orientation="vertical" value={value} onChange={handleChange} variant='fullWidth' sx={{float: "left"}}>
                                     <Tab label="Profile" value={path} to={path} component={Link} sx={{fontWeight:"600", color: 'black', "&.Mui-selected": {color:"red"}, "&.hover": {color: "red", opacity: 1} }} />
-                                    <Tab label="Finance" value={`${path}/cards`} to={`${path}/cards`} component={Link}  sx={{fontWeight:"600", color: "black", "&.Mui-selected": {color:"red"}}} />
+                                    <Tab label="Finance" 
+                                        value={`${path}/cards`} to={`${path}/cards`} 
+                                        component={Link}  
+                                        sx={{fontWeight:"600", color: "black", "&.Mui-selected": {color:"red"}, "&.hover": { color: "red", opacity: 1 },}} />
                                 </Tabs>
                             </Paper>
                         </Grid>
