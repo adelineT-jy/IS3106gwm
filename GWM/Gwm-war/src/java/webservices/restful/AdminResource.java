@@ -38,8 +38,8 @@ public class AdminResource {
             Admin admin = adminSessionLocal.loginAdmin(email, password);
             return Response.status(200).entity(admin).type(MediaType.APPLICATION_JSON).build();
         } catch (Exception ex) {
-            JsonObject exception = Json.createObjectBuilder().add("error", ex.getMessage()).build();
-            return Response.status(404).entity(exception).type(MediaType.APPLICATION_JSON).build();
+            JsonObject exception = Json.createObjectBuilder().add("error",  ex.getMessage()).build();
+            return Response.status(404, ex.getMessage()).entity(exception).type(MediaType.APPLICATION_JSON).build();
         }
     }
 
