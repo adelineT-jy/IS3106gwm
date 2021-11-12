@@ -6,7 +6,6 @@ import { Box, Button, Paper, TextField, Typography, Stack, } from "@mui/material
 export function AdminLogin() {
     const [email, setEmail] = React.useState("");
     const [password, setPassword] = React.useState("");
-    const [error, setError] = React.useState("");
     let history = useHistory();
 
     const handleLogin = (event) => {
@@ -22,7 +21,6 @@ export function AdminLogin() {
             )
                 .then((response) => {
                     if (response.status === 200) {
-                        setError("");
                         return response.json();
                     } else {
                         throw new Error('Login details are invalid');

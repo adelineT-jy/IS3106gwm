@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import StarIcon from '@mui/icons-material/Star';
 import AddIcon from '@mui/icons-material/Add';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
@@ -229,7 +229,7 @@ export default function UserView(props) {
                                 </Typography>
 
                                 {exp.map((eachExp) => (
-                                <>
+                                <Fragment key={eachExp.game.gameId}>
                                 <Grid item xs={12} md={12} key={eachExp.experienceId}>
                                     <Card sx={{maxWidth: "40vh"}}>
                                     <CardMedia
@@ -250,7 +250,7 @@ export default function UserView(props) {
                                     </CardContent>
                                     </Card>
                                 </Grid>
-                             </>
+                             </Fragment>
                             ))}
                             {exp.length === 0 ? <Typography variant="body1" sx={{paddingLeft: "1vh"}}> No Experiences added</Typography>: null}
                             </Grid>

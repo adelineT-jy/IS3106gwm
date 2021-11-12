@@ -96,8 +96,8 @@ export default function Chat() {
           <CardContent xs={8} md={10} className="d-flex flex-column">
             {dataChatMsg.map((msg) =>
               msg.msgOwnerId === uId
-                ? msgRight(msg.message, msg.dateTime)
-                : msgLeft(msg.message, msg.dateTime)
+                ? msgRight(msg.message, msg.dateTime, msg.msgId)
+                : msgLeft(msg.message, msg.dateTime, msg.msgId)
             )}
           </CardContent>
         </Card>
@@ -107,8 +107,8 @@ export default function Chat() {
             <CardContent xs={8} md={10} className="d-flex flex-column">
               {dataChatMsg.map((msg) =>
                 msg.msgOwnerId === uId
-                  ? msgRight(msg.message, msg.dateTime)
-                  : msgLeft(msg.message, msg.dateTime)
+                  ? msgRight(msg.message, msg.dateTime, msg.msgId)
+                  : msgLeft(msg.message, msg.dateTime, msg.msgId)
               )}
             </CardContent>
           </Card>
@@ -151,9 +151,9 @@ export default function Chat() {
     );
   }
 
-  function msgLeft(mes, date) {
+  function msgLeft(mes, date, id) {
     return (
-      <div>
+      <div key={id}>
         <Stack
           direction="column"
           justifyContent="flex start"
@@ -169,9 +169,10 @@ export default function Chat() {
     );
   }
 
-  function msgRight(mes, date) {
+  function msgRight(mes, date, id) {
     return (
       <Stack
+        key={id}
         direction="column"
         justifyContent="flex start"
         alignItems="flex-end"

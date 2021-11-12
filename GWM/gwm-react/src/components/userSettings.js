@@ -133,7 +133,7 @@ export function CardSettings() {
                 setCards(tempUser.cards);
         });
 
-    }, [reload]);
+    }, [reload, uId]);
 
     //card expand more
     const handleExpandClick = () => {
@@ -463,7 +463,7 @@ export function CardSettings() {
                                         </Typography>
                                     </Grid>
                                     <Grid item xs={4} md={4}>
-                                    <img src={MasterCard}  width="50" style={{float: "right"}}/>
+                                    <img alt="Mastercard" src={MasterCard}  width="50" style={{float: "right"}}/>
                                     </Grid>
                                 </Grid>
                             </CardContent>
@@ -518,7 +518,7 @@ export function ProfileSettings() {
             setUser(tempUser);
             console.log(user);
         })
-    },[reload]);
+    },[reload, uId]);
 
     const handleEdit = (event) => {
         event.preventDefault();
