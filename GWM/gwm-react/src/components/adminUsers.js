@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Box, Button, TextField, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TablePagination, TableSortLabel, Paper } from '@mui/material';
-// import { visuallyHidden } from '@mui/utils';
 
 export default function AdminUsers() {
     const [reload, setReload] = React.useState(0);
