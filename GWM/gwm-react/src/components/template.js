@@ -156,6 +156,7 @@ function GuestMenu() {
 }
 
 function AdminMenu() {
+    const history = useHistory()
     return (
         <Toolbar>
             <Logo />
@@ -172,7 +173,15 @@ function AdminMenu() {
                     JSON.parse(window.localStorage.admin).userId}
                 ) &nbsp;
             </Typography>
-            <Button variant="text" href="/logout" startIcon={<Logout/>}>
+            <Button
+                variant="text"
+                startIcon={<Logout />}
+                onClick={() => {
+                    if (window.confirm("Are you sure you want to sign out?") === true) {
+                        history.push('/logout')
+                    };
+                }}
+            >
                 Sign out
             </Button>
         </Toolbar>
@@ -188,7 +197,7 @@ function UserMenu() {
             <NavTabs />
             <Typography
                 variant="body1"
-                sx={{fontWeight: 450,flexGrow: 1, color: "white" }}
+                sx={{ fontWeight: 450, flexGrow: 1, color: "white" }}
                 align="center"
             >
                 <Tooltip title="Account Settings">
@@ -200,7 +209,15 @@ function UserMenu() {
                 {window.localStorage.user !== undefined &&
                     JSON.parse(window.localStorage.user).username}
             </Typography>
-            <Button variant="text" href="/logout" startIcon={<Logout/>}>
+            <Button
+                variant="text"
+                startIcon={<Logout />}
+                onClick={() => {
+                    if (window.confirm("Are you sure you want to sign out?") === true) {
+                        history.push('/logout')
+                    };
+                }}
+            >
                 Sign out
             </Button>
         </Toolbar>
