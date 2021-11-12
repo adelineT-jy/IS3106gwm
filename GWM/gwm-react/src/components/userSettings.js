@@ -104,7 +104,7 @@ export function CardSettings() {
     const [cvv, setCvv] = useState("");
 
     //top up
-    const [openTopupModal, setOpenTopupModal] = useState("false");
+    const [openTopupModal, setOpenTopupModal] = useState(false);
     const [topupAmt, setTopupAmt] = useState(0);
     const [topupWithCard, setTopupWithCard] = useState("");
 

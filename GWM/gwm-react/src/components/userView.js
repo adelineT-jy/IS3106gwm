@@ -43,12 +43,20 @@ export default function UserView(props) {
     const [exp, setExp] = useState([]);
     const [reload, setReload] = useState(0);
     const [isFollowing, setIsFollowing] = useState(false);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
 
     const currentUId = window.localStorage.user === undefined
         ? 0
         : JSON.parse(window.localStorage.user).userId;
+    
+    
 
     useEffect(() => {
+          
+        if (currentUId !== 0) {
+            setIsLoggedIn(true);
+        }
+
         Api.getUser(uId)
         .then((response) => response.json())
         .then((tempUser) => {
@@ -129,36 +137,6 @@ export default function UserView(props) {
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description"
             >
-                {/* <Box sx={modalStyle} centered>
-                    <List sx={{ width: "100%" }}>
-                        <ListItem>
-                            <ListItemAvatar>
-                                <Avatar />
-                            </ListItemAvatar>
-                            <ListItemText
-                                primary={user.username}
-                                secondary={`Gender: ${user.gender === 0 ? "F" : "M"}`}
-                            />
-                        </ListItem>
-                        <ListItem>
-                            <Stack
-                                direction="row"
-                                justifyContent="space-between"
-                                spacing={2}
-                            >
-                                <Chip label={user.isAvailable ? "Available" : "Busy"} color={user.isAvailable ? "success" : "warning"}/>
-                            </Stack>
-                        </ListItem>
-                    </List>
-                    <Button
-                        sx={{ width: "50%" }}
-                        onClick={submitFollow}
-                        color="info"
-                        variant="contained"
-                    >
-                        Follow
-                    </Button>
-                </Box> */}
                 <Box sx={modalStyle} centered>
                     <Grid container spacing={2}>
                         <Paper sx={{ width: "100vh", padding: "2vh"}}>
@@ -172,19 +150,20 @@ export default function UserView(props) {
                                                 sx={{width: "10vh", height: "10vh"}}/>
                                     </Grid>
                                     <Grid item xs={10} md={10}>
-                                        {!isFollowing ? 
+                                        {!isFollowing && isLoggedIn ? 
                                             (<Button variant="contained" size="small" 
                                                 endIcon={<AddIcon/>} color="secondary" 
                                                 sx={{float: "right"}}
                                                 onClick={() => submitFollow()}>
                                                 Follow
-                                            </Button>) :
-                                            (<Button variant="contained" size="small" 
-                                                endIcon={<AddIcon/>} color="secondary" 
-                                                sx={{float: "right"}}
-                                                onClick={() => submitUnfollow()}>
-                                                Unfollow
-                                            </Button>)}
+                                            </Button>) : (isLoggedIn ? 
+                                                (<Button variant="contained" size="small" 
+                                                    endIcon={<AddIcon/>} color="secondary" 
+                                                    sx={{float: "right"}}
+                                                    onClick={() => submitUnfollow()}>
+                                                    Unfollow
+                                                </Button>) : null)}
+                                            
                                         <Typography variant="h6" sx={{fontWeight: "500"}}>
                                         {user.username}
                                         </Typography>
@@ -194,10 +173,10 @@ export default function UserView(props) {
                                         <Typography variant="body1" sx={{ paddingTop: "2vh"}}>
                                             Followers: <b>{followers.length}</b> &nbsp; Following: <b>{following.length}</b>
                                         </Typography>
-                                        <Typography variant="body1" sx={{ paddingTop: "2vh"}}>
+                                        {/* <Typography variant="body1" sx={{ paddingTop: "2vh"}}>
                                             Ratings: <b>coming soon</b>
                                             <StarIcon sx={{color: "#f2bd0c", paddingBottom:"0.5vh"}} />
-                                        </Typography>
+                                        </Typography> */}
                                     </Grid>
                                 </Grid>
                             </Grid>

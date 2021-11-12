@@ -64,7 +64,7 @@ export function Account() {
 
     //add exp
     const [openAddExpModal, setOpenAddExpModal] = useState(false); 
-    const [selectedGameId, setSelectedGameId] = useState("");
+    const [selectedGameId, setSelectedGameId] = useState(0);
     const [selectedGame, setSelectedGame] = useState("");
     const [games, setGames] = useState([]);
 
