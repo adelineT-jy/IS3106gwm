@@ -533,12 +533,12 @@ export const Party = (party) => {
                     </Grid>
                     <Grid container spacing={2}>
                         <Grid item xs={6} sm={4}>
-                            <Typography sx={{ mt: 4 }} variant="body1">
+                            <Typography sx={{ mt: 4 }} variant="h6">
                                 Posts
                             </Typography>
                         </Grid>
                         <Grid item xs={6} sm={8}>
-                            <Typography sx={{ mt: 4 }} variant="body1">
+                            <Typography sx={{ mt: 4 }} variant="h6">
                                 Requests
                             </Typography>
                         </Grid>
@@ -589,36 +589,67 @@ export const Party = (party) => {
                                 )}
                             </List>
                         </Grid>
+                        {party.partyOwner.userId === uId && (
+                            <Grid item xs={12}>
+                                <Stack spacing={1}>
+                                    <Button
+                                        sx={{ width: "50%" }}
+                                        onClick={handleOpen}
+                                        color={
+                                            party.post === undefined
+                                                ? "success"
+                                                : "warning"
+                                        }
+                                        variant="contained"
+                                    >
+                                        {party.post === undefined
+                                            ? "Create a "
+                                            : "Edit your "}{" "}
+                                        Post
+                                    </Button>
+                                    {party.post === undefined ? null : (
+                                        <Button
+                                            sx={{ width: "50%" }}
+                                            onClick={deletePost}
+                                            color="error"
+                                            variant="contained"
+                                        >
+                                            Delete your Post
+                                        </Button>
+                                    )}
+                                </Stack>
+                            </Grid>
+                        )}
                     </Grid>
-                    {party.partyOwner.userId === uId ? (
-                        <Stack spacing={1}>
-                            <Button
-                                sx={{ width: "50%" }}
-                                onClick={handleOpen}
-                                color={
-                                    party.post === undefined
-                                        ? "success"
-                                        : "warning"
-                                }
-                                variant="contained"
-                            >
-                                {party.post === undefined
-                                    ? "Create a "
-                                    : "Edit your "}{" "}
-                                Post
-                            </Button>
-                            {party.post === undefined ? null : (
-                                <Button
-                                    sx={{ width: "50%" }}
-                                    onClick={deletePost}
-                                    color="error"
-                                    variant="contained"
-                                >
-                                    Delete your Post
-                                </Button>
-                            )}
-                        </Stack>
-                    ) : null}
+                    {party.partyEndTime !== undefined && (
+                        <Grid container spacing={2}>
+                            <Grid item xs={12}>
+                                <Typography sx={{ mt: 4 }} variant="h6">
+                                    Reviews
+                                </Typography>
+                            </Grid>
+                            {party.reviews.map((review) => {
+                                return (
+                                    <Grid item xs={12} sm={6} md={4}>
+                                        <Card sx={{ p: 2, m: 2 }} raised>
+                                            <Typography variant="body1">
+                                                Review by{" "}
+                                                <UserView uId={review.userId} />
+                                            </Typography>
+                                            <Rating
+                                                value={review.rating}
+                                                size="large"
+                                                readOnly
+                                            />
+                                            <Typography variant="body2">
+                                                {review.note}
+                                            </Typography>
+                                        </Card>
+                                    </Grid>
+                                );
+                            })}
+                        </Grid>
+                    )}
                 </Collapse>
             </CardContent>
         </Card>
