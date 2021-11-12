@@ -71,7 +71,6 @@ export function Account() {
     //view followings 
     const [openFollowingModal, setOpenFollowingModal] = useState(false); 
     const [openFollowersModal, setOpenFollowersModal] = useState(false); 
-    const [isFollowing, setIsFollowing] = useState(false);
 
     const [reload, setReload] = useState(0);
     let history = useHistory();
@@ -81,10 +80,8 @@ export function Account() {
                 return u.userId === userId;
             });
             if (result.length > 0) {
-                // setIsFollowing(true);
                 return true;
             }
-            console.log("isFollowing:" + userId + isFollowing);
             return false;
         }
 
@@ -326,7 +323,7 @@ export function Account() {
                                      <MenuItem key={game.gameName} value={game.gameId}>{game.gameName}</MenuItem>
                                 ))}
                             </Select>
-                            </FormControl>
+                        </FormControl>
                     </Grid>
                     <Grid item xs={12} md={12}>
                         <TextField

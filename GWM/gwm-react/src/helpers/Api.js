@@ -94,6 +94,13 @@ const Api = {
         });
     },
 
+    topupWallet(uId, amount) {
+        return fetch(`${SERVER_PREFIX}/users/${uId}/wallet/${amount}`, {
+            method: "POST",
+            crossDomain: true,
+        });
+    },
+
 
     //GAMES
     getAllGames() {
