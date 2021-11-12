@@ -83,7 +83,6 @@ public class DataInitialisationSession {
             g3.setGameDescription("Every day, millions of players worldwide enter battle as one of over a hundred Dota heroes. And no matter if it's their 10th hour of play or 1,000th, there's always something new to discover.");
             g3.setGameDownloadLink("https://store.steampowered.com/app/570/Dota_2/");
             adminSessionLocal.createGame(g3);
-            
 
             User u = new User();
             u.setEmail("first@gmail.com");
@@ -348,7 +347,7 @@ public class DataInitialisationSession {
             u31.setGender((byte) 1);
             u31.setDob(new Date());
             userSessionLocal.createUser(u31);
-            
+
             User badUser = new User();
             badUser.setEmail("Naughty@gmail.com");
             badUser.setUsername("NaughtyUser");
@@ -356,7 +355,6 @@ public class DataInitialisationSession {
             badUser.setGender((byte) 1);
             badUser.setDob(new Date());
             userSessionLocal.createUser(badUser);
-
 
             Party p = new Party();
             p.setInviteLink("https://discord.gg/WnD7mCpw");
@@ -413,12 +411,12 @@ public class DataInitialisationSession {
             p10.setInviteLink("https://discord.gg/WnD7mCpw");
             p10.setPartyStartTime(new Date());
             postSessionBeanLocal.createParty(p10, 21L);
-            
+
             Party p11 = new Party();
             p11.setInviteLink("inviteLink110");
             p11.setPartyStartTime(new Date());
             postSessionBeanLocal.createParty(p11, 23L);
-            
+
             Party badParty = new Party();
             badParty.setInviteLink("badLink");
             badParty.setPartyStartTime(new Date());
@@ -535,7 +533,7 @@ public class DataInitialisationSession {
             o6.setRequestPrice(BigDecimal.valueOf(50));
             o6.setGame(g2);
             postSessionBeanLocal.createPost(o6, 4L, 7L, 2L);
-            
+
             Post o7 = new Post();
             o7.setTitle("Hello everyone!");
             o7.setDescription("Testing testing");
@@ -543,7 +541,7 @@ public class DataInitialisationSession {
             o7.setRequestPrice(BigDecimal.valueOf(0));
             o7.setGame(g1);
             postSessionBeanLocal.createPost(o7, 12L, 23L, 1L);
-            
+
             Post badPost = new Post();
             badPost.setTitle("Accepting Bets");
             badPost.setDescription("Random 1v1 game, odds 1:1, no gimmicks, Paypal fast cash, no scams");
@@ -551,100 +549,6 @@ public class DataInitialisationSession {
             badPost.setRequestPrice(BigDecimal.valueOf(10));
             badPost.setGame(g2);
             postSessionBeanLocal.createPost(badPost, 13L, 32L, 2L);
-
-            Chat c1 = new Chat();
-            c1.setName("party p1");
-            c1.setParty(Boolean.TRUE);
-            c1.getUsers().add(u);
-            c1.getUsers().add(u3);
-            c1.getUsers().add(u4);
-            c1.getUsers().add(u6);
-            chatSessionBeanLocal.addGroupChat(c1, new Long(1));
-
-            ChatMessage cm1 = new ChatMessage();
-            cm1.setMessage("Hey whatsupppppp");
-            chatSessionBeanLocal.addMessage(cm1, new Long(3), new Long(1));
-
-            ChatMessage cm2 = new ChatMessage();
-            cm2.setMessage("Yo");
-            chatSessionBeanLocal.addMessage(cm2, new Long(6), new Long(1));
-
-            ChatMessage cm3 = new ChatMessage();
-            cm3.setMessage("Lets get this Boisssssssssssssssssssssssssssssss");
-            chatSessionBeanLocal.addMessage(cm3, new Long(4), new Long(1));
-
-            Chat newC1 = chatSessionBeanLocal.getChat(new Long(1));
-            Date time = chatSessionBeanLocal.getChatMessage(new Long(3)).getDateTime();
-            newC1.setLastMsgTime(time);
-
-            Chat c2 = new Chat();
-            c2.setName("party p2");
-            c2.setParty(Boolean.TRUE);
-            c2.getUsers().add(u15);
-            c2.getUsers().add(u3);
-            c2.getUsers().add(u14);
-            c2.getUsers().add(u16);
-            chatSessionBeanLocal.addGroupChat(c2, new Long(2));
-
-            ChatMessage cm4 = new ChatMessage();
-            cm4.setMessage("Nice to meet all of you");
-            chatSessionBeanLocal.addMessage(cm4, new Long(3), new Long(2));
-
-            Chat newC2 = chatSessionBeanLocal.getChat(new Long(2));
-            Date timec2 = chatSessionBeanLocal.getChatMessage(new Long(4)).getDateTime();
-            newC2.setLastMsgTime(timec2);
-
-            Chat c3 = new Chat();
-            c3.getUsers().add(u2);
-            c3.getUsers().add(u);
-            chatSessionBeanLocal.addChat(c3, new Long(2));
-
-            Chat c4 = new Chat();
-            c4.getUsers().add(u10);
-            c4.getUsers().add(u);
-            chatSessionBeanLocal.addChat(c4, new Long(10));
-
-            ChatMessage cm5 = new ChatMessage();
-            cm5.setMessage("Hey I am interested in your teaching, may i know what do you teach?");
-            chatSessionBeanLocal.addMessage(cm5, new Long(1), new Long(4));
-
-            ChatMessage cm6 = new ChatMessage();
-            cm6.setMessage("I am coach for the games. I can lead u in team battles.");
-            chatSessionBeanLocal.addMessage(cm6, new Long(10), new Long(4));
-
-            Chat newC4 = chatSessionBeanLocal.getChat(new Long(4));
-            Date timec4 = chatSessionBeanLocal.getChatMessage(new Long(6)).getDateTime();
-            newC4.setLastMsgTime(timec4);
-
-            Chat c5 = new Chat();
-            c5.getUsers().add(u6);
-            c5.getUsers().add(u);
-            chatSessionBeanLocal.addChat(c5, new Long(6));
-
-            Chat c6 = new Chat();
-            c6.getUsers().add(u8);
-            c6.getUsers().add(u);
-            chatSessionBeanLocal.addChat(c6, new Long(8));
-
-            Chat c7 = new Chat();
-            c7.getUsers().add(u15);
-            c7.getUsers().add(u);
-            chatSessionBeanLocal.addChat(c7, new Long(15));
-
-            Chat c8 = new Chat();
-            c8.getUsers().add(u9);
-            c8.getUsers().add(u);
-            chatSessionBeanLocal.addChat(c8, new Long(9));
-
-            Chat c9 = new Chat();
-            c9.getUsers().add(u17);
-            c9.getUsers().add(u);
-            chatSessionBeanLocal.addChat(c9, new Long(17));
-
-            Chat c10 = new Chat();
-            c10.getUsers().add(u27);
-            c10.getUsers().add(u);
-            chatSessionBeanLocal.addChat(c10, new Long(27));
 
         } catch (Exception ex) {
             Logger.getLogger(DataInitialisationSession.class.getName()).log(Level.SEVERE, null, ex);

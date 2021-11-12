@@ -41,6 +41,10 @@ export default function Chat() {
       ? 0
       : JSON.parse(window.localStorage.user).userId;
 
+  const handleSubmit = () => {
+    submitRequest();
+  };
+
   useEffect(() => {
     if (uId > 0) {
       fetch(`http://localhost:8080/Gwm-war/webresources/chats/${uId}`)
@@ -62,7 +66,6 @@ export default function Chat() {
   }, [reload, iChatIndex]);
 
   function submitRequest() {
-    console.log({ text });
     const req = { message: text };
     const requestOptions = {
       method: "POST",
@@ -75,19 +78,17 @@ export default function Chat() {
       requestOptions
     )
       .then((response) => {
-        if (!response.ok) {
-          throw new Error(response.statusText);
-        }
+        setReload(reload + 1);
+        return response.json();
       })
       .catch((error) => {
         alert(error);
       });
   }
 
-  const handleSubmit = () => {
-    submitRequest();
-    setReload(reload + 1);
-  };
+  function refreshPage() {
+    window.location.reload(false);
+  }
 
   const card = (
     <React.Fragment>
@@ -97,7 +98,7 @@ export default function Chat() {
             {dataChatMsg.map((msg) =>
               msg.msgOwnerId === uId
                 ? msgRight(msg.message, msg.dateTime)
-                : msgLeft(msg.message, msg.dateTime)
+                : msgLeft(msg.message, msg.dateTime, msg.msgOwnerId)
             )}
           </CardContent>
         </Card>
@@ -158,7 +159,7 @@ export default function Chat() {
           direction="column"
           justifyContent="flex start"
           alignItems="flex-start"
-          padding={1.5}
+          padding={1}
           xs={3}
           md={5}
         >
@@ -176,7 +177,7 @@ export default function Chat() {
         justifyContent="flex start"
         alignItems="flex-end"
         colour="#ffb6c1"
-        padding={1.5}
+        padding={1}
         xs={3}
         md={5}
       >
